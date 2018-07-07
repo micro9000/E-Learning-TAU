@@ -1,0 +1,18 @@
+.table-control-btns{
+    width: 100%;
+}
+
+.table-control-btns tr td{
+    padding: 0;
+    text-align: center;
+    background: inherit;
+}
+
+
+.table-control-btns tr td a{
+	background: #fff; display: block;
+}
+
+.line {
+    border-bottom: 1px solid #ddd;
+}

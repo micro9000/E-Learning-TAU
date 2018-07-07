@@ -1,0 +1,57 @@
+body{
+	background: #dbdbdb;
+}
+
+.content-panel{
+	background: #fff;
+}
+
+
+.fa-angle-double-right, .fa-angle-right{
+	color: #e8e830;
+}
+
+.post_wrapper{
+	margin: 0;
+	padding: 0;
+}
+
+.post_cover img{
+	width: 100%;
+	height: auto;
+}
+
+.post_wrapper{
+	padding: 20px;
+}
+
+.post_wrapper .post_date{
+	font-size:11px;
+}
+
+.post_wrapper .post_description p{
+	font-size:12px; 
+	font-size:1rem; 
+	font-height:1.5rem; 
+	color: #5f5e5e;
+}
+
+.post_wrapper .post_by{
+	padding: 20px 0px 20px 0px;
+}
+
+.link-read-more{
+	font-size: 15px;
+	font-weight: bold;
+	color: #1dc61d;
+}
+
+.agri_quote_of_the_day{
+	font-size:14px; 
+	font-size:1rem; 
+	font-height:1.5rem;
+	font-weight: bold; 
+	color: #5f5e5e;
+	padding: 20px;
+	text-align: center;
+}
