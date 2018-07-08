@@ -13,9 +13,13 @@ $(".btn-add-principle").on("click", function(){
 
 			$("#agriculture_principle_msg").html(data.msg);
 
-			setTimeout(function(){
-				window.location = base_url + "admin_agriculture_principles";
-			}, 500);
+			if (data.done === "TRUE"){
+				setTimeout(function(){
+					window.location = base_url + "admin_agriculture_principles";
+				}, 500);
+			}
+
+			
 		}
 	);
 
@@ -31,8 +35,8 @@ function display_principles_on_table(data){
 			principles += "<td>"+ (i + 1) +"</td>";
 			principles += "<td>"+ principleList.principle +"</td>";
 			principles += "<td>"+ principleList.facultyName +"</td>";
-			principles += "<td>"+ principleList.dateAdded +"</td>";
-			principles += "<td>"+ principleList.dateModify +"</td>";
+			principles += "<td>"+ principleList.dateAddedFormated +"</td>";
+			principles += "<td>"+ principleList.dateModifyFormated +"</td>";
 			
 			principles += "<td>";
 				principles += "<table class='table-control-btns'>";
@@ -162,11 +166,34 @@ $(".btn-update-principle").on("click", function(){
 		},
 		function(data){
 			// console.log(data);
-			if (data.done == "TRUE"){
-				$(".actionMsg").html(data.msg);
-				$("#actionMsgDialog").dialog('open');
-			}
+			// if (data.done == "TRUE"){
+				
+			// }
+			$(".actionMsg").html(data.msg);
+			$("#actionMsgDialog").dialog('open');
 		}
 	);
 
+});
+
+
+$(".btn-search-principle").on("click", function(){
+	var search_principle = $('.search-principle').val();
+
+	$.post(
+		base_url + "search_principles",
+		{
+			"searchStr" : search_principle
+		},
+		function(data){
+			// console.log(data);
+			display_principles_on_table(data);
+		}
+	);
+});
+
+$(".btn-refresh").on("click", function(){
+	if (principleID == 0){
+		get_all_principles();
+	}
 });

@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS Faculties(
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
 
-
 SELECT * FROM Faculties;
+
 
 CREATE TABLE IF NOT EXISTS Admins(
 	id INT NOT NULL AUTO_INCREMENT,
@@ -54,12 +54,8 @@ CREATE TABLE IF NOT EXISTS Admins(
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
 
-SELECT * FROM Admins;
+select DATE_FORMAT(dateAdded, '%M %d %Y %r') from Admins;
 
-SELECT A.id As adminID, F.id as facultyID, F.facultyIDNum, F.firstName, F.lastName, F.email, F.dateRegistered, F.addedByAdminFacultyNum
-FROM Admins As A, Faculties As F
-WHERE F.isDeleted=0 AND A.isDeleted=0 AND A.facultyID=F.id AND F.facultyIDNum='99447846' 
-AND A.pswd='8450eca01665516d9aeb5317764902b78495502637c96192c81b1683d32d691a0965cf037feca8b9ed9ee6fc6ab8f27fce8f77c4fd9b4a442a00fc317b8237e6';
 
 CREATE TABLE IF NOT EXISTS AgriPrinciples(
 	id INT NOT NULL AUTO_INCREMENT,
@@ -73,14 +69,6 @@ CREATE TABLE IF NOT EXISTS AgriPrinciples(
 )ENGINE=INNODB;
 
 
-SELECT * FROM AgriPrinciples;
-
-
-SELECT AP.*, CONCAT(F.firstName, ' ', F.lastName) As facultyName
-FROM AgriPrinciples As AP, Faculties As F
-WHERE AP.addedByFacultyNum=F.facultyIDNum;
-
-SELECT * FROM `AgriPrinciples` As `AP` JOIN `Faculties` As `F` ON `AP`.`addedByFacultyNum` = `F`.`facultyIDNum;` ORDER BY `AP`.`id`;
 
 CREATE TABLE IF NOT EXISTS PrinciplesSubTopic(
 	id INT NOT NULL AUTO_INCREMENT,
@@ -94,24 +82,42 @@ CREATE TABLE IF NOT EXISTS PrinciplesSubTopic(
 	FOREIGN KEY(principleID) REFERENCES AgriPrinciples(id),
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
-
-
+;
 SELECT * FROM PrinciplesSubTopic;
 
-SELECT ST.*, AP.principle, CONCAT(F.firstName, ' ', F.lastName) As facultyName
-FROM PrinciplesSubTopic As ST, AgriPrinciples As AP, Faculties As F
-WHERE ST.isDeleted=0 AND AP.isDeleted=0 AND 
-	ST.principleID=AP.id AND ST.addedByFacultyNum=F.facultyIDNum;
 
 CREATE TABLE IF NOT EXISTS TopicChapters(
 	id INT NOT NULL AUTO_INCREMENT,
 	topicID INT NOT NULL,
-	chapterNum INT NOT NULL DEFAULT 1, -- auto increment in background based on topic
+	principleID INT NOT NULL,
 	chapterTitle VARCHAR(255),
 	dateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
-	dateModify DATETIME DEFAULT CURRENT_TIMESTAMP,
-	adminID INT NOT NULL,
+	dateModify DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	addedByFacultyNum CHAR(20),
+	modifyByFacultyNum CHAR(20) DEFAULT 'NA',
 	isDeleted TINYINT DEFAULT 0,
-	FOREIGN KEY(adminID) REFERENCES Admins(id),
+	FOREIGN KEY(principleID) REFERENCES AgriPrinciples(id),
+	FOREIGN KEY(topicID) REFERENCES PrinciplesSubTopic(id),
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
+
+SELECT * FROM TopicChapters;
+
+
+SELECT `TC`.*, `AP`.`principle`, `PT`.`topic`, CONCAT(FT.firstName, ' ', FT.lastName) As facultyName
+FROM `TopicChapters` As `TC`
+JOIN `AgriPrinciples` As `AP` ON `TC`.`principleID` = `AP`.`id`
+JOIN `PrinciplesSubTopic` As `PT` ON `TC`.`topicID` = `PT`.`id`
+JOIN `Faculties` As `FT` ON `TC`.`addedByFacultyNum`=`FT`.`facultyIDNum`
+WHERE   (
+`TC`.`chapterTitle` LIKE '%update here%' ESCAPE '!'
+OR  `AP`.`principle` LIKE '%update here%' ESCAPE '!'
+OR  `PT`.`topic` LIKE '%update here%' ESCAPE '!'
+ )
+AND   (
+`TC`.`isDeleted` = 0
+AND `AP`.`isDeleted` = 0
+AND `PT`.`isDeleted` = 0
+ )
+AND `PT`.`principleID` = `AP`.`id`
+ORDER BY `TC`.`id` DESC;

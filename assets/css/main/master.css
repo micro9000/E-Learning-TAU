@@ -1,5 +1,5 @@
 body{
-	background: #dbdbdb;
+	background: #e8f4eb;
 }
 
 .content-panel{
@@ -52,6 +52,6 @@ body{
 	font-height:1.5rem;
 	font-weight: bold; 
 	color: #5f5e5e;
-	padding: 20px;
+	padding: 10px;
 	text-align: center;
 }

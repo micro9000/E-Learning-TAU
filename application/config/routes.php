@@ -63,19 +63,49 @@ $route['admin_login_page'] = "admin/login_page";
 $route['admin_login'] = "admin/login";
 $route['admin_logout'] = "admin/destroy_admin_session";
 $route['admin_main_panel'] = "admin/main_panel";
+
+// Principles
+
 $route['admin_agriculture_principles'] = "admin/agriculture_principles";
 $route['admin_agriculture_principles/(:any)'] = "admin/agriculture_principles/$1";
 $route['add_agri_principle'] = "admin/add_principle";
 $route['get_all_principles'] = "admin/get_all_principles";
+$route['search_principles'] = "admin/search_principles";
 $route['delete_principle'] = "admin/delete_principle";
 $route['update_principle'] = "admin/update_principle";
+
+// Sub topics
 
 $route['admin_principles_sub_topics'] = "admin/principles_sub_topics";
 $route['admin_principles_sub_topics/(:any)'] = "admin/principles_sub_topics/$1";
 $route['add_principle_sub_topic'] = "admin/add_principle_sub_topic";
 $route['get_all_principles_sub_topic'] = "admin/get_all_principles_sub_topics";
+$route['search_principles_sub_topics'] = "admin/search_principles_sub_topics";
 $route['delete_principle_sub_topic'] = "admin/delete_principle_sub_topic";
+$route['update_principle_sub_topic'] = "admin/update_principle_sub_topic";
 
+
+// Chapters
+
+$route['sub_topic_chapters'] = "admin/sub_topic_chapters";
+$route['sub_topic_chapters/(:any)'] = "admin/sub_topic_chapters/$1";
+$route['get_principles_sub_topics_by_principle'] = "admin/get_principles_sub_topics_by_principle";
+$route['add_topic_new_chapter'] = "admin/add_topic_new_chapter";
+$route['update_topic_chapter'] = "admin/update_topic_chapter";
+$route['delete_topic_chapter'] = "admin/delete_topic_chapter";
+$route['get_all_chapters'] = "admin/get_all_topics_chapters";
+$route['get_chapter_by_id'] = "admin/get_chapter_by_id";
+$route['search_topics_chapters'] = "admin/search_topics_chapters";
+
+
+// Lessons
+
+$route['chapters_lessons'] = "admin/chapters_lessons";
+
+
+// Faculties
+
+$route['faculties'] = "admin/faculty_list";
 
 $route['home_page'] = "students/home";
 

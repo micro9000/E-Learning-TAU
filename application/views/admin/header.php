@@ -22,24 +22,67 @@
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/login.css"); ?>">
 
-	<?php elseif ($page_code == "principle_panel" || $page_code == "principle_sub_topic_panel"): ?>
+	<?php elseif ($page_code == "principle_panel" || $page_code == "principle_sub_topic_panel" || $page_code == "sub_topic_chapters_panel" || 
+					$page_code == "chapters_lessons_panel" || $page_code == "faculty_list_panel"): ?>
 
+		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/main/master.css"); ?>">
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/admin/master.css"); ?>">
 
 		<?php if ($page_code == "principle_panel"): ?>
+
 			<style type="text/css">
 				#principles_page{
 					color: #fff;
     				background: #0d330b;
 				}
 			</style>
+		
 		<?php elseif ($page_code == "principle_sub_topic_panel"): ?>
+
 			<style type="text/css">
 				#principles_sub_topic_page{
 					color: #fff;
     				background: #0d330b;
 				}
 			</style>
+
+		<?php elseif ($page_code == "sub_topic_chapters_panel"): ?>
+			
+			<style type="text/css">
+				#sub_topic_chapters_page{
+					color: #fff;
+    				background: #0d330b;
+				}
+			</style>
+
+
+		<?php elseif ($page_code == "chapters_lessons_panel"): ?>
+			
+			<style type="text/css">
+				#chapters_lessons_page{
+					color: #fff;
+    				background: #0d330b;
+				}
+			</style>
+
+		<?php elseif ($page_code == "faculty_list_panel"): ?>
+			
+			<style type="text/css">
+				#faculty_list_page, #faculty_list_page #facultiesSubmenu li{
+					color: #fff;
+    				background: #0d330b;
+				}
+			</style>
+
+			<script type="text/javascript">
+				$(document).ready(function(){
+					setTimeout(function(){
+						$("#faculty_list_page").trigger('click');
+					}, 500);
+				});
+			</script>
+
+
 		<?php endif; ?>
 
 	<?php endif; ?>

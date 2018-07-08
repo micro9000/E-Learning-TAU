@@ -15,9 +15,13 @@ $(".btn-add-sub-topic").on("click", function(){
 			// console.log(data);
 
 			$("#principle_sub_topic_msg").html(data.msg);
-			setTimeout(function(){
-				window.location.reload();
-			}, 500);
+
+			if (data.done === "TRUE"){
+				setTimeout(function(){
+					window.location.reload();
+				}, 500);
+			}
+				
 		}
 	);
 
@@ -43,8 +47,8 @@ function display_sub_topics(data){
 			sub_topics += "<td>"+ topics.topic +"</td>";
 			sub_topics += "<td>"+ topics.principle +"</td>";
 			sub_topics += "<td>"+ topics.facultyName +"</td>";
-			sub_topics += "<td>"+ topics.dateAdded +"</td>";
-			sub_topics += "<td>"+ topics.dateModify +"</td>";
+			sub_topics += "<td>"+ topics.dateAddedFormated +"</td>";
+			sub_topics += "<td>"+ topics.dateModifyFormated +"</td>";
 
 			sub_topics += "<td>";
 				sub_topics += "<table class='table-control-btns'>";
@@ -120,7 +124,8 @@ $(document).ready(function(){
             OK: function(){
             	// get_all_principles();
             	setTimeout(function(){
-					window.location.reload();;
+					// window.location.reload();;
+					window.location = base_url + "admin_principles_sub_topics";
 				}, 500);
                 $(this).dialog('close');
             }
@@ -151,4 +156,47 @@ $(document).on("click", ".btn-edit-topic", function(){
 
 $(".btn-cancel-update-sub-topic").on("click", function(){
 	window.location = base_url + "admin_principles_sub_topics";
+});
+
+$(".btn-update-sub-topic").on("click", function(){
+	
+	var topicID = $(this).attr('data-id');
+	var principle_sub_topic = $(".principle_sub_topic").val();
+	var principleID = $(".principleID").val();
+
+	$.post(
+		base_url + "update_principle_sub_topic",
+		{
+			"topicID" : topicID,
+			"principleID" : principleID,
+			"sub_topic" : principle_sub_topic
+		},
+		function(data){
+			// console.log(data);
+			$(".actionMsg").html(data.msg);
+			$("#actionMsgDialog").dialog('open');
+		}
+	);
+});
+
+
+$(".btn-search-topic").on("click", function(){
+	var search_topic = $('.search-topic').val();
+
+	$.post(
+		base_url + "search_principles_sub_topics",
+		{
+			"searchStr" : search_topic
+		},
+		function(data){
+			// console.log(data);
+			display_sub_topics(data);
+		}
+	);
+});
+
+$(".btn-refresh").on("click", function(){
+	if (topicID == 0){
+    	get_all_principles_sub_topics();
+    }
 });

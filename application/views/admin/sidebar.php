@@ -1,25 +1,33 @@
 		<!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h3>Bootstrap Sidebar</h3>
+                <h5>E-Learning Admin Panel</h5>
             </div>
 
             <ul class="list-unstyled components">
-                <p>Dummy Heading</p>
+                <p>Admin: <?php echo $this->session->userdata('admin_session_firstName') ." ". $this->session->userdata('admin_session_lastName') ?></p>
+                
                 <li id="principles_page">
                     <a href="<?php echo base_url("admin_agriculture_principles"); ?>">Principles</a>
                 </li>
+
                 <li id="principles_sub_topic_page">
                     <a href="<?php echo base_url("admin_principles_sub_topics"); ?>">Principles sub topics</a>
                 </li>
-                <li>
-                    <a href="#">Chapters</a>
+
+                <li id="sub_topic_chapters_page">
+                    <a href="<?php echo base_url("sub_topic_chapters"); ?>">Chapters</a>
                 </li>
-                <li>
-                    <a href="#facultiesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Faculties</a>
+
+                <li id="chapters_lessons_page">
+                    <a href="<?php echo base_url("chapters_lessons"); ?>">Lessons</a>
+                </li>
+
+                <li id="faculty_list_page">
+                    <a href="#facultiesSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle faculty_list_page">Faculties</a>
                     <ul class="collapse list-unstyled" id="facultiesSubmenu">
                         <li>
-                            <a href="#">List</a>
+                            <a href="<?php echo base_url("faculties"); ?>">List</a>
                         </li>
                         <li>
                             <a href="#">Add / Update</a>
@@ -35,6 +43,9 @@
                         <li>
                             <a href="#">Add / Update</a>
                         </li>
+                        <li>
+                            <a href="#">Student numbers</a>
+                        </li>
                     </ul>
                 </li>
                 <li>
@@ -48,9 +59,7 @@
                         </li>
                     </ul>
                 </li>
-                <li>
-                    <a href="#">Lessons</a>
-                </li>
+                
                 <!-- <li>
                     <a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pages</a>
                     <ul class="collapse list-unstyled" id="pageSubmenu">

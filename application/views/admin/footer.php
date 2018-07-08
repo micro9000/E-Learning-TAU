@@ -30,6 +30,14 @@
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/sub_topics.js"); ?>"></script>
 
+    <?php elseif($page_code == "sub_topic_chapters_panel"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/chapters.js"); ?>"></script>
+
+    <?php elseif($page_code == "chapters_lessons_panel"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/lessons.js"); ?>"></script>
+
 	<?php endif; ?>
 
     <?php if ($page_code !== "login"): ?>
