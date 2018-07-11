@@ -8,11 +8,12 @@ $(".form-signin").on("submit", function(e){
 	var faculty_number = $(".faculty_number").val();
 	var pass = $(".password").val();
 
+	// console.log((sha512(pass)));
 	$.post(
 		base_url + "admin_login",
 		{
 			"facNum" : faculty_number,
-			"password" : pass
+			"password" : sha512(pass)
 		},
 		function(data){
 			// console.log(data);

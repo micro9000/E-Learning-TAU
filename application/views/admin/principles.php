@@ -29,6 +29,9 @@
                             <button type="submit" class="btn btn-primary btn-cancel-update-principle">
                                 <span class="fa fa-ban"></span> Cancel
                             </button>
+                            <button type="submit" class="btn btn-primary btn-cancel-update-principle">
+                                <span class="fa fa-chevron-left"></span> Back
+                            </button>
                         <?php else: ?>
                             <p>Principle does not exists</p>
                         <?php endif; ?>

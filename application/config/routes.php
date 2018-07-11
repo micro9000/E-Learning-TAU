@@ -106,6 +106,28 @@ $route['chapters_lessons'] = "admin/chapters_lessons";
 // Faculties
 
 $route['faculties'] = "admin/faculty_list";
+$route['faculties/(:any)'] = "admin/faculty_list/$1";
+$route['add_faculty'] = "admin/add_faculty";
+$route['update_faculty'] = "admin/update_faculty";
+$route['delete_faculty'] = "admin/delete_faculty_data";
+$route['get_all_faculties'] = "admin/get_all_faculties";
+$route['search_faculties'] = "admin/search_faculty";
+$route['mark_faculty_as_admin_or_dean'] = "admin/mark_faculty_as_admin_or_dean";
+$route['get_faculty_by_id'] = "admin/get_faculty_by_id";
+
+
+// Students
+
+$route['students'] = "admin/students_list";
+$route['students/(:any)'] = "admin/students_list/$1";
+$route['add_student'] = "admin/add_student";
+$route['get_all_student'] = "admin/get_all_students";
+$route['delete_student'] = "admin/delete_student_data";
+$route['update_student'] = "admin/update_student";
+$route['search_students'] = "admin/search_students";
+$route['validate_student_number'] = "admin/validate_student_number";
+
+$route['admin_home'] = "admin/main_panel";
 
 $route['home_page'] = "students/home";
 

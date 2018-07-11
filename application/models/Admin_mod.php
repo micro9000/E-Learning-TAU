@@ -6,23 +6,337 @@
 		## LOGIN FUNCTIONS
 		##
 
-		public function is_faculty_admin_can_login($facNum, $pass){
+		public function login($facNum, $pass){
 			$data = array(
-				'F.facultyIDNum' => $facNum,
-				'A.pswd' => $pass,
-				'F.isDeleted' => 0,
-				'A.isDeleted' => 0
+				'facultyIDNum' => $facNum,
+				'pswd' => $pass,
+				'isDeleted' => 0
 			);
 
-			$this->db->select('A.id As adminID, F.id as facultyID, F.facultyIDNum, F.firstName, F.lastName, F.email, F.dateRegistered, F.addedByAdminFacultyNum');
-			$this->db->from("Admins As A");
-			$this->db->join("Faculties As F", "A.facultyID = F.id");
+			$this->db->select('id, facultyIDNum, firstName, lastName, email, dateRegistered, addedByAdminFacultyNum, isAdmin, isDean');
 			$this->db->where($data);
-			$results = $this->db->get();
-			// $sql = $this->db->get_compiled_select();
-			// return $sql;
+			$results = $this->db->get("Faculties");
 			return $results->row_array();
 		}
+
+		// public function is_faculty_admin_can_login($facNum, $pass){
+		// 	$data = array(
+		// 		'F.facultyIDNum' => $facNum,
+		// 		'A.pswd' => $pass,
+		// 		'F.isDeleted' => 0,
+		// 		'A.isDeleted' => 0
+		// 	);
+
+		// 	$this->db->select('A.id As adminID, F.id as facultyID, F.facultyIDNum, F.firstName, F.lastName, F.email, F.dateRegistered, F.addedByAdminFacultyNum');
+		// 	$this->db->from("Admins As A");
+		// 	$this->db->join("Faculties As F", "A.facultyID = F.id");
+		// 	$this->db->where($data);
+		// 	$results = $this->db->get();
+		// 	// $sql = $this->db->get_compiled_select();
+		// 	// return $sql;
+		// 	return $results->row_array();
+		// }
+
+		##
+		## FACULTY
+		##
+
+		public function insert_new_faculty($info, $pswd){
+
+			$data = array(
+				'facultyIDNum' => $info['faculty_id_num'],
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email'],
+				'pswd' => $pswd,
+				'addedByAdminFacultyNum' => $info['facultyIDNum']
+			);
+
+			$result = $this->db->insert('Faculties', $data);
+			return $result;
+		}
+
+		public function mark_faculty_data_as_deleted($facultyID){
+			$this->db->set('isDeleted', 1);
+			$this->db->where('id', $facultyID);
+			$result = $this->db->update('Faculties');
+			return $result;
+		}
+
+		public function update_faculty_without_pass($facultyID, $info){
+
+			$data = array(
+				'facultyIDNum' => $info['faculty_id_num'],
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email'],
+				'addedByAdminFacultyNum' => $info['facultyIDNum']
+			);
+
+			$this->db->set($data);
+			$this->db->where('id', $facultyID);
+			$result = $this->db->update('Faculties');
+			return $result;
+		}
+
+		public function update_faculty_with_pass($facultyID, $info, $pswd){
+
+			$data = array(
+				'facultyIDNum' => $info['faculty_id_num'],
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email'],
+				'pswd' => $pswd,
+				'addedByAdminFacultyNum' => $info['facultyIDNum']
+			);
+
+			$this->db->set($data);
+			$this->db->where('id', $facultyID);
+			$result = $this->db->update('Faculties');
+			return $result;
+		}
+
+		public function mark_faculty_as_admin_or_dean($facultyID, $status, $mark_as){
+
+			$data = array();
+			if ($mark_as == "admin"){
+				$data = array(
+					'isAdmin' => $status
+				);
+			}else if ($mark_as == "dean"){
+				$data = array(
+					'isDean' => $status
+				);
+			}
+
+			$this->db->set($data);
+			$this->db->where('id', $facultyID);
+			$result = $this->db->update('Faculties');
+			return $result;
+		}
+
+		public function select_faculty_by_id_num($idNum){
+
+			$this->db->select("id, isAdmin, isDean, facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->from("Faculties");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"facultyIDNum" => $idNum
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function select_faculty_by_id($id){
+
+			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->from("Faculties");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"id" => $id
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function select_faculty_by_id_and_id_number($id, $facultyIDNum){
+
+			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->from("Faculties");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"id !=" => $id,
+					"facultyIDNum" => $facultyIDNum
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function select_faculty_by_id_and_email($id, $email){
+
+			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->from("Faculties");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"id !=" => $id,
+					"email" => $email
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+
+		public function select_all_faculties(){
+
+			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->order_by('id');
+			$this->db->from("Faculties");
+			$this->db->where("isDeleted=0");
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_faculties($searchStr){
+
+			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->order_by('id');
+			$this->db->from("Faculties");
+			$this->db->where("isDeleted=0");
+			$this->db->group_start();
+			$this->db->like("facultyIDNum", $searchStr);
+			$this->db->or_like("CONCAT(firstName,' ', lastName)", $searchStr);
+			$this->db->or_like("email", $searchStr);
+			$this->db->group_end();
+			
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		##
+		## Students
+		##
+
+		public function insert_new_student($info, $pswd){
+
+			$data = array(
+				'stdNum' => $info['student_id_num'],
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email'],
+				'pswd' => $pswd,
+			);
+
+			$result = $this->db->insert('Students', $data);
+			return $result;
+		}
+
+		public function update_student_without_pass($studentID, $info){
+
+			$data = array(
+				'stdNum' => $info['student_id_num'],
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email']
+			);
+
+			$this->db->set($data);
+			$this->db->where("id", $studentID);
+			$result = $this->db->update('Students');
+			return $result;
+		}
+
+		public function update_student_with_pass($studentID, $info, $pswd){
+
+			$data = array(
+				'stdNum' => $info['student_id_num'],
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email'],
+				'pswd' => $pswd,
+			);
+
+			$this->db->set($data);
+			$this->db->where("id", $studentID);
+			$result = $this->db->update('Students');
+			return $result;
+		}
+
+		public function mark_student_data_as_deleted($studentID){
+			$this->db->set('isDeleted', 1);
+			$this->db->where('id', $studentID);
+			$result = $this->db->update('Students');
+			return $result;
+		}
+
+		public function select_std_num($stdNum){
+
+			$this->db->select("id, stdNum");
+			$this->db->from("ValidStudentNumbers");
+			$this->db->where(array("stdNum" => $stdNum));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function select_std_by_id_and_id_number($id, $stdNum){
+
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->from("Students");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"id !=" => $id,
+					"stdNum" => $stdNum
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function select_std_by_id_and_email($id, $email){
+
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->from("Students");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"id !=" => $id,
+					"email" => $email
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function select_all_students(){
+
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->order_by('id');
+			$this->db->from("Students");
+			$this->db->where("isDeleted=0");
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_students($searchStr){
+			
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->order_by('id');
+			$this->db->from("Students");
+			$this->db->where("isDeleted=0");
+			$this->db->group_start();
+			$this->db->like("stdNum", $searchStr);
+			$this->db->or_like("firstName", $searchStr);
+			$this->db->or_like("lastName", $searchStr);
+			$this->db->or_like("email", $searchStr);
+			$this->db->or_like("CONCAT(firstName,' ', lastName)", $searchStr);
+			$this->db->or_like("CONCAT(lastName,' ', firstName)", $searchStr);
+			$this->db->group_end();
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_std_by_id($id){
+
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->from("Students");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"id =" => $id
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		##
+		## Principles
+		##
 
 		public function insert_new_principle($principle, $facultyIDNum){
 			$data = array(

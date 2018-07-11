@@ -58,6 +58,9 @@
                             <button type="submit" class="btn btn-primary btn-cancel-update-chapter">
                             	<span class="fa fa-ban"></span> Cancel
                             </button>
+                            <button type="submit" class="btn btn-primary btn-cancel-update-chapter">
+                                <span class="fa fa-chevron-left"></span> Back
+                            </button>
                         <?php else: ?>
                             <p>Chapter does not exists</p>
                         <?php endif; ?>

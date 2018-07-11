@@ -24,8 +24,8 @@ CREATE TABLE IF NOT EXISTS Students(
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
 
+SELECT * FROM Students where stdNum='2012101205';
 
-SELECT * FROM Students;
 
 CREATE TABLE IF NOT EXISTS Faculties(
 	id INT NOT NULL AUTO_INCREMENT,
@@ -39,8 +39,18 @@ CREATE TABLE IF NOT EXISTS Faculties(
 	isDeleted TINYINT DEFAULT 0,
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
+ALTER TABLE Faculties
+ADD COLUMN isAdmin TINYINT DEFAULT 0;
+ALTER TABLE Faculties
+ADD COLUMN isDean TINYINT DEFAULT 0;
+
+SELECT id, facultyIDNum, firstName, lastName, email, dateRegistered, addedByAdminFacultyNum, isAdmin, isDean
+FROM Faculties WHERE facultyIDNum='99447846' AND pswd='';
 
 SELECT * FROM Faculties;
+
+INSERT INTO `Faculties` (`facultyIDNum`, `firstName`, `lastName`, `email`, `pswd`, `addedByAdminFacultyNum`) 
+VALUES ('99447847', 'RANIEL', 'GARCIA', 'ranielgarcia101@gmial.com', 'b7177df6d79df49b0f9806294f0e7d616d9ff8a9fd87be3b9d0c996aa63e7d9760ad75f8a1a0e9190600ef636d62cec56e699f62ef76a376cc0c744cf8acb939', '99447846');
 
 
 CREATE TABLE IF NOT EXISTS Admins(
@@ -55,6 +65,8 @@ CREATE TABLE IF NOT EXISTS Admins(
 )ENGINE=INNODB;
 
 select DATE_FORMAT(dateAdded, '%M %d %Y %r') from Admins;
+
+SELECT * FROM Admins;
 
 
 CREATE TABLE IF NOT EXISTS AgriPrinciples(
@@ -104,20 +116,12 @@ CREATE TABLE IF NOT EXISTS TopicChapters(
 SELECT * FROM TopicChapters;
 
 
-SELECT `TC`.*, `AP`.`principle`, `PT`.`topic`, CONCAT(FT.firstName, ' ', FT.lastName) As facultyName
-FROM `TopicChapters` As `TC`
-JOIN `AgriPrinciples` As `AP` ON `TC`.`principleID` = `AP`.`id`
-JOIN `PrinciplesSubTopic` As `PT` ON `TC`.`topicID` = `PT`.`id`
-JOIN `Faculties` As `FT` ON `TC`.`addedByFacultyNum`=`FT`.`facultyIDNum`
-WHERE   (
-`TC`.`chapterTitle` LIKE '%update here%' ESCAPE '!'
-OR  `AP`.`principle` LIKE '%update here%' ESCAPE '!'
-OR  `PT`.`topic` LIKE '%update here%' ESCAPE '!'
- )
+SELECT `id`, `facultyIDNum`, `firstName`, `lastName`, `email`, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, `addedByAdminFacultyNum`
+FROM `Faculties`
+WHERE `isDeleted` =0
 AND   (
-`TC`.`isDeleted` = 0
-AND `AP`.`isDeleted` = 0
-AND `PT`.`isDeleted` = 0
+`facultyIDNum` LIKE '%raniel%' ESCAPE '!'
+OR  CONCAT(firstName,' ', lastName) LIKE '%raniel%' ESCAPE '!'
+OR  `email` LIKE '%raniel%' ESCAPE '!'
  )
-AND `PT`.`principleID` = `AP`.`id`
-ORDER BY `TC`.`id` DESC;
+ORDER BY `id`;

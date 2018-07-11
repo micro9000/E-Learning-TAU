@@ -26,7 +26,9 @@
 
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
 
-            	
+            	<!-- NOTE: 
+                    Do not forget to restrict the faculty to not to delete the lesson
+                 -->
 
             	<div class="content-panel" style="border-bottom: 1px solid #dbdbdb;">
                     <div class="post_wrapper">

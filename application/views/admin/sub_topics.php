@@ -55,6 +55,9 @@
                             <button type="submit" class="btn btn-primary btn-cancel-update-sub-topic">
                             	<span class="fa fa-ban"></span> Cancel
                             </button>
+                            <button type="submit" class="btn btn-primary btn-cancel-update-sub-topic">
+                                <span class="fa fa-chevron-left"></span> Back
+                            </button>
                         <?php else: ?>
                             <p>Sub topic does not exists</p>
                         <?php endif; ?>

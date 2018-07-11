@@ -18,7 +18,6 @@
 
 		public function is_admin_still_logged_in(){
 			if (
-				$this->session->has_userdata('admin_session_admin_id') && 
 				$this->session->has_userdata('admin_session_email') &&
 				$this->session->has_userdata('admin_logged_in') &&
 				($this->session->userdata('admin_logged_in') == TRUE)
@@ -30,15 +29,53 @@
 			return FALSE;
 		}
 
+		public function get_actual_user_type($userType){
+			if ($userType == "admin_faculty"){
+				return "Admin";
+			}else if ($userType == "dean"){
+				return "Dean";
+			}else if ($userType == "dean_admin_faculty"){
+				return "Root user";
+			}else if($userType == "faculty"){
+				return "Faculty";
+			}else{
+				return "Faculty";
+			}
+		}
+
+		public function get_user_type(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$isAdmin = $this->session->userdata('admin_session_isAdmin');
+			$isDean = $this->session->userdata('admin_session_isDean');
+
+			if ($isAdmin == 1 && $isDean == 0){
+				return 'admin_faculty';
+			}else if ($isAdmin == 0 && $isDean == 1){
+				return 'dean';
+			}else if ($isAdmin == 1 && $isDean == 1){
+				return 'dean_admin_faculty';
+			}else if ($isAdmin == 0 && $isDean == 0){
+				return 'faculty';
+			}else{
+				return 'faculty';
+			}
+
+		}
+
 		public function destroy_admin_session(){
 
 			$sessions = array(
-				'admin_session_admin_id',
 				'admin_session_faculty_id',
 				'admin_session_facultyNum',
 				'admin_session_firstName',
 				'admin_session_lastName',
 				'admin_session_email',
+				'admin_session_isAdmin',
+				'admin_session_isDean',
 				'admin_logged_in'
 			);
 
@@ -62,11 +99,9 @@
 				"password" => $password
 			);
 
-
 			$this->form_validation->set_data($data);
 			$this->form_validation->set_rules("facNum", "Faculty Number", "trim|required|max_length[8]|min_length[8]");
 			$this->form_validation->set_rules("password", "Password", "trim|required");
-
 
 			if ($this->form_validation->run() === FALSE){
 				$is_done = array(
@@ -76,18 +111,19 @@
 			}else{
 				$hashPass = hashSHA512($password);
 
-				$results = $this->admin_mod->is_faculty_admin_can_login($data['facNum'], $hashPass);
+				$results = $this->admin_mod->login($data['facNum'], $hashPass);
 
 				if (sizeof($results) > 0){
-					if ($results['adminID'] > 0 && $results['facultyIDNum'] != ""){
+					if ($results['id'] > 0 && $results['facultyIDNum'] != ""){
 
 						$std_session_data = array(
-							'admin_session_admin_id' => $results['adminID'],
-							'admin_session_faculty_id' => $results['facultyID'],
+							'admin_session_faculty_id' => $results['id'],
 							'admin_session_facultyNum' => $results['facultyIDNum'],
 							'admin_session_firstName' => $results['firstName'],
 							'admin_session_lastName' => $results['lastName'],
 							'admin_session_email' => $results['email'],
+							'admin_session_isAdmin' => $results['isAdmin'],
+							'admin_session_isDean' => $results['isDean'],
 							'admin_logged_in' => TRUE
 						);
 
@@ -124,19 +160,35 @@
 		##
 		##
 
+		
 		public function main_panel(){
 
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
 
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			$data['session_data'] = $this->session->userdata();
 			$data['page_title'] = "Admin Main Panel";
 			$data['page_code'] = "main_panel";
+
+			$this->load->library('pagination');
+
+			$config['base_url'] = base_url("admin_agriculture_principles");
+			$config['total_rows'] = 200;
+			$config['per_page'] = 20;
+
+			$this->pagination->initialize($config);
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
 			$this->load->view("admin/content_start_div.php");
 			$this->load->view("admin/topbar");
+			
 			$this->load->view("admin/main_panel");
 			$this->load->view("admin/footer");
 		}
@@ -145,6 +197,15 @@
 
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
+			}
+			
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
 			}
 
 			$data['principleID'] = 0;
@@ -161,6 +222,8 @@
 				$data['principleID'] = $principleID;
 			}
 			
+			$data['session_data'] = $this->session->userdata();
+
 			$data['page_title'] = "Admin - Principles";
 			$data['page_code'] = "principle_panel";
 
@@ -179,6 +242,15 @@
 				redirect("/admin_login_page");
 			}
 
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
 			if (is_numeric($topicID) && $topicID > 0 && $topicID != 0){
 
 				$topic_data = $this->admin_mod->select_principles_sub_topic_by_topic_id($topicID);
@@ -191,6 +263,8 @@
 				$data['topicID'] = $topicID;
 				$data['principleID'] = $topic_data['principleID'];
 			}
+
+			$data['session_data'] = $this->session->userdata();
 
 			$data['page_title'] = "Admin Principles Sub Topics";
 			$data['page_code'] = "principle_sub_topic_panel";
@@ -211,6 +285,15 @@
 				redirect("/admin_login_page");
 			}
 
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+			
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
 			if (is_numeric($chapterID) && $chapterID > 0 && $chapterID != 0){
 
 				$chapter_data = $this->admin_mod->select_chapter_by_id($chapterID);
@@ -224,6 +307,8 @@
 				$data['topicID'] = $chapter_data['topicID'];
 				$data['principleID'] = $chapter_data['principleID'];
 			}
+			
+			$data['session_data'] = $this->session->userdata();
 
 			$data['page_title'] = "Admin Sub Topics Chapters";
 			$data['page_code'] = "sub_topic_chapters_panel";
@@ -245,6 +330,13 @@
 				redirect("/admin_login_page");
 			}
 
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+			
+			$data['session_data'] = $this->session->userdata();
+
 			$data['page_title'] = "Admin Chapters-Lessons";
 			$data['page_code'] = "chapters_lessons_panel";
 
@@ -256,11 +348,36 @@
 			$this->load->view("admin/footer");
 		}
 
-		public function faculty_list(){
+		public function faculty_list($facultyID=0){
 
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+			
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			if (is_numeric($facultyID) && $facultyID > 0 && $facultyID != 0){
+
+				$faculty_data = $this->admin_mod->select_faculty_by_id($facultyID);
+				$admin_data = $this->admin_mod->select_faculty_by_id_num($faculty_data['addedByAdminFacultyNum']);
+
+				if (sizeof($faculty_data) == 0){
+					show_404();
+				}
+
+				$data['faculty_to_update_data'] = $faculty_data;
+				$data['admin_data'] = $admin_data;
+				$data['facultyID'] = $facultyID;
+			}
+
+			$data['session_data'] = $this->session->userdata();
 
 			$data['page_title'] = "Admin Faculies";
 			$data['page_code'] = "faculty_list_panel";
@@ -269,7 +386,47 @@
 			$this->load->view("admin/sidebar");
 			$this->load->view("admin/content_start_div.php");
 			$this->load->view("admin/topbar");
-			$this->load->view("admin/faculty_list");
+			$this->load->view("admin/faculties");
+			$this->load->view("admin/footer");
+		}
+
+		public function students_list($studentID=0){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+			
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			if (is_numeric($studentID) && $studentID > 0 && $studentID != 0){
+
+				$student_data = $this->admin_mod->select_std_by_id($studentID);
+
+				if (sizeof($student_data) == 0){
+					show_404();
+				}
+
+				$data['student_to_update_data'] = $student_data;
+				$data['studentID'] = $studentID;
+			}
+
+			$data['session_data'] = $this->session->userdata();
+
+			$data['page_title'] = "Admin Faculies";
+			$data['page_code'] = "students_list_panel";
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/students");
 			$this->load->view("admin/footer");
 		}
 
@@ -279,12 +436,854 @@
 		##
 		##
 
+		## Faculty
+
+		public function add_faculty(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"faculty_id_num" => $this->input->post('faculty_id_num'),
+				"email" => $this->input->post('email'),
+				"lastname" => $this->input->post('lastname'),
+				"firstname" => $this->input->post('firstname'),
+				"password" => $this->input->post('password'),
+				"confirm_pass" => $this->input->post('confirm_pass'),
+				"facultyIDNum" => $facultyIDNum,
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			//is_unique[Faculties.facultyIDNum]|
+			// array('is_unique' => 'This %s already exists.')
+			$this->form_validation->set_rules("faculty_id_num", "Faculty ID number", "trim|required|is_natural|callback_check_id_number_already_used_on_insert");
+			//|is_unique[Faculties.email]
+			// array('is_unique' => 'This %s already exists.')
+			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email|callback_check_email_already_used_on_insert");
+			$this->form_validation->set_rules("lastname", "Faculty Lastname", "trim|required");
+			$this->form_validation->set_rules("firstname", "Faculty Firstname", "trim|required");
+			$this->form_validation->set_rules("password", "Password", "trim|required"); 
+			$this->form_validation->set_rules("confirm_pass", "Password Confirmation", "trim|required|matches[password]");
+			$this->form_validation->set_rules("facultyIDNum", "Admin faculty id number", "trim|required"); 
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$hashPass = hashSHA512($data['password']);
+				
+				if ($this->admin_mod->insert_new_faculty($data, $hashPass) == 1){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Inserted Successfully"
+					);
+				}
+
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function update_faculty(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"facultyID" => $this->input->post('facultyID'),
+				"faculty_id_num" => $this->input->post('faculty_id_num'),
+				"email" => $this->input->post('email'),
+				"lastname" => $this->input->post('lastname'),
+				"firstname" => $this->input->post('firstname'),
+				"facultyIDNum" => $facultyIDNum,
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+
+			$this->form_validation->set_rules("facultyID", "faculty ID", "trim|required"); 
+			$this->form_validation->set_rules("faculty_id_num", "Faculty ID number", "trim|required|is_natural|callback_check_id_number_already_used_on_update");
+			$this->form_validation->set_rules("email", "email", "trim|required|valid_email|callback_check_email_already_used_on_update");
+			$this->form_validation->set_rules("lastname", "Faculty Lastname", "trim|required");
+			$this->form_validation->set_rules("firstname", "Faculty Firstname", "trim|required");
+			$this->form_validation->set_rules("facultyIDNum", "Admin faculty id number", "trim|required"); 
+
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$pswd = $this->input->post('password');
+				$pswd_conf = $this->input->post('confirm_pass');
+
+				if ($pswd != ""){
+
+					$pass = array(
+						"password" => $pswd,
+						"confirm_pass" => $pswd_conf
+					);
+
+					$pass = $this->security->xss_clean($pass);
+					$this->form_validation->set_data($pass);
+
+					$this->form_validation->set_rules("password", "Password", "trim|required"); 
+					$this->form_validation->set_rules("confirm_pass", "Password Confirmation", "trim|required|matches[password]");
+
+					if ($this->form_validation->run() === FALSE){
+						$is_done = array(
+							"done" => "FALSE",
+							"msg" => validation_errors('<span>', '</span>')
+						);
+					}else{
+						$hashPass = hashSHA512($pass['password']);
+
+						if ($this->admin_mod->update_faculty_with_pass($data['facultyID'], $data, $hashPass) == 1){
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Updated Successfully with password"
+							);
+						}
+					}
+					
+				}else{
+					if ($this->admin_mod->update_faculty_without_pass($data['facultyID'], $data) == 1){
+						$is_done = array(
+							"done" => "TRUE",
+							"msg" => "Updated Successfully"
+						);
+					}
+				}
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function delete_faculty_data(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyID = $this->input->post('facultyID');
+
+			$data = array(
+				"facultyID" => $facultyID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("facultyID", "Faculty ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+					
+				if ($this->admin_mod->mark_faculty_data_as_deleted($data['facultyID']) == 1){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully Deleted"
+					);
+				}
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function mark_faculty_as_admin_or_dean(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyID = $this->input->post('facultyID');
+			$status = $this->input->post('status');
+			$mark_as = $this->input->post('mark_as');
+
+			$data = array(
+				"facultyID" => $facultyID,
+				"status" => $status,
+				"mark_as" => $mark_as
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("facultyID", "Faculty ID", "trim|required");
+			$this->form_validation->set_rules("status", "Status", "trim|required");
+			$this->form_validation->set_rules("mark_as", "Mark as", "trim|required");
+
+			if ($this->form_validation->run() === TRUE){
+
+				if ($this->admin_mod->mark_faculty_as_admin_or_dean($data['facultyID'], $data['status'], $data['mark_as']) == 1){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully changed mark ".$data['mark_as']." status"
+					);
+				}
+			}else{
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => ""
+				);
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function check_id_number_already_used_on_update($facultyIDNum){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$facultyID = $this->input->post('facultyID');
+			$faculty_data = $this->admin_mod->select_faculty_by_id_and_id_number($facultyID, $facultyIDNum);
+
+			if (sizeof($faculty_data) > 0){
+				$this->form_validation->set_message('check_id_number_already_used_on_update', 'The {field} already used.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+
+		public function check_id_number_already_used_on_insert($facultyIDNum){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$faculty_data = $this->admin_mod->select_faculty_by_id_and_id_number(0, $facultyIDNum);
+
+			if (sizeof($faculty_data) > 0){
+				$this->form_validation->set_message('check_id_number_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+		public function check_email_already_used_on_update($email){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$facultyID = $this->input->post('facultyID');
+			$faculty_data = $this->admin_mod->select_faculty_by_id_and_email($facultyID, $email);
+
+			if (sizeof($faculty_data) > 0){
+				$this->form_validation->set_message('check_email_already_used_on_update', 'The {field} already used.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+
+		public function check_email_already_used_on_insert($email){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$faculty_data = $this->admin_mod->select_faculty_by_id_and_email(0, $email);
+
+			if (sizeof($faculty_data) > 0){
+				$this->form_validation->set_message('check_email_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+		public function get_all_faculties(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$faculties = $this->admin_mod->select_all_faculties();
+			// print_r($faculties);
+
+			$facultyLen = sizeof($faculties);
+			for($i=0; $i<$facultyLen; $i++){
+				$admin_data = $this->admin_mod->select_faculty_by_id_num($faculties[$i]['addedByAdminFacultyNum']);
+
+				if (sizeof($admin_data) > 0){
+					$faculties[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+				}
+				
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($faculties));
+		}
+
+
+		public function search_faculty(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$searchStr = $this->input->post('searchStr');
+
+			$data = array('search_string' => $searchStr);
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search_string", "Search string", "trim|required");
+
+			$results = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$results = $this->admin_mod->select_faculties($data['search_string']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+		public function get_faculty_by_id(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$facultyID = $this->input->post('facultyID');
+
+			$data = array('facultyID' => $facultyID);
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("facultyID", "Faculty ID", "trim|required");
+
+			$results = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$results = $this->admin_mod->select_faculty_by_id($data['facultyID']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+		## Students -------------------------------------------------------------------------------------
+
+		public function add_student(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"student_id_num" => $this->input->post('student_id_num'),
+				"email" => $this->input->post('email'),
+				"lastname" => $this->input->post('lastname'),
+				"firstname" => $this->input->post('firstname'),
+				"password" => $this->input->post('password'),
+				"confirm_pass" => $this->input->post('confirm_pass')
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("student_id_num", "Student ID number", "trim|required|is_natural|callback_check_is_student_enrolled|callback_check_std_id_number_already_used_on_insert");
+			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email|callback_check_std_email_already_used_on_insert");
+			$this->form_validation->set_rules("lastname", "Student Lastname", "trim|required");
+			$this->form_validation->set_rules("firstname", "Student Firstname", "trim|required");
+			$this->form_validation->set_rules("password", "Password", "trim|required"); 
+			$this->form_validation->set_rules("confirm_pass", "Password Confirmation", "trim|required|matches[password]");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$hashPass = hashSHA512($data['password']);
+				
+				if ($this->admin_mod->insert_new_student($data, $hashPass) == 1){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Inserted Successfully"
+					);
+				}
+
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function update_student(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"studentID" => $this->input->post("studentID"), 
+				"student_id_num" => $this->input->post('student_id_num'),
+				"email" => $this->input->post('email'),
+				"lastname" => $this->input->post('lastname'),
+				"firstname" => $this->input->post('firstname'),
+				"password" => $this->input->post('password'),
+				"confirm_pass" => $this->input->post('confirm_pass')
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("studentID", "Student ID", "trim|required");
+			$this->form_validation->set_rules("student_id_num", "Student ID number", "trim|required|is_natural|callback_check_is_student_enrolled|callback_check_std_id_number_already_used_on_update");
+			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email|callback_check_std_email_already_used_on_update");
+			$this->form_validation->set_rules("lastname", "Student Lastname", "trim|required");
+			$this->form_validation->set_rules("firstname", "Student Firstname", "trim|required");
+			
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$pswd = $this->input->post('password');
+				$pswd_conf = $this->input->post('confirm_pass');
+
+				if ($pswd != ""){
+
+					$pass = array(
+						"password" => $pswd,
+						"confirm_pass" => $pswd_conf
+					);
+
+					$pass = $this->security->xss_clean($pass);
+					$this->form_validation->set_data($pass);
+					$this->form_validation->set_rules("password", "Password", "trim|required"); 
+					$this->form_validation->set_rules("confirm_pass", "Password Confirmation", "trim|required|matches[password]");
+
+					if ($this->form_validation->run() === FALSE){
+
+						$is_done = array(
+							"done" => "FALSE",
+							"msg" => validation_errors('<span>', '</span>')
+						);
+
+					}else{
+
+						$hashPass = hashSHA512($pass['password']);
+
+						if ($this->admin_mod->update_student_with_pass($data['studentID'], $data, $hashPass) == 1){
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Updated Successfully with password"
+							);
+						}
+					}
+					
+				}else{
+					if ($this->admin_mod->update_student_without_pass($data['studentID'], $data) == 1){
+						$is_done = array(
+							"done" => "TRUE",
+							"msg" => "Updated Successfully"
+						);
+					}
+				}
+
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function check_is_student_enrolled($stdIDNum){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$std_data = $this->admin_mod->select_std_num($stdIDNum);
+
+			if (sizeof($std_data) == 0){
+				$this->form_validation->set_message('check_is_student_enrolled', 'Invalid {field}, student number not exists in the master list.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+		public function validate_student_number(){
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$data = array("student_id_num" => $this->input->post('student_id_num'));
+
+			$data = $this->security->xss_clean($data);
+			$this->form_validation->set_data($data);
+
+			$this->form_validation->set_rules("student_id_num", "Student ID number", "trim|required|is_natural|callback_check_is_student_enrolled");
+
+			if ($this->form_validation->run() === FALSE){
+
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+
+			}else{
+
+				$is_done = array(
+					"done" => "TRUE",
+					"msg" => "Student number is enrolled in the master list"
+				);
+
+			}
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function check_std_id_number_already_used_on_insert($stdIDNum){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$std_data = $this->admin_mod->select_std_by_id_and_id_number(0, $stdIDNum);
+
+			if (sizeof($std_data) > 0){
+				$this->form_validation->set_message('check_std_id_number_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+		public function check_std_id_number_already_used_on_update($stdIDNum){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$studentID = $this->input->post("studentID");
+
+			$std_data = $this->admin_mod->select_std_by_id_and_id_number($studentID, $stdIDNum);
+
+			if (sizeof($std_data) > 0){
+				$this->form_validation->set_message('check_std_id_number_already_used_on_update', 'Invalid {field}, the {field} already used.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+		public function check_std_email_already_used_on_insert($email){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$std_data = $this->admin_mod->select_std_by_id_and_email(0, $email);
+
+			if (sizeof($std_data) > 0){
+				$this->form_validation->set_message('check_std_email_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+
+		public function check_std_email_already_used_on_update($email){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			
+			$studentID = $this->input->post("studentID");
+			$std_data = $this->admin_mod->select_std_by_id_and_email($studentID, $email);
+
+			if (sizeof($std_data) > 0){
+				$this->form_validation->set_message('check_std_email_already_used_on_update', 'Invalid {field}, the {field} already used.');
+				return FALSE;
+			}
+
+			return TRUE;
+		}
+
+		public function get_all_students(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$students = $this->admin_mod->select_all_students();
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($students));
+		}
+
+		public function delete_student_data(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$studentID = $this->input->post('studentID');
+
+			$data = array(
+				"studentID" => $studentID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("studentID", "Student ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+
+			}else{
+					
+				if ($this->admin_mod->mark_student_data_as_deleted($data['studentID']) == 1){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully Deleted"
+					);
+				}
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function search_students(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$searchStr = $this->input->post('searchStr');
+
+			$data = array('search_string' => $searchStr);
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search_string", "Search string", "trim|required");
+
+			$results = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$results = $this->admin_mod->select_students($data['search_string']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+
 		## Principles
 
 		public function add_principle(){
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
 			}
 
 			$is_done = array(
@@ -369,6 +1368,12 @@
 				redirect("/admin_login_page");
 			}
 
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
 			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
 
 			$is_done = array(
@@ -414,6 +1419,12 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
 
 			$is_done = array(
 				"done" => "FALSE",
@@ -467,6 +1478,12 @@
 				redirect("/admin_login_page");
 			}
 
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
 			$is_done = array(
 				"done" => "FALSE",
 				"msg" => ""
@@ -515,6 +1532,12 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
 
 			$is_done = array(
 				"done" => "FALSE",
@@ -626,6 +1649,12 @@
 				redirect("/admin_login_page");
 			}
 
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
 			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
 
 			$is_done = array(
@@ -669,6 +1698,12 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
 
 			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
 
@@ -788,6 +1823,12 @@
 				redirect("/admin_login_page");
 			}
 
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
 			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
 
 			$is_done = array(
@@ -842,6 +1883,11 @@
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
 			}
 
 			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
