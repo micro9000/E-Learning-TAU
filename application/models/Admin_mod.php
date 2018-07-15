@@ -689,6 +689,23 @@
 			return $result;
 		}
 
+		public function mark_lesson_as_deleted($lessonID){
+			$this->db->set('isDeleted', 1);
+			$this->db->where('id', $lessonID);
+			$result = $this->db->update('Lessons');
+			return $result;
+		}
+
+		public function mark_lesson_as_deleted_by_user($lessonID, $currentUserIDNum){
+			$this->db->set('isDeleted', 1);
+			$this->db->where(array(
+							"id" => $lessonID,
+							"addedByFacultyNum" => $currentUserIDNum
+					));
+			$result = $this->db->update('Lessons');
+			return $result;
+		}
+
 		public function select_all_lessons($facultyIDNum = ""){
 
 			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 

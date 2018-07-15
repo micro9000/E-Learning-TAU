@@ -123,6 +123,16 @@
       </div>
     </div>
 
+        <!-- Hidden by default -->
+    <div id="deleteDialog" title="Delete Student data">
+        <p>Are you sure you want to delete this lesson ?</p>
+    </div>
+
+    <!-- Hidden by default -->
+    <div id="actionMsgDialog" title="Message">
+        <p class="actionMsg"></p>
+    </div>
+
     <script type="text/javascript">
         var userType = "<?php echo $userType; ?>";
     </script>

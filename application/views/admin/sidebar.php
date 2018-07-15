@@ -56,20 +56,52 @@
                     <li id="students_list_page">
                         <a href="<?php echo base_url("students"); ?>">Students</a>
                     </li>
-                    <!-- <li>
-                        <a href="#studentsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Students</a>
+                    <li>
+                        <a href="#studentsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Audit Trail</a>
                         <ul class="collapse list-unstyled" id="studentsSubmenu">
                             <li>
-                                <a href="#">List</a>
+                                <a href="#">Principles</a>
                             </li>
                             <li>
-                                <a href="#">Add / Update</a>
+                                <a href="#">Sub Topics</a>
                             </li>
                             <li>
-                                <a href="#">Student numbers</a>
+                                <a href="#">Chapters</a>
+                            </li>
+                            <li>
+                                <a href="#">Lessons</a>
+                            </li>
+                            <li>
+                                <a href="#">Faculties</a>
+                            </li>
+                            <li>
+                                <a href="#">Students</a>
                             </li>
                         </ul>
-                    </li> -->
+                    </li>
+                    <li>
+                        <a href="#studentsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Recycle Bin</a>
+                        <ul class="collapse list-unstyled" id="studentsSubmenu">
+                            <li>
+                                <a href="#">Principles</a>
+                            </li>
+                            <li>
+                                <a href="#">Sub Topics</a>
+                            </li>
+                            <li>
+                                <a href="#">Chapters</a>
+                            </li>
+                            <li>
+                                <a href="#">Lessons</a>
+                            </li>
+                            <li>
+                                <a href="#">Faculties</a>
+                            </li>
+                            <li>
+                                <a href="#">Students</a>
+                            </li>
+                        </ul>
+                    </li>
                 <?php endif; ?>
 
             </ul>

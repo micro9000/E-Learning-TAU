@@ -2133,6 +2133,62 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
+		public function delete_lesson(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$lessonID = $this->input->post('lessonID');
+
+			$data = array(
+				"lessonID" => $lessonID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("lessonID", "Lesson ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				if ($userType == "admin_faculty" || $userType == "dean_admin_faculty"){
+					
+					if ($this->admin_mod->mark_lesson_as_deleted($data['lessonID']) == 1){
+						$is_done = array(
+							"done" => "TRUE",
+							"msg" => "Successfully Deleted"
+						);
+					}
+				}else{
+
+					if ($this->admin_mod->mark_lesson_as_deleted_by_user($data['lessonID'], $facultyIDNum) == 1){
+						$is_done = array(
+							"done" => "TRUE",
+							"msg" => "Successfully Deleted"
+						);
+					}
+				}
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
 		public function get_all_lessons_by_current_user(){
 			
 			if ($this->is_admin_still_logged_in() === FALSE){

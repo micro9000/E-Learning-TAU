@@ -121,7 +121,7 @@ $route['get_faculty_by_id'] = "admin/get_faculty_by_id";
 
 $route['add_lessons'] = "admin/add_lessons";
 $route['add_new_lesson'] = "admin/add_new_lesson";
-
+$route['delete_lesson'] = "admin/delete_lesson";
 $route['upload_lesson_img'] = "admin/upload_lessons_img";
 
 

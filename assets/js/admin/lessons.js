@@ -73,12 +73,12 @@ function display_lessons(data){
 
                         	if (userType === "admin_faculty" || userType == "dean_admin_faculty"){
                         		display += "<td>";
-	                                display += "<a href='#'><span class='fa fa-trash-alt'></span> Delete</a>";
+	                                display += "<a href='#' class='btn-delete-lesson' data-lesson-id='"+ lesson.id +"'><span class='fa fa-trash-alt'></span> Delete</a>";
 	                            display += "</td>";
                         	}
 
                             display += "<td>";
-                                display += "<a href='#'><span class='fa fa-edit'></span> Update</a>";
+                                display += "<a href='#' data-lesson-id='"+ lesson.id +"'><span class='fa fa-edit'></span> Update</a>";
                             display += "</td>";
 
                         display += "</tr>";
@@ -187,4 +187,64 @@ $(".btn-advance-search-lesson").on("click", function(){
 			$(".btn-close-advance-search").trigger("click");
 		}
 	);
+});
+
+function delete_lesson(id){
+	$.post(
+		base_url + "delete_lesson",
+		{
+			"lessonID" : id
+		},
+		function(data){
+			// console.log(data);
+			$(".actionMsg").html(data.msg);
+			$("#actionMsgDialog").dialog('open');
+		}
+	);
+}
+
+$(document).ready(function(){
+	$("#deleteDialog").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        buttons:{
+            YES: function(){
+
+                var id = $(this).data('lesson_id');
+                // alert(id);
+                delete_lesson(id);
+
+                $(this).dialog('close');
+            },
+            NO: function(){
+                $(this).dialog('close');
+            }
+        }
+    });
+
+    $("#actionMsgDialog").dialog({
+        autoOpen: false,
+        resizable: false,
+        modal: true,
+        buttons:{
+            OK: function(){
+            	setTimeout(function(){
+					window.location = base_url + "chapters_lessons";
+				}, 500);
+                $(this).dialog('close');
+            }
+        }
+    });
+})
+
+$(document).on("click", ".btn-delete-lesson", function(e){
+
+	e.preventDefault();
+
+	var lesson_id = $(this).attr("data-lesson-id");
+
+	if (lesson_id != ""){
+		$("#deleteDialog").data('lesson_id', lesson_id).dialog('open');
+	}
 });
