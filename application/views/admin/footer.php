@@ -10,6 +10,8 @@
     <script type="text/javascript" src="<?php echo base_url("assets/plugins/jquery-ui/jquery-ui.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/plugins/pagination.min.js"); ?>"></script>
 
+    <script type="text/javascript" src="<?php echo base_url("assets/plugins/tinymce/tinymce.min.js"); ?>"></script>
+
     <script type="text/javascript" src="<?php echo base_url("assets/js/validations.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/sha512.min.js"); ?>"></script>
 
@@ -20,9 +22,7 @@
             });
         });
 
-
-
-        // $(".agriculture_principle").datepicker();
+        // $(".advance_search_date_range").datepicker();
     </script>
 
     <?php if ($page_code == "login"): ?>
@@ -52,6 +52,10 @@
     <?php elseif($page_code == "students_list_panel"): ?>
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/students.js"); ?>"></script>
+    
+    <?php elseif($page_code == "add_lessons"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/add_lessons.js"); ?>"></script>
 
 	<?php endif; ?>
 

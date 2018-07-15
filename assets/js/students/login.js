@@ -12,7 +12,7 @@ $(".form-signin").on("submit", function(e){
 		base_url + "student_login",
 		{
 			"stdNum" : student_number,
-			"password" : pass
+			"password" : sha512(pass)
 		},
 		function(data){
 			// console.log(data);

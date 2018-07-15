@@ -543,6 +543,26 @@
 			return $results->result_array();
 		}
 
+		public function select_all_topics_chapters_topic_id($topicID){
+
+			$this->db->select("TC.*, DATE_FORMAT(TC.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(TC.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, PT.topic, CONCAT(FT.firstName,' ', FT.lastName) As facultyName");
+			$this->db->order_by('TC.id', 'DESC');
+			$this->db->from('TopicChapters As TC');
+			$this->db->join('AgriPrinciples As AP', 'TC.principleID = AP.id');
+			$this->db->join('PrinciplesSubTopic As PT', 'TC.topicID = PT.id');
+			$this->db->join('Faculties As FT', 'TC.addedByFacultyNum=FT.facultyIDNum');
+			$this->db->where('PT.principleID=AP.id');
+			$this->db->where(array(
+							'TC.isDeleted' => 0,
+							'AP.isDeleted' => 0,
+							'PT.isDeleted' => 0,
+							'PT.id' => $topicID
+						));
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
 
 		public function select_chapter_by_id($chapterID){
 
@@ -562,6 +582,27 @@
 
 			$results = $this->db->get();
 			return $results->row_array();
+		}
+
+
+		public function select_chapter_by_topic_id($topicID){
+
+			$this->db->select("TC.*, DATE_FORMAT(TC.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(TC.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, PT.topic, CONCAT(FT.firstName,' ', FT.lastName) As facultyName");
+			$this->db->order_by('TC.id', 'DESC');
+			$this->db->from('TopicChapters As TC');
+			$this->db->join('AgriPrinciples As AP', 'TC.principleID = AP.id');
+			$this->db->join('PrinciplesSubTopic As PT', 'TC.topicID = PT.id');
+			$this->db->join('Faculties As FT', 'TC.addedByFacultyNum=FT.facultyIDNum');
+			$this->db->where('PT.principleID=AP.id');
+			$this->db->where(array(
+							'TC.isDeleted' => 0,
+							'AP.isDeleted' => 0,
+							'PT.isDeleted' => 0,
+							'PT.id' => $topicID
+						));
+
+			$results = $this->db->get();
+			return $results->result_array();
 		}
 
 		public function search_chapter($search_str){
@@ -617,6 +658,152 @@
 			$this->db->where('id', $chapterID);
 			$result = $this->db->update('TopicChapters');
 			return $result;
+		}
+
+		public function insert_new_lesson_without_cover($chapterID, $title, $slug, $content, $facultyIDNum){
+			$data = array(
+				'chapterID' => $chapterID,
+				'title' => $title,
+				'slug' => $slug,
+				'content' => $content,
+				'addedByFacultyNum' => $facultyIDNum
+			);
+
+			$result = $this->db->insert('Lessons', $data);
+			return $result;
+		}
+
+		public function insert_new_lesson_with_cover($chapterID, $title, $slug, $content, $cover_photo_file_name, $cover_orientation , $facultyIDNum){
+			$data = array(
+				'chapterID' => $chapterID,
+				'title' => $title,
+				'slug' => $slug,
+				'content' => $content,
+				'isWithCoverPhoto' => "1",
+				'coverPhoto' => $cover_photo_file_name,
+				'coverOrientation' => $cover_orientation,
+				'addedByFacultyNum' => $facultyIDNum,
+			);
+
+			$result = $this->db->insert('Lessons', $data);
+			return $result;
+		}
+
+		public function select_all_lessons($facultyIDNum = ""){
+
+			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
+								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
+								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
+			$this->db->order_by('Les.id', 'DESC');
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->join('Faculties As Fac', 'Fac.facultyIDNum=Les.addedByFacultyNum');
+			$this->db->where(array(
+							'Les.isDeleted' => 0,
+							'Chap.isDeleted' => 0,
+							'Top.isDeleted' => 0,
+							'Prin.isDeleted' => 0
+						));
+
+			if ($facultyIDNum !== ""){
+				$this->db->where(array("Les.addedByFacultyNum" => $facultyIDNum));
+			}
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+
+		public function select_lessons($search_str){
+
+			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
+								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
+								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
+
+			$this->db->order_by('Les.id', 'DESC');
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->join('Faculties As Fac', 'Fac.facultyIDNum=Les.addedByFacultyNum');
+			$this->db->where(array(
+							'Les.isDeleted' => 0,
+							'Chap.isDeleted' => 0,
+							'Top.isDeleted' => 0,
+							'Prin.isDeleted' => 0
+						));
+			$this->db->group_start();
+			$this->db->like("Les.title", $search_str);
+			$this->db->or_like("Les.content", $search_str);
+			$this->db->group_end();
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function advance_select_lessons($principleID=0, $topicID=0, $chapterID=0, $lesson_title="", $faculty_id_number="", $startDate="", $endDate=""){
+
+			// echo "principleID " . $principleID . " -- ";
+			// echo "topicID " . $topicID . " -- ";
+			// echo "chapterID " . $chapterID . " -- ";
+			// echo "lesson_title " . $lesson_title . " -- ";
+			// echo "faculty_id_number " . $faculty_id_number . " -- ";
+			// echo "startDate " . $startDate . " -- ";
+			// echo "endDate " . $endDate . " -- ";
+
+			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
+								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
+								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
+
+			$this->db->order_by('Les.id', 'DESC');
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->join('Faculties As Fac', 'Fac.facultyIDNum=Les.addedByFacultyNum');
+			$this->db->where(array(
+							'Les.isDeleted' => 0,
+							'Chap.isDeleted' => 0,
+							'Top.isDeleted' => 0,
+							'Prin.isDeleted' => 0
+						));
+			$this->db->group_start();
+
+			if ($principleID > 0){
+				$this->db->where("Prin.id", $principleID);
+			}
+
+			if ($topicID > 0){
+				$this->db->where("Top.id", $topicID);
+			}
+
+			if ($chapterID > 0){
+				$this->db->where("Chap.id", $chapterID);
+			}
+
+			if ($faculty_id_number != ""){
+				$this->db->where("Les.addedByFacultyNum", $faculty_id_number);
+			}
+
+			if ($startDate != "" && $endDate != ""){
+				$this->db->where("Les.dateAdded BETWEEN '". $startDate ."' AND '". $endDate ."'");
+			}
+
+				
+			if ($lesson_title != ""){
+				$this->db->group_start();
+				$this->db->like("Les.title", $lesson_title);
+				$this->db->group_end();
+			}
+			
+			$this->db->group_end();
+
+			// $sql = $this->db->get_compiled_select();
+			// echo $sql;
+			$results = $this->db->get();
+			return $results->result_array();
 		}
 	}
 

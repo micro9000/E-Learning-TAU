@@ -1,5 +1,6 @@
 body{
 	background: #fff;
+    font-family: lato,helvetica neue,helvetica,arial,"sans-serif";
 }
 
 .table-control-btns{
@@ -31,7 +32,8 @@ body{
 }
 
 .content-panel{
-	background: #f4fff7;
+	background: #eaede6;
+    border-bottom: 1px solid #dbdbdb;
 }
 
 .post_wrapper .post_by{
@@ -86,4 +88,17 @@ body{
 
 .paginationjs-pages ul li.active{
     background: #0667d1;
+}
+
+.post_description img{
+    display: none;
+}
+
+
+.action_buttons table tr td{
+    padding-right: 10px;
+}
+
+.action_buttons table tr td a:hover{
+    cursor: pointer;
 }

@@ -4,7 +4,11 @@
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/popper.min.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/bootstrap/js/bootstrap.min.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/jquery.mCustomScrollbar.concat.min.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/plugins/pagination.min.js"); ?>"></script>
 
+    <script type="text/javascript" src="<?php echo base_url("assets/js/validations.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/js/sha512.min.js"); ?>"></script>
+    
 	<script type="text/javascript">
         $(document).ready(function () {
             $("#sidebar").mCustomScrollbar({

@@ -101,6 +101,10 @@ $route['search_topics_chapters'] = "admin/search_topics_chapters";
 // Lessons
 
 $route['chapters_lessons'] = "admin/chapters_lessons";
+$route['get_all_chapters_by_topic_id'] = "admin/get_all_chapters_by_topic_id";
+$route['get_all_lessons_by_current_user'] = "admin/get_all_lessons_by_current_user";
+$route['search_lessons'] = "admin/search_lessons";
+$route['advance_search_lessons'] = "admin/advance_search_lessons";
 
 
 // Faculties
@@ -114,6 +118,11 @@ $route['get_all_faculties'] = "admin/get_all_faculties";
 $route['search_faculties'] = "admin/search_faculty";
 $route['mark_faculty_as_admin_or_dean'] = "admin/mark_faculty_as_admin_or_dean";
 $route['get_faculty_by_id'] = "admin/get_faculty_by_id";
+
+$route['add_lessons'] = "admin/add_lessons";
+$route['add_new_lesson'] = "admin/add_new_lesson";
+
+$route['upload_lesson_img'] = "admin/upload_lessons_img";
 
 
 // Students

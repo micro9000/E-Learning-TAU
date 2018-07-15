@@ -30,8 +30,23 @@
 
                 <?php endif; ?>
 
-                <li id="chapters_lessons_page">
-                    <a href="<?php echo base_url("chapters_lessons"); ?>">Lessons</a>
+                <!-- <li id="chapters_lessons_page">
+                    <a href="<?php //echo base_url("chapters_lessons"); ?>">Lessons</a>
+                </li> -->
+
+                <li>
+                    <a href="#lessonsSubmenu" id="chapters_lessons_page" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Lessons</a>
+                    <ul class="collapse list-unstyled" id="lessonsSubmenu">
+                        <li>
+                            <a href="<?php echo base_url("chapters_lessons"); ?>">Search</a>
+                        </li>
+                        <li>
+                            <a href="<?php echo base_url("add_lessons"); ?>">Add / Update</a>
+                        </li>
+                        <li>
+                            <a href="#">My Lessons</a>
+                        </li>
+                    </ul>
                 </li>
 
                 <?php if ($userType == "admin_faculty" || $userType == "dean_admin_faculty"): // FOR ADMIN VIEW ONLY ?>

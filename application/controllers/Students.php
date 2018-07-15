@@ -90,13 +90,69 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
+		public function get_principles_sub_topics_chapters_matrix(){
+
+			$matrix = array();
+
+			$principles = $this->admin_mod->select_all_principles();
+			$principlesLen = sizeof($principles);
+
+	
+
+			for($p=0; $p<$principlesLen; $p++){
+				$matrix[$p] = array(
+							"principle_id" => $principles[$p]['id'],
+							"principle" => $principles[$p]['principle'],
+							"sub_topics" => array()
+						);
+
+				$principleID = $principles[$p]['id'];
+
+				$principle_sub_topics = $this->admin_mod->select_principles_sub_topic_by_principle_id($principleID);
+				$topicsLen = sizeof($principle_sub_topics);
+
+				$topicChapters = array();
+
+				for($st=0; $st<$topicsLen; $st++){
+
+					$topicID = $principle_sub_topics[$st]['id'];
+
+					$topicChapters = array(
+									"topic_id" => $topicID,
+									"topic" => $principle_sub_topics[$st]['topic'],
+									"chapters" => array()
+								);
+
+					$chapters = $this->admin_mod->select_chapter_by_topic_id($topicID);
+					$chaptersLen = sizeof ($chapters);
+
+					for($ch=0; $ch<$chaptersLen; $ch++){
+						$chapterID = $chapters[$ch]['id'];
+
+						$topic_chapters = array(
+									"chapter_id" => $chapterID,
+									"chapter" => $chapters[$ch]['chapterTitle']
+								);
+
+						array_push($topicChapters['chapters'], $topic_chapters);
+						array_push($matrix[$p]['sub_topics'], $topicChapters);
+					}
+				}
+
+			}
+
+			echo "<pre>";
+			print_r($matrix);
+			echo "</pre>";
+		}
+
 		public function home(){
 			$data['page_title'] = "Home - Students";
 			$data['page_code'] = "home";
 
+			// $this->get_principles_sub_topics_chapters_matrix();
+
 			$this->load->view("students/header", $data);
-			// $this->load->view("students/topbar");
-			// $this->load->view("students/sidebar");
 			$this->load->view("main/sidebar");
 			$this->load->view("main/topbar");
 			$this->load->view("main/home");

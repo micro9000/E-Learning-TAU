@@ -1,4 +1,8 @@
-	
+			<pre>
+				<?php //print_r($principles); ?>
+				<?php //print_r($sub_topics); ?>
+			</pre>
+			
 			<!-- Sidebar  -->
 			<nav id="sidebar">
 			    <div id="dismiss">

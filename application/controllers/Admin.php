@@ -176,13 +176,13 @@
 			$data['page_title'] = "Admin Main Panel";
 			$data['page_code'] = "main_panel";
 
-			$this->load->library('pagination');
+			// $this->load->library('pagination');
 
-			$config['base_url'] = base_url("admin_agriculture_principles");
-			$config['total_rows'] = 200;
-			$config['per_page'] = 20;
+			// $config['base_url'] = base_url("admin_agriculture_principles");
+			// $config['total_rows'] = 200;
+			// $config['per_page'] = 20;
 
-			$this->pagination->initialize($config);
+			// $this->pagination->initialize($config);
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
@@ -340,6 +340,8 @@
 			$data['page_title'] = "Admin Chapters-Lessons";
 			$data['page_code'] = "chapters_lessons_panel";
 
+			$data['principles'] = $this->admin_mod->select_all_principles();
+
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
 			$this->load->view("admin/content_start_div.php");
@@ -427,6 +429,32 @@
 			$this->load->view("admin/content_start_div.php");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/students");
+			$this->load->view("admin/footer");
+		}
+
+
+		public function add_lessons(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			$data['page_title'] = "Admin Add Lessons";
+			$data['page_code'] = "add_lessons";
+
+			$data['principles'] = $this->admin_mod->select_all_principles();
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/add_lesson");
 			$this->load->view("admin/footer");
 		}
 
@@ -1817,6 +1845,34 @@
 		}
 
 
+		public function get_all_chapters_by_topic_id(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$topicID = $this->input->post('topicID');
+
+			$data = array(
+				"topicID" => $topicID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("topicID", "Topic ID", "trim|required");
+
+			$chapters = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$chapters = $this->admin_mod->select_all_topics_chapters_topic_id($data['topicID']);
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($chapters));
+		}
+
+
 		public function update_topic_chapter(){
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -1925,6 +1981,266 @@
 			
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function upload_file($config, $field_name){
+
+			$this->load->library('upload', $config);
+
+			$results = array();
+
+            if ( ! $this->upload->do_upload($field_name))
+            {
+            	$results['is_upload_done'] = "FALSE";
+                $results['results'] = array('error' => $this->upload->display_errors());
+            }
+            else
+            {
+            	$results['is_upload_done'] = "TRUE";
+                $results['results'] = array('upload_data' => $this->upload->data());
+            }
+
+            return $results;
+		}
+
+		public function upload_lessons_img(){
+			$config['upload_path']          = './uploads/lessons/content';
+            $config['allowed_types']        = 'gif|jpg|jpeg|png';
+            $config['max_size']             = 20000;
+            $config['max_width']            = 1024;
+            $config['max_height']           = 768;
+            $config['file_ext_tolower']     = TRUE;
+            $config['encrypt_name']     	= TRUE;
+
+            $results = $this->upload_file($config, "upload_file");
+
+            $this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+
+		public function add_new_lesson(){
+			// print_r($_POST);
+			// print_r($_FILES);			
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$chapter_id = $this->input->post("chapter_id");
+			$lesson_title = $this->input->post("lesson_title");
+			$cover_photo_len = $this->input->post("cover_photo_len");
+			$cover_photo_orientation = $this->input->post("cover_photo_orientation");
+			$lesson_content = $this->input->post("lesson_content");
+
+			$data = array(
+				"chapter_id" => $chapter_id,
+				"lesson_title" => $lesson_title,
+				"cover_photo_len" => $cover_photo_len,
+				"cover_photo_orientation" => $cover_photo_orientation,
+				"lesson_content" => $lesson_content,
+				"faculty_id_num" => $facultyIDNum
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("chapter_id", "Chapter ID", "trim|required");
+			$this->form_validation->set_rules("lesson_title", "Lesson title", "trim|required|min_length[5]");
+			$this->form_validation->set_rules("lesson_content", "Lesson Content", "trim|required");
+			$this->form_validation->set_rules("cover_photo_len", "Cover photo len", "trim|required");
+			$this->form_validation->set_rules("faculty_id_num", "Faculty Id number", "trim|required");
+
+			if ($cover_photo_len > 0){
+				$this->form_validation->set_rules("cover_photo_orientation", "Cover photo orientation", "trim|required");
+			}
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+				
+
+				if ($cover_photo_len > 0){
+
+					$config['upload_path']          = './uploads/lessons/cover';
+		            $config['allowed_types']        = 'gif|jpg|jpeg|png';
+		            $config['max_size']             = 20000;
+		            $config['max_width']            = 1024;
+		            $config['max_height']           = 768;
+		            $config['file_ext_tolower']     = TRUE;
+		            $config['encrypt_name']     	= TRUE;
+
+		            $results = $this->upload_file($config, "cover_photo");
+	
+		            if ($results['is_upload_done'] == "TRUE"){
+		            	
+		            	$slug = url_title($data['lesson_title'],'underscore', TRUE);
+						
+						if ($this->admin_mod->insert_new_lesson_with_cover($data['chapter_id'], 
+																			$data['lesson_title'], 
+																			$slug, 
+																			$data['lesson_content'],
+																			$results['results']['upload_data']['file_name'], 
+																			$data['cover_photo_orientation'] ,
+																			$data['faculty_id_num']) == 1){
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Successfully Inserted"
+							);
+						}
+		            }else{
+		            	$is_done = array(
+							"done" => "FALSE",
+							"msg" => $results['results']['error']
+						);
+		            }
+
+				}else{
+					
+					$slug = url_title($data['lesson_title'],'underscore', TRUE);
+
+					if ($this->admin_mod->insert_new_lesson_without_cover($data['chapter_id'], $data['lesson_title'], $slug, $data['lesson_content'], $data['faculty_id_num']) == 1){
+						$is_done = array(
+							"done" => "TRUE",
+							"msg" => "Successfully Inserted"
+						);
+					}else{
+						$is_done = array(
+							"done" => "FALSE",
+							"msg" => "Error inserting lesson"
+						);
+					}
+				}
+			}
+			// print_r($is_done);
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function get_all_lessons_by_current_user(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$lessons = $this->admin_mod->select_all_lessons($facultyIDNum);
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($lessons));
+		}
+
+		public function search_lessons(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$search_str = $this->input->post('search_str');
+
+			$data = array(
+				"search_str" => $search_str
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search_str", "Search string", "trim|required");
+
+			$lessons = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$lessons = $this->admin_mod->select_lessons($data['search_str']);
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($lessons));
+		}
+
+		public function toValidMySQLDate($date){
+            $dateTmp = strtotime($date);
+            $date = date("Y-m-d", $dateTmp);
+
+            return $date;
+        }
+
+		public function advance_search_lessons(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$principleID = ($this->input->post('principleID') != "") ? $this->input->post('principleID') : 0;
+			$topicID = ($this->input->post('topicID') != "") ? $this->input->post('topicID') : 0;
+			$chapterID = ($this->input->post('chapterID') != "") ? $this->input->post('chapterID') : 0;
+			$lesson_title = ($this->input->post('lesson_title') != "") ? $this->input->post('lesson_title') : "";
+			$faculty_id_number = ($this->input->post('faculty_id_number') != "") ? $this->input->post('faculty_id_number') : "";
+			$startDate = ($this->input->post('startDate') != "") ? $this->input->post('startDate') : "";
+			$endDate = ($this->input->post('endDate') != "") ? $this->input->post('endDate') : "";
+
+			$startDate = $this->toValidMySQLDate($startDate);
+			$endDate = $this->toValidMySQLDate($endDate);
+
+			$data = array(
+				"principleID" => $principleID,
+				"topicID" => $topicID,
+				"chapterID" => $chapterID,
+				"lesson_title" => $lesson_title,
+				"faculty_id_number" => $faculty_id_number,
+				"startDate" => ($startDate == "1970-01-01") ? "" : $startDate,
+				"endDate" => ($endDate == "1970-01-01") ? "" : $endDate
+			);
+			
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("principleID", "Principle ID", "trim");
+			$this->form_validation->set_rules("topicID", "Topic ID", "trim");
+			$this->form_validation->set_rules("chapterID", "Chapter ID", "trim");
+			$this->form_validation->set_rules("lesson_title", "Lesson Title", "trim");
+			$this->form_validation->set_rules("faculty_id_number", "Faculty ID number", "trim");
+			$this->form_validation->set_rules("startDate", "Start Date", "trim");
+			$this->form_validation->set_rules("endDate", "End Date", "trim");
+
+			// print_r($data);
+			$lessons = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$lessons = $this->admin_mod->advance_select_lessons($data['principleID'], 
+																	$data['topicID'], 
+																	$data['chapterID'], 
+																	$data['lesson_title'], 
+																	$data['faculty_id_number'], 
+																	$data['startDate'], 
+																	$data['endDate']
+																);
+			}else{
+				$lessons = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}
+
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($lessons));
 		}
 
 	}
