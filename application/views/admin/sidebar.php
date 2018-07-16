@@ -43,9 +43,9 @@
                         <li>
                             <a href="<?php echo base_url("add_lessons"); ?>">Add / Update</a>
                         </li>
-                        <li>
+                        <!-- <li>
                             <a href="#">My Lessons</a>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
 

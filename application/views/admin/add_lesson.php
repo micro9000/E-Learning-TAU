@@ -1,4 +1,5 @@
-	<div class="container">
+
+    <div class="container">
         <div class="row">
 
         	<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -8,15 +9,9 @@
                     <select class="form-control principleID" id="select_principleID">
 					  	<option value=""></option>
 					  	<?php
-
 					  		$principlesLen = sizeof($principles);
 					  		for($i=0; $i<$principlesLen; $i++){
-					  			if (isset($principleID) && $principleID > 0 && $principleID == $principles[$i]['id']){
-					  				echo "<option value='". $principles[$i]['id'] ."' selected>". $principles[$i]['principle'] ."</option>";
-					  			}else{
-					  				echo "<option value='". $principles[$i]['id'] ."'>". $principles[$i]['principle'] ."</option>";
-					  			}
-					  			
+					  			echo "<option value='". $principles[$i]['id'] ."'>". $principles[$i]['principle'] ."</option>";
 					  		}
 					  	?>
 					</select>
@@ -40,6 +35,11 @@
                     <label for="input_lesson_title">Lesson title <span style="color:red">*</span></label>
 
                     <input type="text" class="form-control lesson_title" id="input_lesson_title" placeholder="Title">
+                </div>
+
+                <div class="form-group">
+                    <label for="exampleTextarea">Example textarea</label>
+                    <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -76,3 +76,7 @@
         </div>
 
     </div>
+
+    <script type="text/javascript">
+        var lessonID = <?php echo $lessonID; ?>;
+    </script>

@@ -689,6 +689,44 @@
 			return $result;
 		}
 
+
+		public function update_lesson_without_cover($lessonID, $chapterID, $title, $slug, $content, $facultyIDNum){
+			$data = array(
+				'chapterID' => $chapterID,
+				'title' => $title,
+				'slug' => $slug,
+				'content' => $content,
+				'modifyByFacultyNum' => $facultyIDNum
+			);
+
+			$this->db->set($data);
+			$this->db->where("id", $lessonID);
+			// $sql = $this->db->get_compiled_update("Lessons");
+			// echo $sql;
+			$result = $this->db->update('Lessons');
+			return $result;
+		}
+
+		public function update_lesson_with_cover($lessonID, $chapterID, $title, $slug, $content, $cover_photo_file_name, $cover_orientation , $facultyIDNum){
+			$data = array(
+				'chapterID' => $chapterID,
+				'title' => $title,
+				'slug' => $slug,
+				'content' => $content,
+				'isWithCoverPhoto' => "1",
+				'coverPhoto' => $cover_photo_file_name,
+				'coverOrientation' => $cover_orientation,
+				'modifyByFacultyNum' => $facultyIDNum,
+			);
+
+			$this->db->set($data);
+			$this->db->where("id", $lessonID);
+			// $sql = $this->db->get_compiled_update("Lessons");
+			// echo $sql;
+			$result = $this->db->update('Lessons');
+			return $result;
+		}
+
 		public function mark_lesson_as_deleted($lessonID){
 			$this->db->set('isDeleted', 1);
 			$this->db->where('id', $lessonID);
@@ -819,6 +857,75 @@
 
 			// $sql = $this->db->get_compiled_select();
 			// echo $sql;
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_lesson_actual_data_by_id($lessonID){
+
+			$this->db->select("Les.*, Chap.id As ChapID, Top.id As TopID, Prin.id As PrinID");
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->where(array(
+						'Les.isDeleted' => 0,
+						'Chap.isDeleted' => 0,
+						'Top.isDeleted' => 0,
+						'Prin.isDeleted' => 0,
+						'Les.id' => $lessonID
+					));
+
+			// $sql = $this->db->get_compiled_select();
+			// echo $sql;
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_lesson_by_id($lessonID){
+
+			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
+								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
+								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
+
+			$this->db->order_by('Les.id', 'DESC');
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->join('Faculties As Fac', 'Fac.facultyIDNum=Les.addedByFacultyNum');
+			$this->db->where(array(
+							'Les.isDeleted' => 0,
+							'Chap.isDeleted' => 0,
+							'Top.isDeleted' => 0,
+							'Prin.isDeleted' => 0,
+							'Les.id' => $lessonID
+						));
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_lesson_by_chapter_id($chapterID){
+
+			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
+								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
+								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
+
+			$this->db->order_by('Les.id', 'DESC');
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->join('Faculties As Fac', 'Fac.facultyIDNum=Les.addedByFacultyNum');
+			$this->db->where(array(
+							'Les.isDeleted' => 0,
+							'Chap.isDeleted' => 0,
+							'Top.isDeleted' => 0,
+							'Prin.isDeleted' => 0,
+							'Chap.id' => $chapterID
+						));
+
 			$results = $this->db->get();
 			return $results->result_array();
 		}

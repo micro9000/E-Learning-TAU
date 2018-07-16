@@ -1,8 +1,6 @@
-			<pre>
-				<?php //print_r($principles); ?>
-				<?php //print_r($sub_topics); ?>
-			</pre>
-			
+			<!-- <pre>
+				<?php //print_r($agriculture_matrix); ?>
+			</pre> -->
 			<!-- Sidebar  -->
 			<nav id="sidebar">
 			    <div id="dismiss">
@@ -16,238 +14,63 @@
 			    <ul class="list-unstyled components">
 			        <p>E-Learning System</p>
 
-			        <li class="active">
-			            <a href="#eco_argr_marketing" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Economics & Agricultural Marketing</a>
-			            <ul class="collapse list-unstyled" id="eco_argr_marketing">
-			                <li>
-			                    <a href="#eco_argr_marketing_sub_topic_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-			                    	<span class="fa fa-angle-double-right"></span> Subcategory 1
-			                    </a>
-			                    <ul class="collapse list-unstyled" id="eco_argr_marketing_sub_topic_1">
-			                        <li>
-			                            <a href="#eco_argr_marketing_chapter_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-			                            	<span class="fa fa-angle-double-right"></span> Chapter 1
-			                            </a>
-			                            <ul class="collapse list-unstyled" id="eco_argr_marketing_chapter_1">
-					                        <li>
-					                            <a href="#"><span class="fa fa-angle-right"></span> Lesson 1 Lesson 1 Lesson 1 Lesson 1 Lesson 1 Lesson 1</a>
-					                        </li>
-					                        <li>
-					                            <a href="#"><span class="fa fa-angle-right"></span>Lesson 2</a>
-					                        </li>
-					                        <li>
-					                            <a href="#"><span class="fa fa-angle-right"></span>Lesson 3</a>
-					                        </li>
-					                    </ul>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 2</a>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 3</a>
-			                        </li>
-			                    </ul>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 2</a>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 3</a>
-			                </li>
-			            </ul>
-			        </li>
-			        <li>
-			            <a href="#agri_ext_communication" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Agriculture Extension & Communication</a>
-			            <ul class="collapse list-unstyled" id="agri_ext_communication">
-			                <li>
-			                    <a href="#agri_ext_communication_sub_topic_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Subcategory 1</a>
-			                    <ul class="collapse list-unstyled" id="agri_ext_communication_sub_topic_1">
-			                        <li>
-			                            <a href="#agri_ext_communication_chapter_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Chapter 1</a>
-			                            <ul class="collapse list-unstyled" id="agri_ext_communication_chapter_1">
-					                        <li>
-					                            <a href="#">Lesson 1</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 2</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 3</a>
-					                        </li>
-					                    </ul>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 2</a>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 3</a>
-			                        </li>
-			                    </ul>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 2</a>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 3</a>
-			                </li>
-			            </ul>
-			        </li>
+			        <?php
 
-			        <li>
-			            <a href="#animal_science" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Animal Science</a>
-			            <ul class="collapse list-unstyled" id="animal_science">
-			                <li>
-			                    <a href="#animal_science_sub_top_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Subcategory 1</a>
-			                    <ul class="collapse list-unstyled" id="animal_science_sub_top_1">
-			                        <li>
-			                            <a href="#animal_science_chapter_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Chapter 1</a>
-			                            <ul class="collapse list-unstyled" id="animal_science_chapter_1">
-					                        <li>
-					                            <a href="#">Lesson 1</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 2</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 3</a>
-					                        </li>
-					                    </ul>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 2</a>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 3</a>
-			                        </li>
-			                    </ul>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 2</a>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 3</a>
-			                </li>
-			            </ul>
-			        </li>
+			        	$principleLen = sizeof($agriculture_matrix);
+			        	// PRINCIPLES
+			        	for($prinIdx=0; $prinIdx < $principleLen; $prinIdx++){
+			        		echo "<li>";
+			        			echo "<a href='#principle_topics_". $prinIdx ."' data-toggle='collapse' aria-expanded='false' class='dropdown-toggle'>". $agriculture_matrix[$prinIdx]['principle'] ."</a>";
+			        			echo "<ul class='collapse list-unstyled' id='principle_topics_". $prinIdx ."'>";
 
-			        <li>
-			            <a href="#crop_protection" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Crop Protection</a>
-			            <ul class="collapse list-unstyled" id="crop_protection">
-			                <li>
-			                    <a href="#crop_protection_sub_top_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Subcategory 1</a>
-			                    <ul class="collapse list-unstyled" id="crop_protection_sub_top_1">
-			                        <li>
-			                            <a href="#crop_protection_chapter_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Chapter 1</a>
-			                            <ul class="collapse list-unstyled" id="crop_protection_chapter_1">
-					                        <li>
-					                            <a href="#">Lesson 1</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 2</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 3</a>
-					                        </li>
-					                    </ul>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 2</a>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 3</a>
-			                        </li>
-			                    </ul>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 2</a>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 3</a>
-			                </li>
-			            </ul>
-			        </li>
+			        				$subTopics = $agriculture_matrix[$prinIdx]['sub_topics'];
+			        				$sub_topicsLen = sizeof($subTopics);
 
-			        <li>
-			            <a href="#crop_science" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Crop Science</a>
-			            <ul class="collapse list-unstyled" id="crop_science">
-			                <li>
-			                    <a href="#crop_science_sub_top_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Subcategory 1</a>
-			                    <ul class="collapse list-unstyled" id="crop_science_sub_top_1">
-			                        <li>
-			                            <a href="#crop_science_chap_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Chapter 1</a>
-			                            <ul class="collapse list-unstyled" id="crop_science_chap_1">
-					                        <li>
-					                            <a href="#">Lesson 1</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 2</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 3</a>
-					                        </li>
-					                    </ul>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 2</a>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 3</a>
-			                        </li>
-			                    </ul>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 2</a>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 3</a>
-			                </li>
-			            </ul>
-			        </li>
+			        				// SUB TOPICS
+			        				for($topicIdx=0; $topicIdx < $sub_topicsLen; $topicIdx++){
+			        					echo "<li>";
+			        						echo "<a href='#topic_chapter_". $prinIdx . "_" . $topicIdx ."' data-toggle='collapse' aria-expanded='false' class='dropdown-toggle'>";
+			        							echo "<span class='fa fa-angle-double-right'></span>" . $subTopics[$topicIdx]['topic'];
+			        						echo "</a>";
+			        						echo "<ul class='collapse list-unstyled' id='topic_chapter_". $prinIdx . "_" . $topicIdx ."'>";
+												
+												$chapters = $subTopics[$topicIdx]['chapters'];
+												$chapterLessonsLen = sizeof($chapters);
+
+												// CHAPTERS
+												for($chapIdx=0; $chapIdx < $chapterLessonsLen; $chapIdx++){
+													echo "<li>";
+				        								echo "<a href='#chapter_lesson_". $prinIdx . "_" . $topicIdx ."_". $chapIdx ."' data-toggle='collapse' aria-expanded='false' class='dropdown-toggle'>";
+				        									echo "<span class='fa fa-angle-double-right'></span> " . $chapters[$chapIdx]['chapter'];
+				        								echo "</a>";
+				        								echo "<ul class='collapse list-unstyled' id='chapter_lesson_". $prinIdx . "_" . $topicIdx ."_". $chapIdx ."'>";
+
+					        								$lessons = $chapters[$chapIdx]['lessons'];
+					        								$lessonsLen = sizeof($lessons);
+
+					        								//LESSONS
+					        								for($lesIdx=0; $lesIdx < $lessonsLen; $lesIdx++){
+					        									echo "<li>";
+					        										echo "<a href='#lesson_view/". $lessons[$lesIdx]['lessonID'] ."/". $lessons[$lesIdx]['lessonSlug'] ."'><span class='fa fa-angle-right'></span> ". $lessons[$lesIdx]['lessonTitle'] ."</a>";
+					        									echo "</li>";
+					        								}
+
+					        							echo "</ul>";
+
+				        							echo "</li>";
+												}			        							
 
 
-			        <li>
-			            <a href="#soil_science" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Soil Science</a>
-			            <ul class="collapse list-unstyled" id="soil_science">
-			                <li>
-			                    <a href="#soil_science_sub_top_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Subcategory 1</a>
-			                    <ul class="collapse list-unstyled" id="soil_science_sub_top_1">
-			                        <li>
-			                            <a href="#soil_science_chap_1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Chapter 1</a>
-			                            <ul class="collapse list-unstyled" id="soil_science_chap_1">
-					                        <li>
-					                            <a href="#">Lesson 1</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 2</a>
-					                        </li>
-					                        <li>
-					                            <a href="#">Lesson 3</a>
-					                        </li>
-					                    </ul>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 2</a>
-			                        </li>
-			                        <li>
-			                            <a href="#">Chapter 3</a>
-			                        </li>
-			                    </ul>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 2</a>
-			                </li>
-			                <li>
-			                    <a href="#">Subcategory 3</a>
-			                </li>
-			            </ul>
-			        </li>
+			        						echo "</ul>";
+			        					echo "</li>";
+			        				}
 
-			       <!--  <li>
-			            <a href="#">Portfolio</a>
-			        </li>
-			        <li>
-			            <a href="#">Contact</a>
-			        </li> -->
+			        			echo "</ul>";
+			        		echo "</li>";
+			        	}
+
+			        ?>
+
 			    </ul>
 
 			    <ul class="list-unstyled CTAs">

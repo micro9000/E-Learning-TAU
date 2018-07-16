@@ -56,15 +56,9 @@
                     <select class="form-control principleID" id="select_principleID">
                         <option value=""></option>
                         <?php
-
                             $principlesLen = sizeof($principles);
                             for($i=0; $i<$principlesLen; $i++){
-                                if (isset($principleID) && $principleID > 0 && $principleID == $principles[$i]['id']){
-                                    echo "<option value='". $principles[$i]['id'] ."' selected>". $principles[$i]['principle'] ."</option>";
-                                }else{
-                                    echo "<option value='". $principles[$i]['id'] ."'>". $principles[$i]['principle'] ."</option>";
-                                }
-                                
+                                echo "<option value='". $principles[$i]['id'] ."'>". $principles[$i]['principle'] ."</option>";
                             }
                         ?>
                     </select>

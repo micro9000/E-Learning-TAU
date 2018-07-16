@@ -88,7 +88,9 @@ tinymce.init({
 	
 	/* display statusbar */
 	statubar: true,
-	
+		
+	relative_urls:false,
+
 	/* plugin */
 	plugins: [
 		"advlist autolink link image lists charmap print preview hr anchor pagebreak",
@@ -157,7 +159,7 @@ tinymce.init({
 
 			    	if (data.is_upload_done == "TRUE"){
 			    		editor.insertContent('<img class="content-img" src="' +  base_url +"uploads/lessons/content/"+ data.results.upload_data.file_name + '"/>');
-
+			    		// console.log('<img class="content-img" src="' +  base_url +"uploads/lessons/content/"+ data.results.upload_data.file_name + '"/>');
 			    	}else{
 
 			    		editor.notificationManager.open({
@@ -230,39 +232,85 @@ tinymce.init({
 				return;
 			}
 
-			var request = $.ajax({
-	            url: base_url + "add_new_lesson",
-	            type: "POST",
-	            data: formData,
-	            contentType: false,
-	            cache: false,
-	            processData: false
-	        });
+			if (lessonID === 0){ // ########### INSERTING
 
-	        request.done(function(data){
-	            // console.log(data);
+				var request = $.ajax({
+		            url: base_url + "add_new_lesson",
+		            type: "POST",
+		            data: formData,
+		            contentType: false,
+		            cache: false,
+		            processData: false
+		        });
 
-	            if (data.done === "TRUE"){
+		        request.done(function(data){
+		            // console.log(data);
 
-	            	editor.notificationManager.open({
-					  	text: data.msg,
-					  	type: 'info',
-					  	timeout: 1000
-					});
+		            if (data.done === "TRUE"){
 
-	            }else{
+		            	editor.notificationManager.open({
+						  	text: data.msg,
+						  	type: 'info',
+						  	timeout: 1000
+						});
 
-	            	editor.notificationManager.open({
-					  	text: data.msg,
-					  	type: 'error',
-					  	timeout: 5000
-					});
-	            }
+						setTimeout(function(){
+			            	window.location.reload();
+			            }, 2000);
 
-	            setTimeout(function(){
-	            	window.location.reload();
-	            }, 2000);
-	        });
+		            }else{
+
+		            	editor.notificationManager.open({
+						  	text: data.msg,
+						  	type: 'error',
+						  	timeout: 5000
+						});
+		            }
+
+		            
+		        });
+
+			}else{ // UPDATING
+
+				formData.append("lesson_id", lessonID);
+
+				var request = $.ajax({
+		            url: base_url + "update_lesson",
+		            type: "POST",
+		            data: formData,
+		            contentType: false,
+		            cache: false,
+		            processData: false
+		        });
+
+		        request.done(function(data){
+		            // console.log(data);
+
+		            if (data.done === "TRUE"){
+
+		            	editor.notificationManager.open({
+						  	text: data.msg,
+						  	type: 'info',
+						  	timeout: 1000
+						});
+
+		            }else{
+
+		            	editor.notificationManager.open({
+						  	text: data.msg,
+						  	type: 'error',
+						  	timeout: 5000
+						});
+		            }
+
+		            setTimeout(function(){
+		            	window.location = base_url + "chapters_lessons";
+		            }, 2000);
+		        });
+
+			}
+
+	
 
         });
 
@@ -282,5 +330,43 @@ tinymce.init({
             }
         });
     },
+
+    init_instance_callback: "get_lesson_data_to_update",
  });
 
+function get_lesson_data_to_update(inst){
+
+	if (lessonID > 0){
+
+		$.post(
+			base_url + "get_lesson_data_by_id",
+			{
+				"lesson_id" : lessonID,
+				"is_actual_data" : "YES"
+			},
+			function(data){
+				// console.log(data);
+
+				$(".principleID").val(data[0].PrinID).change();
+
+				setTimeout(function(){
+					$(".sub_topic_ID").val(data[0].TopID).change();
+				}, 500);
+
+				setTimeout(function(){
+					$(".chapter_id").val(data[0].ChapID).change();
+				}, 1000);
+
+				$(".lesson_title").val(data[0].title);
+
+				if (data[0].isWithCoverPhoto === "1"){
+					$(".cover_photo_orientation").eq(data[0].isWithCoverPhoto).prop("checked", true);
+				}
+
+				inst.setContent(data[0].content);  
+			}
+		);
+
+		// inst.setContent('<strong>Some contents</strong>');  
+	}
+}

@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS Lessons(
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
 
-SELECT * FROM Lessons;
+SELECT * FROM Lessons WHERE isDeleted=0;
 
 SELECT Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle
 FROM Lessons As Les, TopicChapters As Chap, PrinciplesSubTopic As Top, AgriPrinciples As Prin
@@ -143,22 +143,5 @@ WHERE Les.isDeleted=0 AND Chap.isDeleted=0 AND Top.isDeleted=0 AND Prin.isDelete
 	Les.chapterID=Chap.id AND Chap.topicID=Top.id AND Top.principleID=Prin.id AND Les.addedByFacultyNum='99447846';
 
 
-SELECT `Les`.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, `Chap`.`chapterTitle`, `Top`.`topic`, `Prin`.`principle`, CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser
-FROM `Lessons` As `Les`
-JOIN `TopicChapters` As `Chap` ON `Les`.`chapterID` = `Chap`.`id`
-JOIN `PrinciplesSubTopic` As `Top` ON `Chap`.`topicID` = `Top`.`id`
-JOIN `AgriPrinciples` As `Prin` ON `Top`.`principleID` = `Prin`.`id`
-JOIN `Faculties` As `Fac` ON `Fac`.`facultyIDNum`=`Les`.`addedByFacultyNum`
-WHERE `Les`.`isDeleted` = 0
-AND `Chap`.`isDeleted` = 0
-AND `Top`.`isDeleted` = 0
-AND `Prin`.`isDeleted` = 0
-AND   (
-`Prin`.`id` = '12'
-AND `Top`.`id` = '12'
-AND `Chap`.`id` = '6'
-AND    (
-`Les`.`title` LIKE '%one one %' ESCAPE '!'
-  )
- )
-ORDER BY `Les`.`id` DESC;
+UPDATE `Lessons` SET `chapterID` = '6', `title` = 'Title one two three', `slug` = 'title_one_two_three', `content` = '<p><img class=\"content-img\" src=\"//192.168.1.7/ELearning/uploads/lessons/content/a446a41361a96cf42989fcad0e5982aa.png\"></p>\r\n<div>\r\n<h2>Where does it come from?</h2>\r\n<p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32.</p>\r\n<p>The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from \"de Finibus Bonorum et Malorum\" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.</p>\r\n</div>', `modifyByFacultyNum` = '99447846'
+WHERE `id` = '17';

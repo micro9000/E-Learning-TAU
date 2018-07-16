@@ -92,7 +92,7 @@
 
 		public function get_principles_sub_topics_chapters_matrix(){
 
-			$matrix = array();
+			$agriculture_matrix = array();
 
 			$principles = $this->admin_mod->select_all_principles();
 			$principlesLen = sizeof($principles);
@@ -100,7 +100,7 @@
 	
 
 			for($p=0; $p<$principlesLen; $p++){
-				$matrix[$p] = array(
+				$agriculture_matrix[$p] = array(
 							"principle_id" => $principles[$p]['id'],
 							"principle" => $principles[$p]['principle'],
 							"sub_topics" => array()
@@ -131,26 +131,43 @@
 
 						$topic_chapters = array(
 									"chapter_id" => $chapterID,
-									"chapter" => $chapters[$ch]['chapterTitle']
+									"chapter" => $chapters[$ch]['chapterTitle'],
+									"lessons" => array()
 								);
 
+						$lessons = $this->admin_mod->select_lesson_by_chapter_id($chapterID);
+						$lessonsLen = sizeof($lessons);
+
+						for($les=0; $les<$lessonsLen; $les++){
+							$lessonID = $lessons[$les]['id'];
+
+							$lessonsList = array(
+									"lessonID" => $lessonID,
+									"lessonTitle" => $lessons[$les]['title'],
+									"lessonSlug" => $lessons[$les]['slug']
+							);
+
+							array_push($topic_chapters['lessons'], $lessonsList);
+						}
+
 						array_push($topicChapters['chapters'], $topic_chapters);
-						array_push($matrix[$p]['sub_topics'], $topicChapters);
+						array_push($agriculture_matrix[$p]['sub_topics'], $topicChapters);
 					}
 				}
 
 			}
 
-			echo "<pre>";
-			print_r($matrix);
-			echo "</pre>";
+			// echo "<pre>";
+			// print_r($agriculture_matrix);
+			// echo "</pre>";
+			return $agriculture_matrix;
 		}
 
 		public function home(){
 			$data['page_title'] = "Home - Students";
 			$data['page_code'] = "home";
 
-			// $this->get_principles_sub_topics_chapters_matrix();
+			$data['agriculture_matrix'] = $this->get_principles_sub_topics_chapters_matrix();
 
 			$this->load->view("students/header", $data);
 			$this->load->view("main/sidebar");

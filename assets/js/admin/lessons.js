@@ -44,6 +44,10 @@ function display_lessons(data){
 	var display = "";
 	var limit_content;
 
+	var contentTmp = "";
+	var randomNumber = 0;
+	var substringLen = [500, 400, 450, 300, 600, 550, 350, 480, 650, 580];
+
 	$.each(data, function(i, lesson){
 
 		display += "<div class='content-panel'>";
@@ -63,9 +67,27 @@ function display_lessons(data){
 				   return val.replace(/<\/?p>/g,'');
 				});
 
+				// console.log(limit_content);
+
+				for(var i=0; i<limit_content.length; i++){
+					if (limit_content[i].indexOf("<img") === -1){
+						contentTmp += limit_content[i];
+						// console.log(contentTmp);
+						// break;
+					}
+				}
+
+				randomNumber = Math.floor((Math.random() * 10) + 1);
+
 				display += "<div class='post_description'>";
-				display += "<p>" + limit_content[0].substring(0, 400) + "...<a href='#' class='link-read-more'>Read more</a></p>";
+				display += "<p>" + contentTmp.substring(0, substringLen[randomNumber]) + "...<a href='#' class='link-read-more'>Read more</a></p>";
 				display += "</div>";
+
+				// display += "<div class='post_description'>";
+				// display += "<p>" + limit_content[0].substring(0, 400) + "...<a href='#' class='link-read-more'>Read more</a></p>";
+				// display += "</div>";
+
+				contentTmp = "";
 
 				display += "<div class='action_buttons'>";
 					display += "<table>";
@@ -78,7 +100,7 @@ function display_lessons(data){
                         	}
 
                             display += "<td>";
-                                display += "<a href='#' data-lesson-id='"+ lesson.id +"'><span class='fa fa-edit'></span> Update</a>";
+                                display += "<a href='"+ base_url + "add_lessons/" + lesson.id +"' data-lesson-id='"+ lesson.id +"'><span class='fa fa-edit'></span> Update</a>";
                             display += "</td>";
 
                         display += "</tr>";

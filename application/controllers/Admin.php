@@ -433,7 +433,7 @@
 		}
 
 
-		public function add_lessons(){
+		public function add_lessons($lessonID=0){
 
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
@@ -449,6 +449,8 @@
 			$data['page_code'] = "add_lessons";
 
 			$data['principles'] = $this->admin_mod->select_all_principles();
+
+			$data['lessonID'] = $lessonID;
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
@@ -2133,6 +2135,137 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
+
+
+		public function update_lesson(){
+			// print_r($_POST);
+			// print_r($_FILES);	
+
+			// exit();
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$lesson_id = $this->input->post("lesson_id");
+			$chapter_id = $this->input->post("chapter_id");
+			$lesson_title = $this->input->post("lesson_title");
+			$cover_photo_len = $this->input->post("cover_photo_len");
+			$cover_photo_orientation = $this->input->post("cover_photo_orientation");
+			$lesson_content = $this->input->post("lesson_content");
+
+			$data = array(
+				"lesson_id" => $lesson_id,
+				"chapter_id" => $chapter_id,
+				"lesson_title" => $lesson_title,
+				"cover_photo_len" => $cover_photo_len,
+				"cover_photo_orientation" => $cover_photo_orientation,
+				"lesson_content" => $lesson_content,
+				"faculty_id_num" => $facultyIDNum
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("lesson_id", "Lesson ID", "trim|required");
+			$this->form_validation->set_rules("chapter_id", "Chapter ID", "trim|required");
+			$this->form_validation->set_rules("lesson_title", "Lesson title", "trim|required|min_length[5]");
+			$this->form_validation->set_rules("lesson_content", "Lesson Content", "trim|required");
+			$this->form_validation->set_rules("cover_photo_len", "Cover photo len", "trim|required");
+			$this->form_validation->set_rules("faculty_id_num", "Faculty Id number", "trim|required");
+
+			if ($cover_photo_len > 0){
+				$this->form_validation->set_rules("cover_photo_orientation", "Cover photo orientation", "trim|required");
+			}
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+				
+				if ($cover_photo_len > 0){
+
+					$config['upload_path']          = './uploads/lessons/cover';
+		            $config['allowed_types']        = 'gif|jpg|jpeg|png';
+		            $config['max_size']             = 20000;
+		            $config['max_width']            = 2048;
+		            $config['max_height']           = 1536;
+		            $config['file_ext_tolower']     = TRUE;
+		            $config['encrypt_name']     	= TRUE;
+
+		            $results = $this->upload_file($config, "cover_photo");
+	
+		            if ($results['is_upload_done'] == "TRUE"){
+		            	
+		            	$slug = url_title($data['lesson_title'],'underscore', TRUE);
+						
+						if ($this->admin_mod->update_lesson_with_cover($data['lesson_id'],
+																			$data['chapter_id'], 
+																			$data['lesson_title'], 
+																			$slug, 
+																			$data['lesson_content'],
+																			$results['results']['upload_data']['file_name'], 
+																			$data['cover_photo_orientation'] ,
+																			$data['faculty_id_num']) == 1){
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Updated Successfully"
+							);
+
+						}else{
+							$is_done = array(
+								"done" => "FALSE",
+								"msg" => "Error updating lesson"
+							);
+						}
+		            }else{
+		            	$is_done = array(
+							"done" => "FALSE",
+							"msg" => $results['results']['error']
+						);
+		            }
+
+				}else{
+					
+					$slug = url_title($data['lesson_title'],'underscore', TRUE);
+
+					if ($this->admin_mod->update_lesson_without_cover($data['lesson_id'], 
+																		$data['chapter_id'], 
+																		$data['lesson_title'], 
+																		$slug, 
+																		$data['lesson_content'], 
+																		$data['faculty_id_num']) == 1){
+						$is_done = array(
+							"done" => "TRUE",
+							"msg" => "Updated Successfully"
+						);
+					}else{
+						$is_done = array(
+							"done" => "FALSE",
+							"msg" => "Error updating lesson"
+						);
+					}
+				}
+			}
+			// print_r($is_done);
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
 		public function delete_lesson(){
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -2223,6 +2356,42 @@
 
 			if ($this->form_validation->run() === TRUE){
 				$lessons = $this->admin_mod->select_lessons($data['search_str']);
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($lessons));
+		}
+
+		public function get_lesson_by_id(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$lesson_id = $this->input->post('lesson_id');
+			$is_actual_data = $this->input->post('is_actual_data');
+
+			$data = array(
+				"lesson_id" => $lesson_id,
+				"is_actual_data" => $is_actual_data
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("lesson_id", "Lesson ID", "trim|required");
+			$this->form_validation->set_rules("is_actual_data", "Is actual data", "trim|required");
+
+			$lessons = array();
+
+			if ($this->form_validation->run() === TRUE){
+
+				if ($data['is_actual_data'] == "YES"){
+					$lessons = $this->admin_mod->select_lesson_actual_data_by_id($data['lesson_id']);
+				}else{
+					$lessons = $this->admin_mod->select_lesson_by_id($data['lesson_id']);
+				}
+
 			}
 			
 			$this->output->set_content_type('application/json');
