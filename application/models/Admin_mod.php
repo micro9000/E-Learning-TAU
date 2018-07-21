@@ -514,6 +514,22 @@
 		}
 
 
+		public function select_all_deleted_principles_sub_topics(){
+
+			$this->db->select("ST.*, DATE_FORMAT(ST.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(ST.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
+			$this->db->order_by('ST.id', 'DESC');
+			$this->db->from('PrinciplesSubTopic As ST');
+			$this->db->join('AgriPrinciples As AP', 'ST.principleID=AP.id');
+			$this->db->join('Faculties As F', 'ST.addedByFacultyNum=F.facultyIDNum');
+			$this->db->where(array(
+							'ST.isDeleted' => 1
+						));
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+
 		public function search_principle_sub_topics($search){
 
 			$this->db->select("ST.*, DATE_FORMAT(ST.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(ST.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
@@ -524,6 +540,24 @@
 			$this->db->where(array(
 							'AP.isDeleted' => 0,
 							'ST.isDeleted' => 0
+						));
+
+			$this->db->like('ST.topic', $search);
+			$this->db->or_like('AP.principle', $search);
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function search_deleted_principle_sub_topics($search){
+
+			$this->db->select("ST.*, DATE_FORMAT(ST.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(ST.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
+			$this->db->order_by('ST.id', 'DESC');
+			$this->db->from('PrinciplesSubTopic As ST');
+			$this->db->join('AgriPrinciples As AP', 'ST.principleID=AP.id');
+			$this->db->join('Faculties As F', 'ST.addedByFacultyNum=F.facultyIDNum');
+			$this->db->where(array(
+							'ST.isDeleted' => 1
 						));
 
 			$this->db->like('ST.topic', $search);
@@ -550,6 +584,22 @@
 			return $results->row_array();
 		}
 
+		public function select_deleted_principles_sub_topic_by_id($topicID){
+
+			$this->db->select("ST.*, DATE_FORMAT(ST.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(ST.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
+			$this->db->order_by('ST.id', 'DESC');
+			$this->db->from('PrinciplesSubTopic As ST');
+			$this->db->join('AgriPrinciples As AP', 'ST.principleID=AP.id');
+			$this->db->join('Faculties As F', 'ST.addedByFacultyNum=F.facultyIDNum');
+			$this->db->where(array(
+							'ST.isDeleted' => 1,
+							'ST.id' => $topicID
+						));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
 		public function select_principles_sub_topic_by_principle_id($principleID){
 
 			$this->db->select("ST.*, DATE_FORMAT(ST.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(ST.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
@@ -569,6 +619,13 @@
 
 		public function mark_principle_sub_topic_as_deleted($topicID){
 			$this->db->set('isDeleted', 1);
+			$this->db->where('id', $topicID);
+			$result = $this->db->update('PrinciplesSubTopic');
+			return $result;
+		}
+
+		public function restore_deleted_principle_sub_topic($topicID){
+			$this->db->set('isDeleted', 0);
 			$this->db->where('id', $topicID);
 			$result = $this->db->update('PrinciplesSubTopic');
 			return $result;

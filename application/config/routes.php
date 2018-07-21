@@ -154,12 +154,18 @@ $route['get_all_audit_trails'] = "admin/get_all_audit_trails";
 $route['search_audit_trail'] = "admin/search_audit_trail";
 
 
-// Recycle bin
-// Principle
+// Recycle bin - Principle
 $route['recycle_bin_principle'] = "admin/recycle_bin_principle";
 $route['get_all_deleted_principles'] = "admin/get_all_deleted_principles";
 $route['search_deleted_principles'] = "admin/search_deleted_principles";
 $route['restore_principle'] = "admin/restore_principle";
+
+// Recycle bin - Principle Sub topic
+$route['recycle_bin_principle_sub_topic'] = "admin/recycle_bin_principle_sub_topic";
+$route['search_deleted_principles_sub_topics'] = "admin/search_deleted_principles_sub_topics";
+$route['get_all_deleted_principles_sub_topics'] = "admin/get_all_deleted_principles_sub_topics";
+$route['restore_principle_sub_topic'] = "admin/restore_principle_sub_topic";
+
 
 $route['default_controller'] = 'students';
 $route['404_override'] = '';

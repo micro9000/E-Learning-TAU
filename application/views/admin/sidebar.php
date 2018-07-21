@@ -66,7 +66,7 @@
                                 <a href="<?php echo base_url("recycle_bin_principle"); ?>">Principles</a>
                             </li>
                             <li>
-                                <a href="#">Sub Topics</a>
+                                <a href="<?php echo base_url("recycle_bin_principle_sub_topic"); ?>"">Sub Topics</a>
                             </li>
                             <li>
                                 <a href="#">Chapters</a>

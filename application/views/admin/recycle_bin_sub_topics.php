@@ -1,12 +1,12 @@
     
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">Agriculture Principles</div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">Agriculture Principles sub topics</div>
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control search-principle" placeholder="Principle" aria-describedby="basic-addon2">
+                    <input type="text" class="form-control search-sub-topic" placeholder="Sub topic" aria-describedby="basic-addon2">
                     <div class="input-group-append">
-                        <button class="btn btn-primary btn-search-deleted-principle" type="button">
+                        <button class="btn btn-primary btn-search-deleted-sub-topic" type="button">
                             <span class="fa fa-search"></span>Search
                         </button>
                         <button class="btn btn-primary btn-refresh" type="button">
@@ -22,6 +22,7 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
+                            <th scope="col">Topic</th>
                             <th scope="col">Principle</th>
                             <th scope="col">User</th>
                             <th scope="col">Date Added</th>
@@ -30,14 +31,14 @@
                         </tr>
                     </thead>
                     
-                    <tbody class="deleted_principles"></tbody>
+                    <tbody class="deleted_sub_topics"></tbody>
                 </table>
             </div>
         </div>
     </div>
     
     <!-- Hidden by default -->
-    <div id="restoreDialog" title="Restore Principle">
+    <div id="restoreDialog" title="Restore Principle Sub topic">
         <p>Are you sure you want to restore this item?</p>
     </div>
 

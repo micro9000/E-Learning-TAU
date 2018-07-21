@@ -561,6 +561,33 @@
 			$this->load->view("admin/footer");
 		}
 
+		public function recycle_bin_principle_sub_topic(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$data['page_title'] = "Admin Recycle Bin";
+			$data['page_code'] = "recycle_bin_sub_topics";
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/recycle_bin_sub_topics");
+			$this->load->view("admin/footer");
+		}
+
 		##
 		##
 		## // ACTIONS:
@@ -2014,6 +2041,18 @@
 			$this->output->set_output(json_encode($principles));
 		}
 
+
+		public function get_all_deleted_principles_sub_topics(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$principles = $this->admin_mod->select_all_deleted_principles_sub_topics();
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($principles));
+		}
+
 		public function get_principles_sub_topics_by_principle(){
 	
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -2056,6 +2095,31 @@
 
 			if ($this->form_validation->run() === TRUE){
 				$results = $this->admin_mod->search_principle_sub_topics($data['search_string']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+
+		public function search_deleted_principles_sub_topics(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$searchStr = $this->input->post('searchStr');
+
+			$data = array('search_string' => $searchStr);
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search_string", "Search string", "trim|required");
+
+			$results = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$results = $this->admin_mod->search_deleted_principle_sub_topics($data['search_string']);
 			}
 
 			$this->output->set_content_type('application/json');
@@ -2119,6 +2183,62 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
+		public function restore_principle_sub_topic(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$topicID = $this->input->post('topicID');
+
+			$data = array(
+				"topicID" => $topicID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("topicID", "Topic ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+				
+				$subTopicData = $this->admin_mod->select_deleted_principles_sub_topic_by_id($data['topicID']);
+				$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+				if ($this->admin_mod->restore_deleted_principle_sub_topic($data['topicID']) == 1){
+
+					// Audit Trail
+					if (sizeof($subTopicData) > 0){
+						$actionDone = "Restore agriculture principle sub topic (" . $subTopicData['topic'] . ")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+					}
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully Restore"
+					);
+				}
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
 
 		public function add_topic_new_chapter(){
 			
