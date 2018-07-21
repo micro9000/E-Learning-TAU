@@ -166,6 +166,12 @@ $route['search_deleted_principles_sub_topics'] = "admin/search_deleted_principle
 $route['get_all_deleted_principles_sub_topics'] = "admin/get_all_deleted_principles_sub_topics";
 $route['restore_principle_sub_topic'] = "admin/restore_principle_sub_topic";
 
+// Recycle bin - Principle Sub topic
+$route['recycle_bin_chapters'] = "admin/recycle_bin_chapters";
+$route['get_all_deleted_topics_chapters'] = "admin/get_all_deleted_topics_chapters";
+$route['restore_deleted_topic_chapter'] = "admin/restore_deleted_topic_chapter";
+$route['search_deleted_topics_chapters'] = "admin/search_deleted_topics_chapters";
+
 
 $route['default_controller'] = 'students';
 $route['404_override'] = '';

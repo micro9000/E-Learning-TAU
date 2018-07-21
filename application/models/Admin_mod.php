@@ -678,6 +678,23 @@
 			return $results->result_array();
 		}
 
+		public function select_all_deleted_topics_chapters(){
+
+			$this->db->select("TC.*, DATE_FORMAT(TC.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(TC.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, PT.topic, CONCAT(FT.firstName,' ', FT.lastName) As facultyName");
+			$this->db->order_by('TC.id', 'DESC');
+			$this->db->from('TopicChapters As TC');
+			$this->db->join('AgriPrinciples As AP', 'TC.principleID = AP.id');
+			$this->db->join('PrinciplesSubTopic As PT', 'TC.topicID = PT.id');
+			$this->db->join('Faculties As FT', 'TC.addedByFacultyNum=FT.facultyIDNum');
+			$this->db->where('PT.principleID=AP.id');
+			$this->db->where(array(
+							'TC.isDeleted' => 1
+						));
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
 		public function select_all_topics_chapters_topic_id($topicID){
 
 			$this->db->select("TC.*, DATE_FORMAT(TC.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(TC.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, PT.topic, CONCAT(FT.firstName,' ', FT.lastName) As facultyName");
@@ -712,6 +729,25 @@
 							'TC.isDeleted' => 0,
 							'AP.isDeleted' => 0,
 							'PT.isDeleted' => 0,
+							'TC.id' => $chapterID
+						));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+
+		public function select_deleted_chapter_by_id($chapterID){
+
+			$this->db->select("TC.*, DATE_FORMAT(TC.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(TC.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, PT.topic, CONCAT(FT.firstName,' ', FT.lastName) As facultyName");
+			$this->db->order_by('TC.id', 'DESC');
+			$this->db->from('TopicChapters As TC');
+			$this->db->join('AgriPrinciples As AP', 'TC.principleID = AP.id');
+			$this->db->join('PrinciplesSubTopic As PT', 'TC.topicID = PT.id');
+			$this->db->join('Faculties As FT', 'TC.addedByFacultyNum=FT.facultyIDNum');
+			$this->db->where('PT.principleID=AP.id');
+			$this->db->where(array(
+							'TC.isDeleted' => 1,
 							'TC.id' => $chapterID
 						));
 
@@ -773,6 +809,35 @@
 			return $results->result_array();
 		}
 
+		public function search_deleted_chapter($search_str){
+
+			$this->db->select("TC.*, DATE_FORMAT(TC.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(TC.dateModify, '%M %d, %Y %r') As dateModifyFormated, AP.principle, PT.topic, CONCAT(FT.firstName,' ', FT.lastName) As facultyName");
+			
+			$this->db->from('TopicChapters As TC');
+			$this->db->join('AgriPrinciples As AP', 'TC.principleID = AP.id');
+			$this->db->join('PrinciplesSubTopic As PT', 'TC.topicID = PT.id');
+			$this->db->join('Faculties As FT', 'TC.addedByFacultyNum=FT.facultyIDNum');
+
+			$this->db->group_start();
+
+			$this->db->like('TC.chapterTitle', $search_str);
+			$this->db->or_like('AP.principle', $search_str);
+			$this->db->or_like('PT.topic', $search_str);
+
+			$this->db->group_end();
+
+			$this->db->group_start();
+			$this->db->where("TC.isDeleted", 1);
+			$this->db->group_end();
+
+			$this->db->where('PT.principleID=AP.id');
+
+			$this->db->order_by('TC.id', 'DESC');
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
 
 		public function update_topic_chapter($chapterID, $principleID, $topicID, $chapterTitle, $facultyIDNum){
 			$data = array(
@@ -790,6 +855,13 @@
 
 		public function mark_topic_chapter_as_deleted($chapterID){			
 			$this->db->set('isDeleted', 1);
+			$this->db->where('id', $chapterID);
+			$result = $this->db->update('TopicChapters');
+			return $result;
+		}
+
+		public function restore_deleted_topic_chapter($chapterID){			
+			$this->db->set('isDeleted', 0);
 			$this->db->where('id', $chapterID);
 			$result = $this->db->update('TopicChapters');
 			return $result;

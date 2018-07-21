@@ -186,7 +186,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			
 			$this->load->view("admin/main_panel");
@@ -229,7 +229,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/principles");
 			$this->load->view("admin/footer");
@@ -273,7 +273,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/sub_topics");
 			$this->load->view("admin/footer");
@@ -317,7 +317,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/chapters");
 			$this->load->view("admin/footer");
@@ -348,7 +348,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/lessons");
 			$this->load->view("admin/footer");
@@ -390,7 +390,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/faculties");
 			$this->load->view("admin/footer");
@@ -430,7 +430,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/students");
 			$this->load->view("admin/footer");
@@ -462,7 +462,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/add_lesson");
 			$this->load->view("admin/footer");
@@ -490,7 +490,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/audit_trail");
 			$this->load->view("admin/footer");
@@ -527,7 +527,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/view_lesson_update_summary");
 			$this->load->view("admin/footer");
@@ -555,7 +555,7 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/recycle_bin_principle");
 			$this->load->view("admin/footer");
@@ -582,9 +582,37 @@
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
-			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/content_start_div");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/recycle_bin_sub_topics");
+			$this->load->view("admin/footer");
+		}
+
+
+		public function recycle_bin_chapters(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$data['page_title'] = "Admin Recycle Bin";
+			$data['page_code'] = "recycle_bin_chapters";
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/recycle_bin_chapters");
 			$this->load->view("admin/footer");
 		}
 
@@ -2313,6 +2341,17 @@
 			$this->output->set_output(json_encode($chapters));
 		}
 
+		public function get_all_deleted_topics_chapters(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$chapters = $this->admin_mod->select_all_deleted_topics_chapters();
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($chapters));
+		}
+
 		public function search_topics_chapters(){
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -2334,6 +2373,34 @@
 
 			if ($this->form_validation->run() === TRUE){
 				$chapters = $this->admin_mod->search_chapter($data['search_str']);
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($chapters));
+		}
+
+
+		public function search_deleted_topics_chapters(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$search_str = $this->input->post('search_str');
+
+			$data = array(
+				"search_str" => $search_str
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search_str", "Search string", "trim|required");
+
+			$chapters = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$chapters = $this->admin_mod->search_deleted_chapter($data['search_str']);
 			}
 			
 			$this->output->set_content_type('application/json');
@@ -2507,6 +2574,62 @@
 
 					if (sizeof($chapterCurrentData) > 0){
 						$actionDone = "Remove topic chapter (" . $chapterCurrentData['chapterTitle'] . ")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+					}
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully Deleted"
+					);
+				}
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function restore_deleted_topic_chapter(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$chapterID = $this->input->post('chapterID');
+
+			$data = array(
+				"chapterID" => $chapterID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("chapterID", "Chapter ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$chapterCurrentData = $this->admin_mod->select_deleted_chapter_by_id($data['chapterID']);
+				$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+				if ($this->admin_mod->restore_deleted_topic_chapter($data['chapterID']) == 1){
+
+					if (sizeof($chapterCurrentData) > 0){
+						$actionDone = "Restore topic chapter (" . $chapterCurrentData['chapterTitle'] . ")";
 						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
 					}
 
