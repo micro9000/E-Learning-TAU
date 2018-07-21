@@ -47,7 +47,7 @@
                             <?php if (isset($facultyID) && $facultyID > 0): ?>
 
                                 <?php if (sizeof($faculty_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $faculty_to_update_data['firstName']; ?>" class="form-control faculty_lastname" id="input_lastname" placeholder="lastname">
+                                    <input type="text" value="<?php echo $faculty_to_update_data['lastName']; ?>" class="form-control faculty_lastname" id="input_lastname" placeholder="lastname">
                                 <?php else: ?>
                                     <input type="text" class="form-control faculty_lastname" id="input_lastname" placeholder="lastname">
                                 <?php endif; ?>

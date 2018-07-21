@@ -56,28 +56,8 @@
                     <li id="students_list_page">
                         <a href="<?php echo base_url("students"); ?>">Students</a>
                     </li>
-                    <li>
-                        <a href="#studentsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Audit Trail</a>
-                        <ul class="collapse list-unstyled" id="studentsSubmenu">
-                            <li>
-                                <a href="#">Principles</a>
-                            </li>
-                            <li>
-                                <a href="#">Sub Topics</a>
-                            </li>
-                            <li>
-                                <a href="#">Chapters</a>
-                            </li>
-                            <li>
-                                <a href="#">Lessons</a>
-                            </li>
-                            <li>
-                                <a href="#">Faculties</a>
-                            </li>
-                            <li>
-                                <a href="#">Students</a>
-                            </li>
-                        </ul>
+                    <li id="audit_trail_page">
+                        <a href="<?php echo base_url("audit_trail"); ?>">Audit Trail</a>
                     </li>
                     <li>
                         <a href="#studentsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Recycle Bin</a>

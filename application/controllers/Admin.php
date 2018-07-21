@@ -100,7 +100,7 @@
 			);
 
 			$this->form_validation->set_data($data);
-			$this->form_validation->set_rules("facNum", "Faculty Number", "trim|required|max_length[8]|min_length[8]");
+			$this->form_validation->set_rules("facNum", "Faculty Number", "trim|required"); //|max_length[8]|min_length[8]
 			$this->form_validation->set_rules("password", "Password", "trim|required");
 
 			if ($this->form_validation->run() === FALSE){
@@ -460,6 +460,34 @@
 			$this->load->view("admin/footer");
 		}
 
+
+		public function audit_trail(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			$data['page_title'] = "Admin Audit Trail";
+			$data['page_code'] = "audit_trail";
+
+			// $audit_trail_list = $this->admin_mod->select_all_audit_trail();
+			// $data['audit_trail_list'] = $audit_trail_list;
+			// $data['audit_trail_list_len'] = sizeof($audit_trail_list);
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/audit_trail");
+			$this->load->view("admin/footer");
+		}
+
 		##
 		##
 		## // ACTIONS:
@@ -522,6 +550,11 @@
 				$hashPass = hashSHA512($data['password']);
 				
 				if ($this->admin_mod->insert_new_faculty($data, $hashPass) == 1){
+
+					// Audit Trail
+					$actionDone = "Add new faculty - " . $data['lastname'].", ".$data['firstname'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'FACU', $facultyIDNum);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Inserted Successfully"
@@ -535,7 +568,57 @@
 		}
 
 
+		private function faculty_update_audit_trail($facuCurData, $newData, $isWithPass){
+
+			$current_user_ffID = $this->session->userdata('admin_session_facultyNum');
+			// $facultyDataID = $newData['facultyID'];
+
+			if (sizeof($facuCurData) > 0 && sizeof($newData) > 0){
+
+				if ($facuCurData['firstName'] != $newData['firstname']){ // firstname
+
+					$actionDone = "Update faculty first name from - " . $facuCurData['firstName']." to ".$newData['firstname'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'FACU', $current_user_ffID);
+
+				}
+
+				if ($facuCurData['lastName'] != $newData['lastname']){ // lastname
+
+					$actionDone = "Update faculty last name from - " . $facuCurData['lastName']." to ".$newData['lastname'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'FACU', $current_user_ffID);
+
+				}
+
+				if ($facuCurData['email'] != $newData['email']){ // email
+
+					$actionDone = "Update faculty email from - " . $facuCurData['email']." to ".$newData['email'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'FACU', $current_user_ffID);
+
+				}
+
+				if ($facuCurData['facultyIDNum'] != $newData['faculty_id_num']){ // facultyIDNum
+
+					$actionDone = "Update faculty id number from - " . $facuCurData['facultyIDNum']." to ".$newData['faculty_id_num'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'FACU', $current_user_ffID);
+
+				}
+
+				if ($isWithPass == "with_pass"){
+
+					if ($facuCurData['cur_pswd'] != $newData['password']){ // Password
+
+						$actionDone = "Update faculty (". $newData['lastname'] .", ". $newData['firstname'] .") password";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'FACU', $current_user_ffID);
+
+					}
+
+				}
+
+			}
+		}
+
 		public function update_faculty(){
+
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
@@ -573,7 +656,6 @@
 			$this->form_validation->set_rules("firstname", "Faculty Firstname", "trim|required");
 			$this->form_validation->set_rules("facultyIDNum", "Admin faculty id number", "trim|required"); 
 
-
 			if ($this->form_validation->run() === FALSE){
 				$is_done = array(
 					"done" => "FALSE",
@@ -583,6 +665,8 @@
 
 				$pswd = $this->input->post('password');
 				$pswd_conf = $this->input->post('confirm_pass');
+
+				$facuCurData = $this->admin_mod->select_faculty_by_id($data['facultyID']);
 
 				if ($pswd != ""){
 
@@ -605,7 +689,14 @@
 					}else{
 						$hashPass = hashSHA512($pass['password']);
 
-						if ($this->admin_mod->update_faculty_with_pass($data['facultyID'], $data, $hashPass) == 1){
+						$data['password'] = $hashPass;
+						
+						$facuCurData['cur_pswd'] = $this->admin_mod->select_faculty_password_by_id($data['facultyID']);
+
+						if ($this->admin_mod->update_faculty_with_pass($data) == 1){
+
+							$this->faculty_update_audit_trail($facuCurData, $data, 'with_pass');
+
 							$is_done = array(
 								"done" => "TRUE",
 								"msg" => "Updated Successfully with password"
@@ -614,7 +705,11 @@
 					}
 					
 				}else{
-					if ($this->admin_mod->update_faculty_without_pass($data['facultyID'], $data) == 1){
+
+					if ($this->admin_mod->update_faculty_without_pass($data) == 1){
+
+						$this->faculty_update_audit_trail($facuCurData, $data, 'without_pass');
+
 						$is_done = array(
 							"done" => "TRUE",
 							"msg" => "Updated Successfully"
@@ -639,8 +734,6 @@
 				redirect("/admin_main_panel");
 			}
 
-			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-
 			$is_done = array(
 				"done" => "FALSE",
 				"msg" => ""
@@ -663,8 +756,16 @@
 					"msg" => validation_errors('<span>', '</span>')
 				);
 			}else{
-					
+				
+				$facuCurData = $this->admin_mod->select_faculty_by_id($data['facultyID']);
+
 				if ($this->admin_mod->mark_faculty_data_as_deleted($data['facultyID']) == 1){
+
+					// audit trail
+					$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+					$actionDone = "Remove faculty " . $facuCurData['lastName'] .", ". $facuCurData['firstName'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully Deleted"
@@ -687,8 +788,6 @@
 			if ($userType == "faculty" || $userType == "dean"){
 				redirect("/admin_main_panel");
 			}
-
-			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
 
 			$is_done = array(
 				"done" => "FALSE",
@@ -714,7 +813,15 @@
 
 			if ($this->form_validation->run() === TRUE){
 
+				$facuCurData = $this->admin_mod->select_faculty_by_id($data['facultyID']);
+
 				if ($this->admin_mod->mark_faculty_as_admin_or_dean($data['facultyID'], $data['status'], $data['mark_as']) == 1){
+
+					// audit trail
+					$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+					$actionDone = "Faculty ". $facuCurData['lastName'] .", ". $facuCurData['firstName'] . " mark as " . $data['mark_as'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully changed mark ".$data['mark_as']." status"
@@ -925,7 +1032,7 @@
 				"msg" => ""
 			);
 
-			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
 
 			$data = array(
 				"student_id_num" => $this->input->post('student_id_num'),
@@ -956,6 +1063,11 @@
 				$hashPass = hashSHA512($data['password']);
 				
 				if ($this->admin_mod->insert_new_student($data, $hashPass) == 1){
+
+					// Audit Trail
+					$actionDone = "Add new student - " . $data['lastname'].", ".$data['firstname'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $facultyIDNum);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Inserted Successfully"
@@ -968,8 +1080,59 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
+		private function student_update_audit_trail($stdCurData, $newData, $isWithPass){
+
+			$current_user_ffID = $this->session->userdata('admin_session_facultyNum');
+
+			if (sizeof($stdCurData) > 0 && sizeof($newData) > 0){
+
+				if ($stdCurData['firstName'] != $newData['firstname']){ // firstname
+
+					$actionDone = "Update student firstname from - " . $stdCurData['firstName']." to ".$newData['firstname'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $current_user_ffID);
+
+				}
+
+				if ($stdCurData['lastName'] != $newData['lastname']){ // lastname
+
+					$actionDone = "Update student lastname from - " . $stdCurData['lastName']." to ".$newData['lastname'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $current_user_ffID);
+
+				}
+
+				if ($stdCurData['email'] != $newData['email']){ // email
+
+					$actionDone = "Update student email from - " . $stdCurData['email']." to ".$newData['email'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $current_user_ffID);
+
+				}
+
+				if ($stdCurData['stdNum'] != $newData['student_id_num']){ // student_id_num
+
+					$actionDone = "Update student id number from - " . $stdCurData['stdNum']." to ".$newData['student_id_num'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $current_user_ffID);
+
+				}
+
+				if ($isWithPass == "with_pass"){
+
+					$currentPswd = $stdCurData['password']['pswd'];
+					$newPswd = $newData['pswd'];
+
+					if ($currentPswd != $newPswd){ // Password
+
+						$actionDone = "Update student (". $newData['lastname'] .", ". $newData['firstname'] .") password";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $current_user_ffID);
+
+					}
+
+				}
+
+			}
+		}
 
 		public function update_student(){
+
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
@@ -998,6 +1161,8 @@
 				"confirm_pass" => $this->input->post('confirm_pass')
 			);
 
+			// print_r($data);
+
 			$data = $this->security->xss_clean($data);
 
 			$this->form_validation->set_data($data);
@@ -1006,7 +1171,8 @@
 			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email|callback_check_std_email_already_used_on_update");
 			$this->form_validation->set_rules("lastname", "Student Lastname", "trim|required");
 			$this->form_validation->set_rules("firstname", "Student Firstname", "trim|required");
-			
+
+
 			if ($this->form_validation->run() === FALSE){
 				$is_done = array(
 					"done" => "FALSE",
@@ -1014,8 +1180,11 @@
 				);
 			}else{
 
+				
 				$pswd = $this->input->post('password');
 				$pswd_conf = $this->input->post('confirm_pass');
+
+				$stdCurData = $this->admin_mod->select_std_by_id($data['studentID']);
 
 				if ($pswd != ""){
 
@@ -1039,8 +1208,14 @@
 					}else{
 
 						$hashPass = hashSHA512($pass['password']);
+						$data['pswd'] = $hashPass;		
 
-						if ($this->admin_mod->update_student_with_pass($data['studentID'], $data, $hashPass) == 1){
+						$stdCurData['password'] = $this->admin_mod->select_std_pswd_by_id($data['studentID']);				
+
+						if ($this->admin_mod->update_student_with_pass($data) == 1){
+
+							$this->student_update_audit_trail($stdCurData, $data, "with_pass");
+
 							$is_done = array(
 								"done" => "TRUE",
 								"msg" => "Updated Successfully with password"
@@ -1049,7 +1224,11 @@
 					}
 					
 				}else{
-					if ($this->admin_mod->update_student_without_pass($data['studentID'], $data) == 1){
+				
+					if ($this->admin_mod->update_student_without_pass($data) == 1){
+
+						$this->student_update_audit_trail($stdCurData, $data, "without_pass");
+
 						$is_done = array(
 							"done" => "TRUE",
 							"msg" => "Updated Successfully"
@@ -1058,6 +1237,7 @@
 				}
 
 			}
+
 
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));
@@ -1233,8 +1413,7 @@
 				redirect("/admin_main_panel");
 			}
 
-			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-
+			
 			$is_done = array(
 				"done" => "FALSE",
 				"msg" => ""
@@ -1259,8 +1438,16 @@
 				);
 
 			}else{
+
+				$stdCurData = $this->admin_mod->select_std_by_id($data['studentID']);
 					
 				if ($this->admin_mod->mark_student_data_as_deleted($data['studentID']) == 1){
+
+					// Audit Trail
+					$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+					$actionDone = "Remove student (". $stdCurData['lastName'] .", ". $stdCurData['firstName'] .")";
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $facultyIDNum);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully Deleted"
@@ -1343,6 +1530,11 @@
 			}else{
 				
 				if ($this->admin_mod->insert_new_principle($data['principle'], $data['facultyIDNum']) == 1){
+
+					// Audit Trail
+					$actionDone = "Added new agriculture principle (".$data['principle'].")";
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Inserted Successfully"
@@ -1404,8 +1596,6 @@
 			}
 
 
-			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-
 			$is_done = array(
 				"done" => "FALSE",
 				"msg" => ""
@@ -1428,8 +1618,18 @@
 					"msg" => validation_errors('<span>', '</span>')
 				);
 			}else{
-					
+				
+				$principleData = $this->admin_mod->select_principle_by_id($data['principleID']);
+				$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
 				if ($this->admin_mod->mark_principle_as_deleted($data['principleID']) == 1){
+
+					// Audit Trail
+					if (sizeof($principleData) > 0){
+						$actionDone = "Remove agriculture principle (".$principleData['principle'].")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+					}
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully Deleted"
@@ -1485,7 +1685,16 @@
 				);
 			}else{
 				
+				$principleData = $this->admin_mod->select_principle_by_id($data['principleID']);
+
 				if ($this->admin_mod->update_principle($data['principleID'], $data['principle'], $data['facultyIDNum']) == 1){
+
+					// Audit Trail
+					if (sizeof($principleData) > 0){
+						$actionDone = "Update agriculture principle from ".$principleData['principle']." to " . $data['principle'];
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+					}
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Updated Successfully"
@@ -1544,6 +1753,11 @@
 			}else{
 				
 				if ($this->admin_mod->insert_new_principle_sub_topic($data['principleID'], $data['sub_topic'], $data['facultyIDNum']) == 1){
+
+					// Audit Trail
+					$actionDone = "Added new agriculture principle sub topic (" . $data['sub_topic'] .")";
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Inserted Successfully"
@@ -1600,8 +1814,17 @@
 					"msg" => validation_errors('<span>', '</span>')
 				);
 			}else{
+
+				$subTopicData = $this->admin_mod->select_principles_sub_topic_by_topic_id($data['topicID']);
 				
 				if ($this->admin_mod->update_principle_sub_topic($data['topicID'], $data['principleID'], $data['sub_topic'], $data['facultyIDNum']) == 1){
+
+					// Audit Trail
+					if (sizeof($subTopicData) > 0){
+						$actionDone = "Update agriculture principle sub topic from " . $subTopicData['topic'] ." to ". $data['sub_topic'];
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+					}
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Update Successfully"
@@ -1685,8 +1908,6 @@
 			}
 
 
-			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-
 			$is_done = array(
 				"done" => "FALSE",
 				"msg" => ""
@@ -1709,8 +1930,18 @@
 					"msg" => validation_errors('<span>', '</span>')
 				);
 			}else{
-					
+				
+				$subTopicData = $this->admin_mod->select_principles_sub_topic_by_topic_id($data['topicID']);
+				$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
 				if ($this->admin_mod->mark_principle_sub_topic_as_deleted($data['topicID']) == 1){
+
+					// Audit Trail
+					if (sizeof($subTopicData) > 0){
+						$actionDone = "Remove agriculture principle sub topic (" . $subTopicData['topic'] . ")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+					}
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully Deleted"
@@ -1770,6 +2001,10 @@
 			}else{
 					
 				if ($this->admin_mod->insert_new_topic_chapter($data['principleID'], $data['topicID'], $data['chapterTitle'], $data['addedByFacultyNum']) == 1){
+					
+					$actionDone = "Added new topic chapter (" . $data['chapterTitle'] . ")";
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully Inserted"
@@ -1923,8 +2158,16 @@
 					"msg" => validation_errors('<span>', '</span>')
 				);
 			}else{
+
+				$chapterCurrentData = $this->admin_mod->select_chapter_by_id($data['chapterID']);
 					
 				if ($this->admin_mod->update_topic_chapter($data['chapterID'], $data['principleID'], $data['topicID'], $data['chapterTitle'], $data['addedByFacultyNum']) == 1){
+					
+					if (sizeof($chapterCurrentData) > 0){
+						$actionDone = "Update topic chapter from " . $chapterCurrentData['chapterTitle'] . " to ". $data['chapterTitle'];
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+					}
+					
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Update Successfully"
@@ -1948,8 +2191,6 @@
 				redirect("/admin_main_panel");
 			}
 
-			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-
 			$is_done = array(
 				"done" => "FALSE",
 				"msg" => ""
@@ -1972,8 +2213,17 @@
 					"msg" => validation_errors('<span>', '</span>')
 				);
 			}else{
-					
+
+				$chapterCurrentData = $this->admin_mod->select_chapter_by_id($data['chapterID']);
+				$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
 				if ($this->admin_mod->mark_topic_chapter_as_deleted($data['chapterID']) == 1){
+
+					if (sizeof($chapterCurrentData) > 0){
+						$actionDone = "Remove topic chapter (" . $chapterCurrentData['chapterTitle'] . ")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+					}
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully Deleted"
@@ -2028,12 +2278,6 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
-
-			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
-				redirect("/admin_main_panel");
-			}
-
 
 			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
 
@@ -2101,6 +2345,11 @@
 																			$results['results']['upload_data']['file_name'], 
 																			$data['cover_photo_orientation'] ,
 																			$data['faculty_id_num']) == 1){
+
+							// Audit trail
+							$actionDone = "Added new lesson (".$data['lesson_title'].")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'LESS', $facultyIDNum);
+
 							$is_done = array(
 								"done" => "TRUE",
 								"msg" => "Successfully Inserted"
@@ -2118,6 +2367,11 @@
 					$slug = url_title($data['lesson_title'],'underscore', TRUE);
 
 					if ($this->admin_mod->insert_new_lesson_without_cover($data['chapter_id'], $data['lesson_title'], $slug, $data['lesson_content'], $data['faculty_id_num']) == 1){
+							
+						// Audit trail
+						$actionDone = "Added new lesson (".$data['lesson_title'].")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'LESS', $facultyIDNum);
+
 						$is_done = array(
 							"done" => "TRUE",
 							"msg" => "Successfully Inserted"
@@ -2165,6 +2419,7 @@
 			$cover_photo_len = $this->input->post("cover_photo_len");
 			$cover_photo_orientation = $this->input->post("cover_photo_orientation");
 			$lesson_content = $this->input->post("lesson_content");
+			$update_summary = $this->input->post("update_summary");
 
 			$data = array(
 				"lesson_id" => $lesson_id,
@@ -2173,7 +2428,8 @@
 				"cover_photo_len" => $cover_photo_len,
 				"cover_photo_orientation" => $cover_photo_orientation,
 				"lesson_content" => $lesson_content,
-				"faculty_id_num" => $facultyIDNum
+				"faculty_id_num" => $facultyIDNum,
+				"update_summary" => $update_summary
 			);
 
 			$data = $this->security->xss_clean($data);
@@ -2185,6 +2441,7 @@
 			$this->form_validation->set_rules("lesson_content", "Lesson Content", "trim|required");
 			$this->form_validation->set_rules("cover_photo_len", "Cover photo len", "trim|required");
 			$this->form_validation->set_rules("faculty_id_num", "Faculty Id number", "trim|required");
+			$this->form_validation->set_rules("update_summary", "Update Summary", "trim|required");
 
 			if ($cover_photo_len > 0){
 				$this->form_validation->set_rules("cover_photo_orientation", "Cover photo orientation", "trim|required");
@@ -2221,6 +2478,13 @@
 																			$results['results']['upload_data']['file_name'], 
 																			$data['cover_photo_orientation'] ,
 																			$data['faculty_id_num']) == 1){
+
+							$this->admin_mod->insert_lesson_update_summary($data['lesson_id'], $data['update_summary'], $facultyIDNum);
+
+							// Audit trail
+							$actionDone = "Update lesson (".$data['lesson_title']."), please go to update summary history for more details";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'LESS', $facultyIDNum);
+
 							$is_done = array(
 								"done" => "TRUE",
 								"msg" => "Updated Successfully"
@@ -2249,6 +2513,13 @@
 																		$slug, 
 																		$data['lesson_content'], 
 																		$data['faculty_id_num']) == 1){
+
+						$this->admin_mod->insert_lesson_update_summary($data['lesson_id'], $data['update_summary'], $data['faculty_id_num']);
+
+						// Audit trail
+						$actionDone = "Update lesson (".$data['lesson_title']."), please go to update summary history for more details";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'LESS', $facultyIDNum);
+
 						$is_done = array(
 							"done" => "TRUE",
 							"msg" => "Updated Successfully"
@@ -2466,6 +2737,67 @@
 
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($lessons));
+		}
+
+
+		public function get_all_audit_trails(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+			$audit_trail_list = $this->admin_mod->select_all_audit_trail();
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($audit_trail_list));
+		}
+
+		public function search_audit_trail(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$affectedModule = ($this->input->post('affectedModule') != "") ? $this->input->post('affectedModule') : "";
+			$startDate = ($this->input->post('startDate') != "") ? $this->input->post('startDate') : "";
+			$endDate = ($this->input->post('endDate') != "") ? $this->input->post('endDate') : "";
+
+			$startDate = $this->toValidMySQLDate($startDate);
+			$endDate = $this->toValidMySQLDate($endDate);
+
+			$data = array(
+				"affectedModule" => $affectedModule,
+				"startDate" => ($startDate == "1970-01-01") ? "" : $startDate,
+				"endDate" => ($endDate == "1970-01-01") ? "" : $endDate
+			);
+			
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("affectedModule", "Affected Module", "trim");
+			$this->form_validation->set_rules("startDate", "Start Date", "trim");
+			$this->form_validation->set_rules("endDate", "End Date", "trim");
+
+			$audits = array();
+
+			if ($this->form_validation->run() === TRUE){
+				
+				$audits = $this->admin_mod->select_audit_trail($data['affectedModule'], $data['startDate'], $data['endDate']);
+
+			}else{
+				$audits = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}
+
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($audits));
 		}
 
 	}

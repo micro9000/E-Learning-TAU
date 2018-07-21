@@ -239,9 +239,9 @@ function get_faculty_data_with_validation(task){
 				"confirm_pass" : sha512(faculty_confirm_password),
 			});
 		}
-		else{ // here
-			return {"length" : 0};
-		}
+		// else{ // here
+		// 	return {"length" : 0};
+		// }
 		
 	}
 
@@ -278,6 +278,7 @@ $(".btn-update-faculty-data").on("click", function(){
 
 	$.extend(faculty_data, {"facultyID" : facultyID});
 
+	// console.log(faculty_data);
 	if (faculty_data.length > 0){
 		$.post(
 			base_url + "update_faculty",

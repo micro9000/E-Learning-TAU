@@ -1,7 +1,64 @@
+
     <div class="wrapper">
         <div class="content">
             <div class="container">
                 <div class="row">
+
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        
+                        <div class="content-panel" style="margin-bottom: 0;">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div id="lessons_cover" class="carousel slide" data-ride="carousel">
+
+                                      <!-- Indicators -->
+                                      <ul class="carousel-indicators">
+                                        <?php
+                                            $coverLen = sizeof($latest_lessons_cover_img);
+
+                                            if ($coverLen > 0){
+
+                                                echo "<li data-target='#lessons_cover' data-slide-to='0' class='active'></li>";
+                                                for($i=1; $i<$coverLen; $i++){
+                                                    echo "<li data-target='#lessons_cover' data-slide-to='". $i ."'></li>";
+                                                }
+                                            }
+                                        ?>
+                                      </ul>
+                                      
+                                      <!-- The slideshow -->
+                                      <div class="carousel-inner">
+
+                                        <?php
+                                            $coverLen = sizeof($latest_lessons_cover_img);
+
+                                            if ($coverLen > 0){
+
+                                                echo "<div class='carousel-item active cover_img'>";
+                                                echo "<img src=" . base_url("uploads/lessons/cover/". $latest_lessons_cover_img[0]['coverPhoto']) .">";
+                                                echo "</div>";
+
+                                                for($i=1; $i<$coverLen; $i++){
+                                                    echo "<div class='carousel-item cover_img'>";
+                                                    echo "<img src=" . base_url("uploads/lessons/cover/". $latest_lessons_cover_img[$i]['coverPhoto']) .">";
+                                                    echo "</div>";
+                                                }
+                                            }
+                                        ?>
+                                      </div>
+                                      
+                                      <!-- Left and right controls -->
+                                      <a class="carousel-control-prev" href="#lessons_cover" data-slide="prev">
+                                        <span class="carousel-control-prev-icon"></span>
+                                      </a>
+                                      <a class="carousel-control-next" href="#lessons_cover" data-slide="next">
+                                        <span class="carousel-control-next-icon"></span>
+                                      </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         
@@ -14,120 +71,117 @@
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        
-                        <div class="content-panel">
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <div id="demo" class="carousel slide" data-ride="carousel">
 
-                                      <!-- Indicators -->
-                                      <ul class="carousel-indicators">
-                                        <li data-target="#demo" data-slide-to="0" class="active"></li>
-                                        <li data-target="#demo" data-slide-to="1"></li>
-                                        <li data-target="#demo" data-slide-to="2"></li>
-                                      </ul>
-                                      
-                                      <!-- The slideshow -->
-                                      <div class="carousel-inner">
-                                        <div class="carousel-item active">
-                                          <img src="<?php echo base_url("assets/imgs/temp/tanim.jpg") ?>" alt="Los Angeles" width="100%" height="auto">
-                                        </div>
-                                        <div class="carousel-item">
-                                          <img src="<?php echo base_url("assets/imgs/temp/tanim.jpg") ?>" alt="Chicago" width="100%" height="auto">
-                                        </div>
-                                        <div class="carousel-item">
-                                          <img src="<?php echo base_url("assets/imgs/temp/tanim.jpg") ?>" alt="New York" width="100%" height="auto">
-                                        </div>
-                                      </div>
-                                      
-                                      <!-- Left and right controls -->
-                                      <a class="carousel-control-prev" href="#demo" data-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                      </a>
-                                      <a class="carousel-control-next" href="#demo" data-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                      </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <?php
 
-                        <br/>
+                            for($i=0; $i<$latest_lessons_with_cover_len; $i++){
 
-                        <div class="content-panel">
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                echo "<div class='content-panel'>";
+                                    echo "<div class='row'>";
+                                        echo "<div class='col-lg-12 col-md-12 col-sm-12 col-xs-12'>";
 
-                                    <div class="post_cover">
-                                        <img src="<?php echo base_url("assets/imgs/temp/tanim.jpg") ?>">    
-                                    </div>
+                                            $orientation = $latest_lessons_with_cover[$i]['coverOrientation'];
+                                            $isWithCover =$latest_lessons_with_cover[$i]['isWithCoverPhoto'];
 
-                                    <div class="post_wrapper">
+                                            if ($orientation == "L" && $isWithCover == "1"){
 
-                                        <div class="post_date">
-                                            JUNE 21, 2018 / Economics and Agriculture Marketing
-                                        </div>
-                                        
-                                        <div class="post_title">
-                                            <h3>Mixed Reality @ Microsoft – June 2018 Update</h3>
-                                        </div>
+                                                echo "<div class='post_cover'>";
+                                                    echo "<img src=".base_url("uploads/lessons/cover/".$latest_lessons_with_cover[$i]['coverPhoto']).">"; 
+                                                echo "</div>";
 
-                                        <div class="post_by">
-                                            By Raniel Garcia
-                                        </div>
+                                                echo "<div class='post_wrapper'>";
+                                                    
+                                                    echo "<div class='post_date'>";
+                                                        echo $latest_lessons_with_cover[$i]['dateAddedFormated'] ." / ". $latest_lessons_with_cover[$i]['principle'] ." / ".$latest_lessons_with_cover[$i]['topic'];
+                                                    echo "</div>";
 
-                                        <div class="post_description">
-                                            <p>
-                                                Recent Microsoft-Harvard Business Review Analytic Services survey
-                                                shows 87 percent of respondents are currently exploring, piloting, or
-                                                deploying mixed reality in their <a href="#" class="link-read-more">Read more</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                                    echo "<div class='post_title'>";
+                                                        echo $latest_lessons_with_cover[$i]['title'];
+                                                    echo "</div>";
 
-                        <br/>
-                        
-                        <div class="content-panel">
-                            <div class="row">
-                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                    echo "<div class='post_by'> By ";
+                                                        echo $latest_lessons_with_cover[$i]['AddedByUser'];
+                                                    echo "</div>";
 
-                                    <!-- <div class="post_cover">
-                                        <img src="<?php echo base_url("assets/imgs/temp/tanim.jpg") ?>">    
-                                    </div> -->
+                                                    echo "<div class='post_description'><p>";
+                                                        echo get_content_summary_helper($latest_lessons_with_cover[$i]['content']) . "...<br/><a href='#' class='link-read-more'>Read more</a>";
+                                                    echo "</p></div>";
 
-                                    <div class="post_wrapper">
+                                                echo "</div>";
 
-                                        <div class="post_date">
-                                            JUNE 21, 2018 / Economics and Agriculture Marketing
-                                        </div>
-                                        
-                                        <div class="post_title">
-                                            <h3>Mixed Reality @ Microsoft – June 2018 Update</h3>
-                                        </div>
+                                            }else if ($orientation == "P" && $isWithCover == "1"){
 
-                                        <div class="post_by">
-                                            By Raniel Garcia
-                                        </div>
+                                                echo "<div class='post_wrapper'>";
+                                                    echo "<div class='row'>";
 
-                                        <div class="post_description">
-                                            <p>
-                                                Recent Microsoft-Harvard Business Review Analytic Services survey
-                                                shows 87 percent of respondents are currently exploring, piloting, or
-                                                deploying mixed reality in their <a href="#" class="link-read-more">Read more</a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                                        echo "<div class='col-lg-6 col-md-6 col-sm-6 col-xs-6' style='padding: 0 !important;'>";
+                                                            echo "<div class='post_cover cover_portrait'>";
+                                                                echo "<img src=".base_url("uploads/lessons/cover/".$latest_lessons_with_cover[$i]['coverPhoto']).">"; 
+                                                            echo "</div>";
+                                                        echo "</div>";
 
+                                                        echo "<div class='col-lg-6 col-md-6 col-sm-6 col-xs-6'>";
+
+                                                            echo "<div class='post_date'>";
+                                                                echo $latest_lessons_with_cover[$i]['dateAddedFormated'] ." / ". $latest_lessons_with_cover[$i]['principle'] ." / ".$latest_lessons_with_cover[$i]['topic'];
+                                                            echo "</div>";
+
+                                                            echo "<div class='post_title'>";
+                                                                echo $latest_lessons_with_cover[$i]['title'];
+                                                            echo "</div>";
+
+                                                            echo "<div class='post_by'> By ";
+                                                                echo $latest_lessons_with_cover[$i]['AddedByUser'];
+                                                            echo "</div>";
+
+                                                            echo "<div class='post_description'><p>";
+                                                                echo get_content_summary_helper($latest_lessons_with_cover[$i]['content']) . "...<br/><a href='#' class='link-read-more'>Read more</a>";
+                                                            echo "</p></div>";
+
+                                                        echo "</div>";
+
+                                                    echo "</div>";
+                                                echo "</div>";
+                                            }else{
+                                                // nothing
+                                            }
+
+                                        echo "</div>";
+                                    echo "</div>";
+                                echo "</div>";
+                            }
+                        ?>
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                        <div class="content-panel" style="border-bottom: 1px solid #dbdbdb;">
+
+                        <?php
+                            for($i=0; $i<$latest_lessons_without_cover_len; $i++){
+                                echo "<div class='content-panel lessons-without-cover'>";
+                                    echo "<div class='post_wrapper'>";
+
+                                        echo "<div class='post_date'>";
+                                            echo $latest_lessons_without_cover[$i]['dateAddedFormated'] ." / ". $latest_lessons_without_cover[$i]['principle'] ." / ".$latest_lessons_without_cover[$i]['topic'];
+                                        echo "</div>";
+
+                                        echo "<div class='post_title'>";
+                                            echo $latest_lessons_without_cover[$i]['title'];
+                                        echo "</div>";
+
+                                        echo "<div class='post_by'> By ";
+                                            echo $latest_lessons_without_cover[$i]['AddedByUser'];
+                                        echo "</div>";
+
+                                        echo "<div class='post_description'><p>";
+                                            echo get_content_summary_helper($latest_lessons_without_cover[$i]['content']) . "...<br/><a href='#' class='link-read-more'>Read more</a>";
+                                        echo "</p></div>";
+
+                                    echo "</div>";
+                                echo "</div>";
+                            }
+                        ?>
+
+                        <!-- <div class="content-panel lessons-without-cover">
                             <div class="post_wrapper">
 
                                 <div class="post_date">
@@ -275,7 +329,7 @@
                                     </p>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                             
                     </div>
 

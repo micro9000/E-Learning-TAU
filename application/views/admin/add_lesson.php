@@ -37,10 +37,12 @@
                     <input type="text" class="form-control lesson_title" id="input_lesson_title" placeholder="Title">
                 </div>
 
-                <div class="form-group">
-                    <label for="exampleTextarea">Example textarea</label>
-                    <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
-                </div>
+                <?php if (isset($lessonID) && $lessonID > 0): ?>
+                    <div class="form-group">
+                        <label for="exampleTextarea">Update Summary</label>
+                        <textarea class="form-control update_summary" id="exampleTextarea" rows="3"></textarea>
+                    </div>
+                <?php endif; ?>
 
                 <div class="form-group">
                     <label for="exampleInputFile">Cover photo (optional)</label>

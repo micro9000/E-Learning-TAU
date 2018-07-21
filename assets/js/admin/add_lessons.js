@@ -219,7 +219,24 @@ tinymce.init({
 				formData.append("cover_photo_len", "0");
 			}
 
-		
+			if (lessonID > 0){ // update summary
+				var update_summary = $(".update_summary").val();
+
+				if (update_summary === ""){
+					$(".update_summary").css("border", "1px solid red");
+
+					editor.notificationManager.open({
+					  	text: "Please add update summary",
+					  	type: 'error',
+					  	timeout: 5000
+					});
+
+					return;
+				}else{
+					formData.append("update_summary", update_summary);
+				}
+			}
+
 
 		    if (content !== ""){
 				formData.append("lesson_content", content);
@@ -231,6 +248,7 @@ tinymce.init({
 				});
 				return;
 			}
+
 
 			if (lessonID === 0){ // ########### INSERTING
 
@@ -244,7 +262,7 @@ tinymce.init({
 		        });
 
 		        request.done(function(data){
-		            // console.log(data);
+		            console.log(data);
 
 		            if (data.done === "TRUE"){
 
@@ -258,6 +276,7 @@ tinymce.init({
 			            	window.location.reload();
 			            }, 2000);
 
+						 return;
 		            }else{
 
 		            	editor.notificationManager.open({
@@ -284,7 +303,7 @@ tinymce.init({
 		        });
 
 		        request.done(function(data){
-		            // console.log(data);
+		            console.log(data);
 
 		            if (data.done === "TRUE"){
 

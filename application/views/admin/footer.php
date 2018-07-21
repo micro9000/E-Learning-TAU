@@ -56,6 +56,10 @@
     <?php elseif($page_code == "add_lessons"): ?>
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/add_lessons.js"); ?>"></script>
+    
+    <?php elseif($page_code == "audit_trail"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/audit_trail.js"); ?>"></script>
 
 	<?php endif; ?>
 

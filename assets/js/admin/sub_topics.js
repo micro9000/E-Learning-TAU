@@ -31,7 +31,7 @@ function get_all_principles_sub_topics(){
 	$.post(
 		base_url + "get_all_principles_sub_topic",
 		function(data){
-			console.log(data);
+			// console.log(data);
 			display_sub_topics(data);
 		}
 	);

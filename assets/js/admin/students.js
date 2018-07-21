@@ -317,8 +317,7 @@ $(".btn-update-student-data").on("click", function(){
 	if (studentID > 0 && studentID !== ""){
 
 		$.extend(student_data, {"studentID" : studentID});
-
-		// console.log(student_data);
+		
 		if (student_data.length > 0){
 			$.post(
 				base_url + "update_student",

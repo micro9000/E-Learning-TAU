@@ -63,35 +63,34 @@
 			return $result;
 		}
 
-		public function update_faculty_without_pass($facultyID, $info){
+		public function update_faculty_without_pass($info){
 
 			$data = array(
 				'facultyIDNum' => $info['faculty_id_num'],
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
-				'email' => $info['email'],
-				'addedByAdminFacultyNum' => $info['facultyIDNum']
+				'email' => $info['email']
 			);
 
 			$this->db->set($data);
-			$this->db->where('id', $facultyID);
+			$this->db->where('id', $info['facultyID']);
+
 			$result = $this->db->update('Faculties');
 			return $result;
 		}
 
-		public function update_faculty_with_pass($facultyID, $info, $pswd){
+		public function update_faculty_with_pass($info){
 
 			$data = array(
 				'facultyIDNum' => $info['faculty_id_num'],
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
-				'pswd' => $pswd,
-				'addedByAdminFacultyNum' => $info['facultyIDNum']
+				'pswd' => $info['password']
 			);
 
 			$this->db->set($data);
-			$this->db->where('id', $facultyID);
+			$this->db->where('id', $info['facultyID']);
 			$result = $this->db->update('Faculties');
 			return $result;
 		}
@@ -113,6 +112,21 @@
 			$this->db->where('id', $facultyID);
 			$result = $this->db->update('Faculties');
 			return $result;
+		}
+
+		public function select_faculty_password_by_id($id){
+
+			$this->db->select("pswd");
+			$this->db->from("Faculties");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"id" => $id
+			));
+
+			// $sql = $this->db->get_compiled_select();
+			// echo $sql;
+			$results = $this->db->get();
+			return $results->row_array();
 		}
 
 		public function select_faculty_by_id_num($idNum){
@@ -215,7 +229,7 @@
 			return $result;
 		}
 
-		public function update_student_without_pass($studentID, $info){
+		public function update_student_without_pass($info){
 
 			$data = array(
 				'stdNum' => $info['student_id_num'],
@@ -225,23 +239,23 @@
 			);
 
 			$this->db->set($data);
-			$this->db->where("id", $studentID);
+			$this->db->where("id", $info['studentID']);
 			$result = $this->db->update('Students');
 			return $result;
 		}
 
-		public function update_student_with_pass($studentID, $info, $pswd){
+		public function update_student_with_pass($info){
 
 			$data = array(
 				'stdNum' => $info['student_id_num'],
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
-				'pswd' => $pswd,
+				'pswd' => $info['pswd'],
 			);
 
 			$this->db->set($data);
-			$this->db->where("id", $studentID);
+			$this->db->where("id", $info['studentID']);
 			$result = $this->db->update('Students');
 			return $result;
 		}
@@ -321,6 +335,19 @@
 			return $results->result_array();
 		}
 
+		public function select_std_pswd_by_id($id){
+
+			$this->db->select("pswd");
+			$this->db->from("Students");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"id =" => $id
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
 		public function select_std_by_id($id){
 
 			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
@@ -362,6 +389,7 @@
 		}
 
 		public function select_principle_by_id($principleID){
+
 			$this->db->select("AP.*, DATE_FORMAT(AP.dateAdded, '%M %d %Y %r') As dateAddedFormated, DATE_FORMAT(AP.dateModify, '%M %d %Y %r') As dateModifyFormated, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
 			$this->db->order_by('AP.id');
 			$this->db->from('AgriPrinciples As AP');
@@ -727,6 +755,19 @@
 			return $result;
 		}
 
+
+		public function insert_lesson_update_summary($lessonID, $updateSummary, $facultyIDNum){
+			
+			$data = array(
+				'lessonID' => $lessonID,
+				'updateSummary' => $updateSummary,
+				'updatedByFacultyNum' => $facultyIDNum,
+			);
+
+			$result = $this->db->insert('Lesson_update_summary', $data);
+			return $result;
+		}
+
 		public function mark_lesson_as_deleted($lessonID){
 			$this->db->set('isDeleted', 1);
 			$this->db->where('id', $lessonID);
@@ -926,6 +967,55 @@
 							'Chap.id' => $chapterID
 						));
 
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function insert_audit_trail_new_entry($actionDone, $affectedModule, $responsibleFacultyNum){
+
+			$data = array(
+				'actionDone' => $actionDone,
+				'affectedModule' => $affectedModule,
+				'responsibleFacultyNum' => $responsibleFacultyNum
+			);
+
+			$result = $this->db->insert('AuditTrail', $data);
+			return $result;
+		}
+
+
+		public function select_all_audit_trail(){
+
+			$this->db->select("Audit.id, Audit.actionDone, Audit.affectedModule, CONCAT(Facu.firstName, ' ', Facu.lastName) As DoneBy, DATE_FORMAT(Audit.actionDate, '%M %d, %Y %r') As dateTrans");
+			$this->db->from("AuditTrail As Audit, Faculties As Facu");
+			$this->db->where("Audit.responsibleFacultyNum=Facu.facultyIDNum");
+			$this->db->order_by("Audit.id", "DESC");
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_audit_trail($affectedModule="", $startDate="", $endDate=""){
+
+			$this->db->select("Audit.id, Audit.actionDone, Audit.affectedModule, CONCAT(Facu.firstName, ' ', Facu.lastName) As DoneBy, DATE_FORMAT(Audit.actionDate, '%M %d, %Y %r') As dateTrans");
+			$this->db->from("AuditTrail As Audit, Faculties As Facu");
+			$this->db->where("Audit.responsibleFacultyNum=Facu.facultyIDNum");
+
+			if ($affectedModule != "" && $startDate != "" && $endDate != ""){
+
+				$this->db->where("Audit.affectedModule",$affectedModule);
+				$this->db->where("Audit.actionDate BETWEEN '". $startDate ."' AND '". $endDate ."'");
+
+			}else if ($affectedModule != "" && $startDate == "" && $endDate == ""){
+
+				$this->db->where("Audit.affectedModule",$affectedModule);
+
+			}else if ($affectedModule == "" && $startDate != "" && $endDate != ""){
+
+				$this->db->where("Audit.actionDate BETWEEN '". $startDate ."' AND '". $endDate ."'");
+				
+			}
+
+			$this->db->order_by("Audit.id", "DESC");
 			$results = $this->db->get();
 			return $results->result_array();
 		}

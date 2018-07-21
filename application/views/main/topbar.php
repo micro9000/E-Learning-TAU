@@ -1,4 +1,4 @@
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
             <div class="container">
 
                 <button type="button" id="sidebarCollapse" class="btn btn-info btn-show-menu">

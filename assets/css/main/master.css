@@ -1,9 +1,14 @@
 body{
-	background: #e0e2e1;
+	background: #c7ccc8;
+}
+
+.wrapper{
+	margin-top: 100px;
 }
 
 .content-panel{
 	background: #fff;
+	margin-bottom: 20px;
 }
 
 
@@ -11,14 +16,20 @@ body{
 	color: #e8e830;
 }
 
-.post_wrapper{
+/*.post_wrapper{
 	margin: 0;
 	padding: 0;
-}
+}*/
 
 .post_cover img{
 	width: 100%;
 	height: auto;
+}
+
+.cover_portrait img{
+	width: 100%;
+	height: 320px;
+    max-height: 100%;
 }
 
 .post_wrapper{
@@ -54,4 +65,15 @@ body{
 	color: #5f5e5e;
 	padding: 10px;
 	text-align: center;
+}
+
+.cover_img img{
+	width: 100%; 
+	height: auto; 
+	min-height: 300px;
+	max-height: 400px;
+}
+
+.lessons-without-cover{
+	border-bottom: 1px solid #dbdbdb;
 }

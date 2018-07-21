@@ -23,9 +23,15 @@
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/login.css"); ?>">
 
-	<?php elseif ($page_code == "principle_panel" || $page_code == "principle_sub_topic_panel" || $page_code == "sub_topic_chapters_panel" || 
-					$page_code == "chapters_lessons_panel" || $page_code == "faculty_list_panel" || $page_code == "students_list_panel" || 
-					$page_code == "add_lessons"): ?>
+	<?php elseif ($page_code == "main_panel"): ?>
+		<style type="text/css">
+			#admin_home_page{
+				color: #fff;
+				background: #0d330b;
+			}
+		</style>
+
+	<?php else: ?>
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/main/master.css"); ?>">
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/admin/master.css"); ?>">
@@ -94,15 +100,18 @@
 				}
 			</style>
 
+		<?php elseif ($page_code == "audit_trail"): ?>
+			
+			<style type="text/css">
+				#audit_trail_page{
+					color: #fff;
+    				background: #0d330b;
+				}
+			</style>
+
 		<?php endif; ?>
 
-	<?php elseif ($page_code == "main_panel"): ?>
-		<style type="text/css">
-			#admin_home_page{
-				color: #fff;
-				background: #0d330b;
-			}
-		</style>
+	
 	<?php endif; ?>
 
 
@@ -113,4 +122,4 @@
 </head>
 <body>
 
-	<div class="wrapper">
+	<div class="wrapper" style="margin-top: 0">

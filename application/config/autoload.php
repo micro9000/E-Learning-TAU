@@ -99,6 +99,7 @@ $autoload['helper'] = array("date",
 							"url",
 							"html",
 							"hashSHA512",
+							"get_content_summary_helper",
 							"security");
 
 /*

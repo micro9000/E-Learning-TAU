@@ -144,6 +144,13 @@ $route['admin_home'] = "admin/main_panel";
 
 $route['home_page'] = "students/home";
 
+
+// Audit Trail
+
+$route['audit_trail'] = "admin/audit_trail";
+$route['get_all_audit_trails'] = "admin/get_all_audit_trails";
+$route['search_audit_trail'] = "admin/search_audit_trail";
+
 $route['default_controller'] = 'students';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

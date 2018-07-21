@@ -169,6 +169,18 @@
 
 			$data['agriculture_matrix'] = $this->get_principles_sub_topics_chapters_matrix();
 
+			$data['latest_lessons_cover_img'] = $this->students_mod->select_latest_lessons_cover_img();
+
+			$latest_lessons_with_cover = $this->students_mod->select_latest_lessons_with_cover();
+
+			$data['latest_lessons_with_cover_len'] = sizeof($latest_lessons_with_cover);
+			$data['latest_lessons_with_cover'] = $latest_lessons_with_cover;
+
+			$latest_lessons_without_cover =$this->students_mod->select_latest_lessons_without_cover();
+
+			$data['latest_lessons_without_cover_len'] = sizeof($latest_lessons_without_cover);
+			$data['latest_lessons_without_cover'] = $latest_lessons_without_cover;
+
 			$this->load->view("students/header", $data);
 			$this->load->view("main/sidebar");
 			$this->load->view("main/topbar");
