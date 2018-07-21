@@ -11,3 +11,11 @@ $(document).on("mouseleave", ".icon-edit", function() {
 $(document).on("mouseenter", ".icon-edit", function() {
     $(this).attr("src", base_url + "assets/imgs/icons/edit-hover.png");
 });
+
+
+$(document).on("mouseleave", ".icon-undo", function() {
+    $(this).attr("src", base_url + "assets/imgs/icons/undo.png");
+});
+$(document).on("mouseenter", ".icon-undo", function() {
+    $(this).attr("src", base_url + "assets/imgs/icons/undo-hover.png");
+});

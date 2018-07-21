@@ -59,11 +59,11 @@
                     <li id="audit_trail_page">
                         <a href="<?php echo base_url("audit_trail"); ?>">Audit Trail</a>
                     </li>
-                    <li>
-                        <a href="#studentsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Recycle Bin</a>
-                        <ul class="collapse list-unstyled" id="studentsSubmenu">
+                    <li id="recycle_bin_page">
+                        <a href="#recycleBinSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Recycle Bin</a>
+                        <ul class="collapse list-unstyled" id="recycleBinSubmenu">
                             <li>
-                                <a href="#">Principles</a>
+                                <a href="<?php echo base_url("recycle_bin_principle"); ?>">Principles</a>
                             </li>
                             <li>
                                 <a href="#">Sub Topics</a>

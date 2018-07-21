@@ -403,6 +403,21 @@
 			return $results->row_array();
 		}
 
+		public function select_deleted_principle_by_id($principleID){
+
+			$this->db->select("AP.*, DATE_FORMAT(AP.dateAdded, '%M %d %Y %r') As dateAddedFormated, DATE_FORMAT(AP.dateModify, '%M %d %Y %r') As dateModifyFormated, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
+			$this->db->order_by('AP.id');
+			$this->db->from('AgriPrinciples As AP');
+			$this->db->join('Faculties As F', 'AP.addedByFacultyNum = F.facultyIDNum');
+			$this->db->where(array(
+								'AP.isDeleted' => 1,
+								'AP.id' => $principleID
+							));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
 		public function select_all_principles(){
 
 			$this->db->select("AP.*, DATE_FORMAT(AP.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(AP.dateModify, '%M %d, %Y %r') As dateModifyFormated, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
@@ -422,6 +437,14 @@
 			return $result;
 		}
 
+
+		public function mark_principle_as_undeleted($principleID){
+			$this->db->set('isDeleted', 0);
+			$this->db->where('id', $principleID);
+			$result = $this->db->update('AgriPrinciples');
+			return $result;
+		}
+
 		public function update_principle($principleID, $principle, $facultyIDNum){
 
 			$data = array(
@@ -435,7 +458,34 @@
 			return $result;
 		}
 
+		public function select_all_deleted_principles(){
 
+			$this->db->select("AP.*, DATE_FORMAT(AP.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(AP.dateModify, '%M %d, %Y %r') As dateModifyFormated, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
+			$this->db->order_by('AP.id', 'DESC');
+			$this->db->from('AgriPrinciples As AP');
+			$this->db->join('Faculties As F', 'AP.addedByFacultyNum = F.facultyIDNum');
+			$this->db->where('AP.isDeleted' , 1);
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function search_deleted_principle($search){
+
+			$this->db->select("AP.*, DATE_FORMAT(AP.dateAdded, '%M %d, %Y %r') As dateAddedFormated, DATE_FORMAT(AP.dateModify, '%M %d, %Y %r') As dateModifyFormated, CONCAT(F.firstName, ' ', F.lastName) As facultyName");
+			$this->db->order_by('AP.id');
+			$this->db->from('AgriPrinciples As AP');
+			$this->db->join('Faculties As F', 'AP.addedByFacultyNum = F.facultyIDNum');
+			$this->db->where('AP.isDeleted', 1);
+			$this->db->like('AP.principle', $search);
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		//
+		// Sub topics
+		//
 		public function insert_new_principle_sub_topic($principleID, $topic, $facultyIDNum){
 			$data = array(
 				'principleID' => $principleID,

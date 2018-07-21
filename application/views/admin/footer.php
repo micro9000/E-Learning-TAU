@@ -61,6 +61,10 @@
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/audit_trail.js"); ?>"></script>
 
+    <?php elseif($page_code == "recycle_bin_principle"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/recycle_bin_principle.js"); ?>"></script>
+
 	<?php endif; ?>
 
     <?php if ($page_code !== "login"): ?>

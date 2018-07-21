@@ -108,6 +108,15 @@
     				background: #0d330b;
 				}
 			</style>
+			
+		<?php elseif ($page_code == "recycle_bin_principle"): ?>
+			
+			<style type="text/css">
+				#recycle_bin_page{
+					color: #fff;
+    				background: #0d330b;
+				}
+			</style>
 
 		<?php endif; ?>
 

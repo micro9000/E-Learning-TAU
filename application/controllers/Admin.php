@@ -335,6 +335,10 @@
 			$data['userType'] = $userType;
 			$data['actualUserType'] = $actualUserType;
 			
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
 			$data['session_data'] = $this->session->userdata();
 
 			$data['page_title'] = "Admin Chapters-Lessons";
@@ -445,6 +449,10 @@
 			$data['userType'] = $userType;
 			$data['actualUserType'] = $actualUserType;
 
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
 			$data['page_title'] = "Admin Add Lessons";
 			$data['page_code'] = "add_lessons";
 
@@ -500,6 +508,7 @@
 			$data['userType'] = $userType;
 			$data['actualUserType'] = $actualUserType;
 
+
 			$data['page_title'] = "Admin Audit Trail";
 			$data['page_code'] = "audit_trail";
 
@@ -521,6 +530,34 @@
 			$this->load->view("admin/content_start_div.php");
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/view_lesson_update_summary");
+			$this->load->view("admin/footer");
+		}
+
+
+		public function recycle_bin_principle(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$data['page_title'] = "Admin Recycle Bin";
+			$data['page_code'] = "recycle_bin_principle";
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/recycle_bin_principle");
 			$this->load->view("admin/footer");
 		}
 
@@ -1679,6 +1716,61 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
+		public function restore_principle(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$principleID = $this->input->post('principleID');
+
+			$data = array(
+				"principleID" => $principleID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("principleID", "Principle ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+				
+				$principleData = $this->admin_mod->select_deleted_principle_by_id($data['principleID']);
+				$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+				if ($this->admin_mod->mark_principle_as_undeleted($data['principleID']) == 1){
+
+					// Audit Trail
+					if (sizeof($principleData) > 0){
+						$actionDone = "Restore agriculture principle (".$principleData['principle'].")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+					}
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully Restore"
+					);
+				}
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
 
 		public function update_principle(){
 			
@@ -1741,6 +1833,44 @@
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));
 
+		}
+
+
+		public function get_all_deleted_principles(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$principles = $this->admin_mod->select_all_deleted_principles();
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($principles));
+		}
+
+
+		public function search_deleted_principles(){
+			
+			// print_r($this->input->post());
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$searchStr = $this->input->post('searchStr');
+
+			$data = array('search_string' => $searchStr);
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search_string", "Search string", "trim|required");
+
+			$results = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$results = $this->admin_mod->search_deleted_principle($data['search_string']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
 		}
 
 

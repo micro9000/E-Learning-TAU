@@ -153,6 +153,14 @@ $route['audit_trail'] = "admin/audit_trail";
 $route['get_all_audit_trails'] = "admin/get_all_audit_trails";
 $route['search_audit_trail'] = "admin/search_audit_trail";
 
+
+// Recycle bin
+// Principle
+$route['recycle_bin_principle'] = "admin/recycle_bin_principle";
+$route['get_all_deleted_principles'] = "admin/get_all_deleted_principles";
+$route['search_deleted_principles'] = "admin/search_deleted_principles";
+$route['restore_principle'] = "admin/restore_principle";
+
 $route['default_controller'] = 'students';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
