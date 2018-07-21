@@ -1,7 +1,4 @@
-	<pre>
-     <?php //print_r($chapters_lessons); ?>   
-    </pre>
-    
+
 	<div class="container">
         <div class="row">
 
@@ -117,66 +114,6 @@
       </div>
     </div>
 
-
-    <!-- Update Summary modal -->
-    <div class="modal fade" id="update_summary_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">Update Summary</h5>
-                <button type="button" class="close btn-close-advance-search" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-            
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-                <h3>HI</h3>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    <span class="fa fa-times"></span> Close
-                </button>
-            </div>
-        </div>
-      </div>
-    </div>
 
         <!-- Hidden by default -->
     <div id="deleteDialog" title="Delete Student data">

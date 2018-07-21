@@ -114,6 +114,8 @@ $route['update_lesson'] = "admin/update_lesson";
 $route['delete_lesson'] = "admin/delete_lesson";
 $route['upload_lesson_img'] = "admin/upload_lessons_img";
 
+$route['view_lesson_update_summary/(:any)/(:any)'] = "admin/view_lesson_update_summary/$1/$2";
+
 // Faculties
 
 $route['faculties'] = "admin/faculty_list";

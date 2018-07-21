@@ -488,6 +488,42 @@
 			$this->load->view("admin/footer");
 		}
 
+		public function view_lesson_update_summary($lessonID = 0, $slug = ""){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			$data['page_title'] = "Admin Audit Trail";
+			$data['page_code'] = "audit_trail";
+
+			$lessonData = array(
+						"id" => $lessonID,
+						"slug" => $slug
+					);
+
+			$lessonData = $this->security->xss_clean($lessonData);
+
+			$lesson_update_summary = $this->admin_mod->select_lesson_update_summary($lessonData['id']);
+			$data['lesson_update_summary'] = $lesson_update_summary;
+			$data['lesson_update_summary_len'] = sizeof($lesson_update_summary);
+
+			$data['lesson_data'] = $this->admin_mod->select_lesson_by_id($lessonData['id']);
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div.php");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/view_lesson_update_summary");
+			$this->load->view("admin/footer");
+		}
+
 		##
 		##
 		## // ACTIONS:

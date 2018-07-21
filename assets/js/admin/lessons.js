@@ -104,7 +104,7 @@ function display_lessons(data){
                             display += "</td>";
 
                             display += "<td>";
-                                display += "<a href='#' data-lesson-id='"+ lesson.id +"'  data-toggle='modal' data-target='#update_summary_modal'><span class='fa fa-eye'></span> Update Summary</a>";
+                                display += "<a href='"+ base_url + "view_lesson_update_summary/"+ lesson.id +"/"+ lesson.slug +"' target='_blank'><span class='fa fa-eye'></span> Update Summary</a>";
                             display += "</td>";
 
                         display += "</tr>";

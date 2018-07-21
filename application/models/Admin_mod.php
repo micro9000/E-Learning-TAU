@@ -971,6 +971,18 @@
 			return $results->result_array();
 		}
 
+		public function select_lesson_update_summary($lessonID){
+
+			$this->db->select("LUS.id, LUS.lessonID, LUS.updateSummary, LUS.updatedByFacultyNum, DATE_FORMAT(LUS.dateUpdated, '%M %d, %Y %r') As dateUpdatedFormatted, 
+								CONCAT(FAC.firstName,' ', FAC.lastName) As UpdatedBy");
+			$this->db->from("Lesson_update_summary As LUS");
+			$this->db->join("Faculties As FAC", "FAC.facultyIDNum=LUS.updatedByFacultyNum");
+			$this->db->where("LUS.lessonID", $lessonID);
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
 		public function insert_audit_trail_new_entry($actionDone, $affectedModule, $responsibleFacultyNum){
 
 			$data = array(
