@@ -616,6 +616,34 @@
 			$this->load->view("admin/footer");
 		}
 
+
+		public function recycle_bin_faculties(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$data['page_title'] = "Admin Recycle Bin";
+			$data['page_code'] = "recycle_bin_faculties";
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/recycle_bin_faculties");
+			$this->load->view("admin/footer");
+		}
+
 		##
 		##
 		## // ACTIONS:
@@ -906,6 +934,61 @@
 		}
 
 
+		public function restore_deleted_faculty_data(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyID = $this->input->post('facultyID');
+
+			$data = array(
+				"facultyID" => $facultyID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("facultyID", "Faculty ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+				
+				$facuCurData = $this->admin_mod->select_deleted_faculty_by_id($data['facultyID']);
+
+				if ($this->admin_mod->restore_deleted_faculty_data($data['facultyID']) == 1){
+
+					// audit trail
+					$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+					$actionDone = "Restore faculty " . $facuCurData['lastName'] .", ". $facuCurData['firstName'];
+					$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully Restore"
+					);
+				}
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
 		public function mark_faculty_as_admin_or_dean(){
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -1082,6 +1165,33 @@
 			$this->output->set_output(json_encode($faculties));
 		}
 
+		public function get_all_deleted_faculties(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$faculties = $this->admin_mod->select_all_deleted_faculties();
+			// print_r($faculties);
+
+			$facultyLen = sizeof($faculties);
+			for($i=0; $i<$facultyLen; $i++){
+				$admin_data = $this->admin_mod->select_deleted_faculty_by_id_num($faculties[$i]['addedByAdminFacultyNum']);
+
+				if (sizeof($admin_data) > 0){
+					$faculties[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+				}
+				
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($faculties));
+		}
 
 		public function search_faculty(){
 			
@@ -1106,6 +1216,55 @@
 
 			if ($this->form_validation->run() === TRUE){
 				$results = $this->admin_mod->select_faculties($data['search_string']);
+
+				$facultyLen = sizeof($results);
+				for($i=0; $i<$facultyLen; $i++){
+					$admin_data = $this->admin_mod->select_faculty_by_id_num($results[$i]['addedByAdminFacultyNum']);
+
+					if (sizeof($admin_data) > 0){
+						$results[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					}
+					
+				}
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+		public function search_deleted_faculty(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$searchStr = $this->input->post('searchStr');
+
+			$data = array('search_string' => $searchStr);
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search_string", "Search string", "trim|required");
+
+			$results = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$results = $this->admin_mod->select_deleted_faculties($data['search_string']);
+
+				$facultyLen = sizeof($results);
+				for($i=0; $i<$facultyLen; $i++){
+					$admin_data = $this->admin_mod->select_deleted_faculty_by_id_num($results[$i]['addedByAdminFacultyNum']);
+
+					if (sizeof($admin_data) > 0){
+						$results[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					}
+					
+				}
 			}
 
 			$this->output->set_content_type('application/json');
@@ -1135,6 +1294,16 @@
 
 			if ($this->form_validation->run() === TRUE){
 				$results = $this->admin_mod->select_faculty_by_id($data['facultyID']);
+
+				$facultyLen = sizeof($results);
+				for($i=0; $i<$facultyLen; $i++){
+					$admin_data = $this->admin_mod->select_faculty_by_id_num($results[$i]['addedByAdminFacultyNum']);
+
+					if (sizeof($admin_data) > 0){
+						$results[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					}
+					
+				}
 			}
 
 			$this->output->set_content_type('application/json');

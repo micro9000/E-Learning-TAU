@@ -109,7 +109,10 @@
 				}
 			</style>
 			
-		<?php elseif ($page_code == "recycle_bin_principle" || $page_code == "recycle_bin_sub_topics" || $page_code == "recycle_bin_chapters" ): ?>
+		<?php elseif ($page_code == "recycle_bin_principle" || 
+						$page_code == "recycle_bin_sub_topics" || 
+						$page_code == "recycle_bin_chapters" ||
+						$page_code == "recycle_bin_faculties"): ?>
 			
 			<style type="text/css">
 				#recycle_bin_page{

@@ -172,6 +172,12 @@ $route['get_all_deleted_topics_chapters'] = "admin/get_all_deleted_topics_chapte
 $route['restore_deleted_topic_chapter'] = "admin/restore_deleted_topic_chapter";
 $route['search_deleted_topics_chapters'] = "admin/search_deleted_topics_chapters";
 
+// Recycle bin - Faculties
+$route['recycle_bin_faculties'] = "admin/recycle_bin_faculties";
+$route['get_all_deleted_faculties'] = "admin/get_all_deleted_faculties";
+$route['restore_deleted_faculty_data'] = "admin/restore_deleted_faculty_data";
+$route['search_deleted_faculty'] = "admin/search_deleted_faculty";
+
 
 $route['default_controller'] = 'students';
 $route['404_override'] = '';

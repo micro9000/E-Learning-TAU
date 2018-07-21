@@ -63,6 +63,13 @@
 			return $result;
 		}
 
+		public function restore_deleted_faculty_data($facultyID){
+			$this->db->set('isDeleted', 0);
+			$this->db->where('id', $facultyID);
+			$result = $this->db->update('Faculties');
+			return $result;
+		}
+
 		public function update_faculty_without_pass($info){
 
 			$data = array(
@@ -142,12 +149,35 @@
 			return $results->row_array();
 		}
 
+		public function select_deleted_faculty_by_id_num($idNum){
+
+			$this->db->select("id, isAdmin, isDean, facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->from("Faculties");
+			$this->db->where("facultyIDNum", $idNum);
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
 		public function select_faculty_by_id($id){
 
 			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
 			$this->db->from("Faculties");
 			$this->db->where(array(
 					"isDeleted" => 0,
+					"id" => $id
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function select_deleted_faculty_by_id($id){
+
+			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->from("Faculties");
+			$this->db->where(array(
+					"isDeleted" => 1,
 					"id" => $id
 			));
 
@@ -195,12 +225,39 @@
 			return $results->result_array();
 		}
 
+		public function select_all_deleted_faculties(){
+
+			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->order_by('id');
+			$this->db->from("Faculties");
+			$this->db->where("isDeleted=1");
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
 		public function select_faculties($searchStr){
 
 			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
 			$this->db->order_by('id');
 			$this->db->from("Faculties");
 			$this->db->where("isDeleted=0");
+			$this->db->group_start();
+			$this->db->like("facultyIDNum", $searchStr);
+			$this->db->or_like("CONCAT(firstName,' ', lastName)", $searchStr);
+			$this->db->or_like("email", $searchStr);
+			$this->db->group_end();
+			
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_deleted_faculties($searchStr){
+
+			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
+			$this->db->order_by('id');
+			$this->db->from("Faculties");
+			$this->db->where("isDeleted=1");
 			$this->db->group_start();
 			$this->db->like("facultyIDNum", $searchStr);
 			$this->db->or_like("CONCAT(firstName,' ', lastName)", $searchStr);
