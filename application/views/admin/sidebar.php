@@ -78,7 +78,7 @@
                                 <a href="<?php echo base_url("recycle_bin_faculties"); ?>">Faculties</a>
                             </li>
                             <li>
-                                <a href="#">Students</a>
+                                <a href="<?php echo base_url("recycle_bin_students"); ?>">Students</a>
                             </li>
                         </ul>
                     </li>

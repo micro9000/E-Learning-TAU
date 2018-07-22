@@ -178,6 +178,11 @@ $route['get_all_deleted_faculties'] = "admin/get_all_deleted_faculties";
 $route['restore_deleted_faculty_data'] = "admin/restore_deleted_faculty_data";
 $route['search_deleted_faculty'] = "admin/search_deleted_faculty";
 
+// Recycle bin - Students
+$route['recycle_bin_students'] = "admin/recycle_bin_students";
+$route['get_all_deleted_students'] = "admin/get_all_deleted_students";
+$route['restore_deleted_student_data'] = "admin/restore_deleted_student_data";
+$route['search_deleted_students'] = "admin/search_deleted_students";
 
 $route['default_controller'] = 'students';
 $route['404_override'] = '';

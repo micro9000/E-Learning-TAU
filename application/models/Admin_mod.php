@@ -324,6 +324,13 @@
 			return $result;
 		}
 
+		public function restore_deleted_student_data($studentID){
+			$this->db->set('isDeleted', 0);
+			$this->db->where('id', $studentID);
+			$result = $this->db->update('Students');
+			return $result;
+		}
+
 		public function select_std_num($stdNum){
 
 			$this->db->select("id, stdNum");
@@ -373,12 +380,42 @@
 			return $results->result_array();
 		}
 
+		public function select_all_deleted_students(){
+
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->order_by('id');
+			$this->db->from("Students");
+			$this->db->where("isDeleted=1");
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
 		public function select_students($searchStr){
 			
 			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
 			$this->db->order_by('id');
 			$this->db->from("Students");
 			$this->db->where("isDeleted=0");
+			$this->db->group_start();
+			$this->db->like("stdNum", $searchStr);
+			$this->db->or_like("firstName", $searchStr);
+			$this->db->or_like("lastName", $searchStr);
+			$this->db->or_like("email", $searchStr);
+			$this->db->or_like("CONCAT(firstName,' ', lastName)", $searchStr);
+			$this->db->or_like("CONCAT(lastName,' ', firstName)", $searchStr);
+			$this->db->group_end();
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_deleted_students($searchStr){
+			
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->order_by('id');
+			$this->db->from("Students");
+			$this->db->where("isDeleted=1");
 			$this->db->group_start();
 			$this->db->like("stdNum", $searchStr);
 			$this->db->or_like("firstName", $searchStr);
@@ -411,7 +448,20 @@
 			$this->db->from("Students");
 			$this->db->where(array(
 					"isDeleted" => 0,
-					"id =" => $id
+					"id" => $id
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function select_deleted_std_by_id($id){
+
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->from("Students");
+			$this->db->where(array(
+					"isDeleted" => 1,
+					"id" => $id
 			));
 
 			$results = $this->db->get();

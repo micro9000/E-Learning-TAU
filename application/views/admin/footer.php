@@ -77,6 +77,10 @@
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/recycle_bin_faculties.js"); ?>"></script>
 
+    <?php elseif($page_code == "recycle_bin_students"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/recycle_bin_students.js"); ?>"></script>
+
 	<?php endif; ?>
 
     <?php if ($page_code !== "login"): ?>
