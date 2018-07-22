@@ -617,6 +617,33 @@
 		}
 
 
+		public function recycle_bin_lessons(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$data['page_title'] = "Admin Recycle Bin";
+			$data['page_code'] = "recycle_bin_lessons";
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/recycle_bin_lessons");
+			$this->load->view("admin/footer");
+		}
+
 		public function recycle_bin_faculties(){
 
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -3284,6 +3311,8 @@
 				);
 			}else{
 
+				$lessonCurData = $this->admin_mod->select_lesson_actual_data_by_id($data['lessonID']);
+
 				if ($userType == "admin_faculty" || $userType == "dean_admin_faculty"){
 					
 					if ($this->admin_mod->mark_lesson_as_deleted($data['lessonID']) == 1){
@@ -3301,6 +3330,70 @@
 						);
 					}
 				}
+
+				// Audit trail
+				if ($is_done['done'] == "TRUE"){
+					if (sizeof($lessonCurData) > 0){
+						$actionDone = "Deleted lesson (".$lessonCurData[0]['title'].")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'LESS', $facultyIDNum);
+					}
+				}
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function restore_deleted_lesson(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$lessonID = $this->input->post('lessonID');
+
+			$data = array(
+				"lessonID" => $lessonID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("lessonID", "Lesson ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$lessonCurData = $this->admin_mod->select_deleted_lesson_actual_data_by_id($data['lessonID']);
+				
+				if ($this->admin_mod->restore_deleted_lesson($data['lessonID']) == 1){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully Restore"
+					);
+				}
+
+				// Audit trail
+				if ($is_done['done'] == "TRUE"){
+					if (sizeof($lessonCurData) > 0){
+						$actionDone = "Restore lesson (".$lessonCurData[0]['title'].")";
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'LESS', $facultyIDNum);
+					}
+				}
 			}
 			
 			$this->output->set_content_type('application/json');
@@ -3316,6 +3409,19 @@
 			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
 
 			$lessons = $this->admin_mod->select_all_lessons($facultyIDNum);
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($lessons));
+		}
+
+		public function get_all_deleted_lessons_by_current_user(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$lessons = $this->admin_mod->select_all_deleted_lessons($facultyIDNum);
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($lessons));
 		}
@@ -3341,6 +3447,33 @@
 
 			if ($this->form_validation->run() === TRUE){
 				$lessons = $this->admin_mod->select_lessons($data['search_str']);
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($lessons));
+		}
+
+		public function search_deleted_lessons(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$search_str = $this->input->post('search_str');
+
+			$data = array(
+				"search_str" => $search_str
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search_str", "Search string", "trim|required");
+
+			$lessons = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$lessons = $this->admin_mod->select_deleted_lessons($data['search_str']);
 			}
 			
 			$this->output->set_content_type('application/json');

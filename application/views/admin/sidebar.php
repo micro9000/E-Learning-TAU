@@ -72,7 +72,7 @@
                                 <a href="<?php echo base_url("recycle_bin_chapters"); ?>">Chapters</a>
                             </li>
                             <li>
-                                <a href="#">Lessons</a>
+                                <a href="<?php echo base_url("recycle_bin_lessons"); ?>">Lessons</a>
                             </li>
                             <li>
                                 <a href="<?php echo base_url("recycle_bin_faculties"); ?>">Faculties</a>

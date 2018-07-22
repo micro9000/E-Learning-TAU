@@ -81,6 +81,10 @@
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/recycle_bin_students.js"); ?>"></script>
 
+    <?php elseif($page_code == "recycle_bin_lessons"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/recycle_bin_lessons.js"); ?>"></script>
+
 	<?php endif; ?>
 
     <?php if ($page_code !== "login"): ?>

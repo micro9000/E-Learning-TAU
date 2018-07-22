@@ -1071,6 +1071,13 @@
 			return $result;
 		}
 
+		public function restore_deleted_lesson($lessonID){
+			$this->db->set('isDeleted', 0);
+			$this->db->where('id', $lessonID);
+			$result = $this->db->update('Lessons');
+			return $result;
+		}
+
 		public function select_all_lessons($facultyIDNum = ""){
 
 			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
@@ -1097,6 +1104,26 @@
 			return $results->result_array();
 		}
 
+		public function select_all_deleted_lessons($facultyIDNum = ""){
+
+			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
+								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
+								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
+			$this->db->order_by('Les.id', 'DESC');
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->join('Faculties As Fac', 'Fac.facultyIDNum=Les.addedByFacultyNum');
+			$this->db->where("Les.isDeleted", 1);
+
+			if ($facultyIDNum !== ""){
+				$this->db->where(array("Les.addedByFacultyNum" => $facultyIDNum));
+			}
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
 
 		public function select_lessons($search_str){
 
@@ -1119,6 +1146,28 @@
 			$this->db->group_start();
 			$this->db->like("Les.title", $search_str);
 			$this->db->or_like("Les.content", $search_str);
+			$this->db->group_end();
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function select_deleted_lessons($search_str){
+
+			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
+								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
+								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
+
+			$this->db->order_by('Les.id', 'DESC');
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->join('Faculties As Fac', 'Fac.facultyIDNum=Les.addedByFacultyNum');
+			$this->db->where("Les.isDeleted", 1);
+			$this->db->group_start();
+			$this->db->like("Les.title", $search_str);
+			// $this->db->or_like("Les.content", $search_str);
 			$this->db->group_end();
 
 			$results = $this->db->get();
@@ -1205,6 +1254,23 @@
 
 			// $sql = $this->db->get_compiled_select();
 			// echo $sql;
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+
+		public function select_deleted_lesson_actual_data_by_id($lessonID){
+
+			$this->db->select("Les.*, Chap.id As ChapID, Top.id As TopID, Prin.id As PrinID");
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->where(array(
+						'Les.isDeleted' => 1,
+						'Les.id' => $lessonID
+					));
+
 			$results = $this->db->get();
 			return $results->result_array();
 		}
