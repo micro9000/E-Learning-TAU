@@ -119,6 +119,9 @@ $route['upload_lesson_img'] = "admin/upload_lessons_img";
 
 $route['view_lesson_update_summary/(:any)/(:any)'] = "admin/view_lesson_update_summary/$1/$2";
 
+$route['faculty_view_lesson/(:any)/(:any)'] = "admin/view_lesson/$1/$2";
+$route['faculty_add_lesson_comment'] = "admin/add_lesson_comment";
+
 // Faculties
 
 $route['faculties'] = "admin/faculty_list";

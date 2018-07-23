@@ -716,6 +716,44 @@
 			$this->load->view("admin/footer");
 		}
 
+
+		public function view_lesson($lessonID=0, $slug=""){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			$lessonData = array(
+						'id' => $lessonID,
+						'slug' => $slug
+					);
+
+			$lessonData = $this->security->xss_clean($lessonData);
+
+			$data['page_title'] = "Admin view lesson";
+			$data['page_code'] = "view_lesson";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+
+			$lessonData = $this->admin_mod->select_lesson_by_id($lessonData['id']);
+			$data['lesson_data'] = $lessonData;
+
+			$chapter_lessons = $this->admin_mod->select_lesson_by_chapter_id($lessonData[0]['chapterID']);
+			$data['chapter_lessons'] = $chapter_lessons;
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/faculty_view_lesson");
+			$this->load->view("admin/footer");
+		}
+
 		##
 		##
 		## // ACTIONS:
@@ -3663,6 +3701,54 @@
 
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($audits));
+		}
+
+
+		public function add_lesson_comment(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"lessonID" => $this->input->post('lessonID'),
+				"comments" => $this->input->post('comments')
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+
+			$this->form_validation->set_rules("lessonID", "Lesson ID", "trim|required|is_natural");
+			$this->form_validation->set_rules("comments", "Comments", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				if ($this->students_mod->insert_lesson_comment($data['lessonID'], $data['comments'], $facultyIDNum, 'FAC') == 1){
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Inserted Successfully"
+					);
+				}
+
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
 		}
 
 	}

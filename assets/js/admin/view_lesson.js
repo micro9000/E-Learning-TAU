@@ -49,7 +49,7 @@ $(".btn-add-comment").on("click", function(){
 	var lessonID = $(this).attr("data-lesson-id");
 
 	$.post(
-		base_url + "add_lesson_comment",
+		base_url + "faculty_add_lesson_comment",
 		{
 			"lessonID" : lessonID,
 			"comments" : comments

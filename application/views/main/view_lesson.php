@@ -1,14 +1,3 @@
-<!-- <br/>
-<br/>
-<br/>
-<br/>
-<br/>
-<br/>
-						<pre>
-							<?php //print_r($lesson_data); ?>
-						</pre>
- -->
-
     <div class="wrapper">
         <div class="content">
             <div class="container">

@@ -80,7 +80,7 @@ function display_lessons(data){
 				randomNumber = Math.floor((Math.random() * 10) + 1);
 
 				display += "<div class='post_description'>";
-				display += "<p>" + contentTmp.substring(0, substringLen[randomNumber]) + "...<a href='#' class='link-read-more'>Read more</a></p>";
+				display += "<p>" + contentTmp.substring(0, substringLen[randomNumber]) + "...<a href='"+ base_url + "faculty_view_lesson/"+ lesson.id + "/"+ lesson.slug +"' class='link-read-more'>Read more</a></p>";
 				display += "</div>";
 
 				// display += "<div class='post_description'>";

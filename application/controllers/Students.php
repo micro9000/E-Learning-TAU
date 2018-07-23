@@ -125,78 +125,78 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
-		public function get_principles_sub_topics_chapters_matrix(){
+		// public function get_principles_sub_topics_chapters_matrix(){
 
-			$agriculture_matrix = array();
+		// 	$agriculture_matrix = array();
 
-			$principles = $this->admin_mod->select_all_principles();
-			$principlesLen = sizeof($principles);
+		// 	$principles = $this->admin_mod->select_all_principles();
+		// 	$principlesLen = sizeof($principles);
 
 
-			for($p=0; $p<$principlesLen; $p++){
-				$agriculture_matrix[$p] = array(
-							"principle_id" => $principles[$p]['id'],
-							"principle" => $principles[$p]['principle'],
-							"sub_topics" => array()
-						);
+		// 	for($p=0; $p<$principlesLen; $p++){
+		// 		$agriculture_matrix[$p] = array(
+		// 					"principle_id" => $principles[$p]['id'],
+		// 					"principle" => $principles[$p]['principle'],
+		// 					"sub_topics" => array()
+		// 				);
 
-				$principleID = $principles[$p]['id'];
+		// 		$principleID = $principles[$p]['id'];
 
-				$principle_sub_topics = $this->admin_mod->select_principles_sub_topic_by_principle_id($principleID);
-				$topicsLen = sizeof($principle_sub_topics);
+		// 		$principle_sub_topics = $this->admin_mod->select_principles_sub_topic_by_principle_id($principleID);
+		// 		$topicsLen = sizeof($principle_sub_topics);
 
-				$topicChapters = array();
+		// 		$topicChapters = array();
 
-				for($st=0; $st<$topicsLen; $st++){
+		// 		for($st=0; $st<$topicsLen; $st++){
 
-					$topicID = $principle_sub_topics[$st]['id'];
+		// 			$topicID = $principle_sub_topics[$st]['id'];
 
-					$topicChapters = array(
-									"topic_id" => $topicID,
-									"topic" => $principle_sub_topics[$st]['topic'],
-									"chapters" => array()
-								);
+		// 			$topicChapters = array(
+		// 							"topic_id" => $topicID,
+		// 							"topic" => $principle_sub_topics[$st]['topic'],
+		// 							"chapters" => array()
+		// 						);
 
-					$chapters = $this->admin_mod->select_chapter_by_topic_id($topicID);
-					$chaptersLen = sizeof ($chapters);
+		// 			$chapters = $this->admin_mod->select_chapter_by_topic_id($topicID);
+		// 			$chaptersLen = sizeof ($chapters);
 
-					for($ch=0; $ch<$chaptersLen; $ch++){
-						$chapterID = $chapters[$ch]['id'];
+		// 			for($ch=0; $ch<$chaptersLen; $ch++){
+		// 				$chapterID = $chapters[$ch]['id'];
 
-						$topic_chapters = array(
-									"chapter_id" => $chapterID,
-									"chapter" => $chapters[$ch]['chapterTitle'],
-									"lessons" => array()
-								);
+		// 				$topic_chapters = array(
+		// 							"chapter_id" => $chapterID,
+		// 							"chapter" => $chapters[$ch]['chapterTitle'],
+		// 							"lessons" => array()
+		// 						);
 
-						$lessons = $this->admin_mod->select_lesson_by_chapter_id($chapterID);
-						$lessonsLen = sizeof($lessons);
+		// 				$lessons = $this->admin_mod->select_lesson_by_chapter_id($chapterID);
+		// 				$lessonsLen = sizeof($lessons);
 
-						for($les=0; $les<$lessonsLen; $les++){
-							$lessonID = $lessons[$les]['id'];
+		// 				for($les=0; $les<$lessonsLen; $les++){
+		// 					$lessonID = $lessons[$les]['id'];
 
-							$lessonsList = array(
-									"lessonID" => $lessonID,
-									"lessonTitle" => $lessons[$les]['title'],
-									"lessonSlug" => $lessons[$les]['slug']
-							);
+		// 					$lessonsList = array(
+		// 							"lessonID" => $lessonID,
+		// 							"lessonTitle" => $lessons[$les]['title'],
+		// 							"lessonSlug" => $lessons[$les]['slug']
+		// 					);
 
-							array_push($topic_chapters['lessons'], $lessonsList);
-						}
+		// 					array_push($topic_chapters['lessons'], $lessonsList);
+		// 				}
 
-						array_push($topicChapters['chapters'], $topic_chapters);
+		// 				array_push($topicChapters['chapters'], $topic_chapters);
 						
-					}
-					array_push($agriculture_matrix[$p]['sub_topics'], $topicChapters);
-				}
+		// 			}
+		// 			array_push($agriculture_matrix[$p]['sub_topics'], $topicChapters);
+		// 		}
 
-			}
+		// 	}
 
-			// echo "<pre>";
-			// print_r($agriculture_matrix);
-			// echo "</pre>";
-			return $agriculture_matrix;
-		}
+		// 	// echo "<pre>";
+		// 	// print_r($agriculture_matrix);
+		// 	// echo "</pre>";
+		// 	return $agriculture_matrix;
+		// }
 
 		public function home(){
 
@@ -206,7 +206,7 @@
 
 			$data['page_title'] = "Home - Students";
 			$data['page_code'] = "home";
-			$data['agriculture_matrix'] = $this->get_principles_sub_topics_chapters_matrix();
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$data['latest_lessons_cover_img'] = $this->students_mod->select_latest_lessons_cover_img();
 
@@ -240,7 +240,7 @@
 
 			$data['page_title'] = "Home - Students";
 			$data['page_code'] = "view_lesson";
-			$data['agriculture_matrix'] = $this->get_principles_sub_topics_chapters_matrix();
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$lessonData = $this->admin_mod->select_lesson_by_id($lessonData['id']);
 			$data['lesson_data'] = $lessonData;
