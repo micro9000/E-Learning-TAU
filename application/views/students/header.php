@@ -22,7 +22,7 @@
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/login.css"); ?>">
 
-	<?php elseif($page_code == "home"): ?>
+	<?php elseif($page_code == "home" || $page_code == "view_lesson"): ?>
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/main/master.css"); ?>">
 

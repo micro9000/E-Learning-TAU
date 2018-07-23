@@ -88,7 +88,7 @@
 
 			$is_done = array(
 					"done" => "FALSE",
-					"msg" => ""
+					"msg" => "Login failed"
 				);
 
 			$facNum = $this->input->post('facNum');
@@ -113,27 +113,34 @@
 
 				$results = $this->admin_mod->login($data['facNum'], $hashPass);
 
-				if (sizeof($results) > 0){
-					if ($results['id'] > 0 && $results['facultyIDNum'] != ""){
+				if ($results != null){
+					if (sizeof($results) > 0){
+						if ($results['id'] > 0 && $results['facultyIDNum'] != ""){
 
-						$std_session_data = array(
-							'admin_session_faculty_id' => $results['id'],
-							'admin_session_facultyNum' => $results['facultyIDNum'],
-							'admin_session_firstName' => $results['firstName'],
-							'admin_session_lastName' => $results['lastName'],
-							'admin_session_email' => $results['email'],
-							'admin_session_isAdmin' => $results['isAdmin'],
-							'admin_session_isDean' => $results['isDean'],
-							'admin_logged_in' => TRUE
-						);
+							$std_session_data = array(
+								'admin_session_faculty_id' => $results['id'],
+								'admin_session_facultyNum' => $results['facultyIDNum'],
+								'admin_session_firstName' => $results['firstName'],
+								'admin_session_lastName' => $results['lastName'],
+								'admin_session_email' => $results['email'],
+								'admin_session_isAdmin' => $results['isAdmin'],
+								'admin_session_isDean' => $results['isDean'],
+								'admin_logged_in' => TRUE
+							);
 
-						$this->session->set_userdata($std_session_data);
+							$this->session->set_userdata($std_session_data);
 
-						$is_done = array(
-							"done" => "TRUE",
-							"msg" => "Successfully Logged in"
-						);
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Successfully Logged in"
+							);
 
+						}else{
+							$is_done = array(
+								"done" => "FALSE",
+								"msg" => "Login failed"
+							);
+						}
 					}else{
 						$is_done = array(
 							"done" => "FALSE",
@@ -146,6 +153,7 @@
 						"msg" => "Login failed"
 					);
 				}
+
 			}
 
 			// print_r($is_done);
@@ -214,7 +222,9 @@
 
 				$principle_data = $this->admin_mod->select_principle_by_id($principleID);
 
-				if (sizeof($principle_data) == 0){
+				if ($principle_data == null){
+					show_404();
+				} else if (sizeof($principle_data) == 0){
 					show_404();
 				}
 
@@ -255,7 +265,9 @@
 
 				$topic_data = $this->admin_mod->select_principles_sub_topic_by_topic_id($topicID);
 
-				if (sizeof($topic_data) == 0){
+				if ($topic_data == null){
+					show_404();
+				}else if (sizeof($topic_data) == 0){
 					show_404();
 				}
 
@@ -298,7 +310,9 @@
 
 				$chapter_data = $this->admin_mod->select_chapter_by_id($chapterID);
 
-				if (sizeof($chapter_data) == 0){
+				if ($chapter_data == null){
+					show_404();
+				} else if (sizeof($chapter_data) == 0){
 					show_404();
 				}
 
@@ -374,7 +388,9 @@
 				$faculty_data = $this->admin_mod->select_faculty_by_id($facultyID);
 				$admin_data = $this->admin_mod->select_faculty_by_id_num($faculty_data['addedByAdminFacultyNum']);
 
-				if (sizeof($faculty_data) == 0){
+				if ($faculty_data == null){
+					show_404();
+				}else if (sizeof($faculty_data) == 0){
 					show_404();
 				}
 
@@ -415,7 +431,9 @@
 
 				$student_data = $this->admin_mod->select_std_by_id($studentID);
 
-				if (sizeof($student_data) == 0){
+				if ($student_data == null){
+					show_404();
+				}else if (sizeof($student_data) == 0){
 					show_404();
 				}
 

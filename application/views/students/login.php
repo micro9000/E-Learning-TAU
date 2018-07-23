@@ -1,13 +1,4 @@
-<?php if ($this->authentication->is_student_logged_in()) : ?>
-    <script type="text/javascript">
-        window.location = base_url + "home_page";
-    </script>
-<?php endif; ?>
 
-<!-- <?php if ($this->authentication->is_student_logged_in()){
-    redirect('home_page');
-} ?>
- -->
 <div class="container">
     <div class="card card-container">
         <img id="profile-img" class="profile-img-card" src="<?php echo base_url("assets/imgs/profile_temp.png"); ?>" />
@@ -26,7 +17,7 @@
         </form><!-- /form -->
 
         <div class="login-alert">
-        	<div class="alert hidden-default"></div>
+        	<div class="alert login-msg hidden-default">asdf</div>
         	<div class="loader hidden-default"></div>
         </div>
 

@@ -14,7 +14,7 @@
         </form><!-- /form -->
 
         <div class="login-alert">
-        	<div class="alert hidden-default"></div>
+        	<div class="alert login-msg hidden-default"></div>
         	<div class="loader hidden-default"></div>
         </div>
         

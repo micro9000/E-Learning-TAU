@@ -87,6 +87,46 @@
 			return $results->result_array();
 		}
 
+		public function insert_lesson_comment($lessonID, $comments, $stdNum_facNum, $userType){
+
+			$data = array(
+				'lessonID' => $lessonID,
+				'comments' => $comments,
+				'stdNum_facNum' => $stdNum_facNum,
+				'userType' => $userType
+			);
+
+			$result = $this->db->insert('Lesson_comments', $data);
+			return $result;
+		}
+
+		public function get_all_lesson_comments($lessonID){
+
+			$this->db->where('lessonID', $lessonID);
+			$results = $this->db->get('Lesson_comments');
+			return $results->result_array();
+
+		}
+		
+		// Use to display comments
+		public function getDatesMinsDifference_today($date_1){
+			$this->db->select("TIMESTAMPDIFF(MINUTE, '". $date_1 ."', CURRENT_TIMESTAMP ) as timeDiff");
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function getFormattedDate_without_year($date){
+			$this->db->select("DATE_FORMAT('". $date ."', '%M %d, %r') as formattedDate");
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function getFormattedDate_with_year($date){
+			$this->db->select("DATE_FORMAT('". $date ."', '%M %d, %Y %r') as formattedDate");
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
 	}
 
 ?>

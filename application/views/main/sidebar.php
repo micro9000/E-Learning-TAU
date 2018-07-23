@@ -51,7 +51,7 @@
 					        								//LESSONS
 					        								for($lesIdx=0; $lesIdx < $lessonsLen; $lesIdx++){
 					        									echo "<li>";
-					        										echo "<a href='#lesson_view/". $lessons[$lesIdx]['lessonID'] ."/". $lessons[$lesIdx]['lessonSlug'] ."'><span class='fa fa-angle-right'></span> ". $lessons[$lesIdx]['lessonTitle'] ."</a>";
+					        										echo "<a href='". base_url('view_lesson/'.$lessons[$lesIdx]['lessonID'] ."/". $lessons[$lesIdx]['lessonSlug']) ."'><span class='fa fa-angle-right'></span> ". $lessons[$lesIdx]['lessonTitle'] ."</a>";
 					        									echo "</li>";
 					        								}
 

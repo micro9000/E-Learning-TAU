@@ -104,7 +104,7 @@
                                                     echo "</div>";
 
                                                     echo "<div class='post_description'><p>";
-                                                        echo get_content_summary_helper($latest_lessons_with_cover[$i]['content']) . "...<br/><a href='#' class='link-read-more'>Read more</a>";
+                                                        echo get_content_summary_helper($latest_lessons_with_cover[$i]['content']) . "...<br/><a href='". base_url("view_lesson/".$latest_lessons_with_cover[$i]['id']."/".$latest_lessons_with_cover[$i]['slug']) ."' class='link-read-more'>Read more</a>";
                                                     echo "</p></div>";
 
                                                 echo "</div>";
@@ -135,7 +135,7 @@
                                                             echo "</div>";
 
                                                             echo "<div class='post_description'><p>";
-                                                                echo get_content_summary_helper($latest_lessons_with_cover[$i]['content']) . "...<br/><a href='#' class='link-read-more'>Read more</a>";
+                                                                echo get_content_summary_helper($latest_lessons_with_cover[$i]['content']) . "...<br/><a href='". base_url("view_lesson/".$latest_lessons_with_cover[$i]['id']."/".$latest_lessons_with_cover[$i]['slug']) ."' class='link-read-more'>Read more</a>";
                                                             echo "</p></div>";
 
                                                         echo "</div>";
@@ -173,7 +173,7 @@
                                         echo "</div>";
 
                                         echo "<div class='post_description'><p>";
-                                            echo get_content_summary_helper($latest_lessons_without_cover[$i]['content']) . "...<br/><a href='#' class='link-read-more'>Read more</a>";
+                                            echo get_content_summary_helper($latest_lessons_without_cover[$i]['content']) . "...<br/><a href='". base_url("view_lesson/".$latest_lessons_without_cover[$i]['id']."/".$latest_lessons_without_cover[$i]['slug']) ."' class='link-read-more'>Read more</a>";
                                         echo "</p></div>";
 
                                     echo "</div>";
@@ -181,156 +181,6 @@
                             }
                         ?>
 
-                        <!-- <div class="content-panel lessons-without-cover">
-                            <div class="post_wrapper">
-
-                                <div class="post_date">
-                                    JUNE 21, 2018 / Economics and Agriculture Marketing
-                                </div>
-                                
-                                <div class="post_title">
-                                    <h3>Mixed Reality @ Microsoft – June 2018 Update</h3>
-                                </div>
-
-                                <div class="post_by">
-                                    By Raniel Garcia
-                                </div>
-
-                                <div class="post_description">
-                                    <p>
-                                        Recent Microsoft-Harvard Business Review Analytic Services survey
-                                        shows 87 percent of respondents are currently exploring, piloting, or
-                                        deploying mixed reality in their <a href="#" class="link-read-more">Read more</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-panel" style="border-bottom: 1px solid #dbdbdb;">
-                            <div class="post_wrapper">
-
-                                <div class="post_date">
-                                    JUNE 21, 2018 / Economics and Agriculture Marketing
-                                </div>
-                                
-                                <div class="post_title">
-                                    <h3>Mixed Reality @ Microsoft – June 2018 Update</h3>
-                                </div>
-
-                                <div class="post_by">
-                                    By Raniel Garcia
-                                </div>
-
-                                <div class="post_description">
-                                    <p>
-                                        Recent Microsoft-Harvard Business Review Analytic Services survey
-                                        shows 87 percent of respondents are currently exploring, piloting, or
-                                        deploying mixed reality in their <a href="#" class="link-read-more">Read more</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-panel" style="border-bottom: 1px solid #dbdbdb;">
-                            <div class="post_wrapper">
-
-                                <div class="post_date">
-                                    JUNE 21, 2018 / Economics and Agriculture Marketing
-                                </div>
-                                
-                                <div class="post_title">
-                                    <h3>Mixed Reality @ Microsoft – June 2018 Update</h3>
-                                </div>
-
-                                <div class="post_by">
-                                    By Raniel Garcia
-                                </div>
-
-                                <div class="post_description">
-                                    <p>
-                                        Recent Microsoft-Harvard Business Review Analytic Services survey
-                                        shows 87 percent of respondents are currently exploring, piloting, or
-                                        deploying mixed reality in their <a href="#" class="link-read-more">Read more</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-panel" style="border-bottom: 1px solid #dbdbdb;">
-                            <div class="post_wrapper">
-
-                                <div class="post_date">
-                                    JUNE 21, 2018 / Economics and Agriculture Marketing
-                                </div>
-                                
-                                <div class="post_title">
-                                    <h3>Mixed Reality @ Microsoft – June 2018 Update</h3>
-                                </div>
-
-                                <div class="post_by">
-                                    By Raniel Garcia
-                                </div>
-
-                                <div class="post_description">
-                                    <p>
-                                        Recent Microsoft-Harvard Business Review Analytic Services survey
-                                        shows 87 percent of respondents are currently exploring, piloting, or
-                                        deploying mixed reality in their <a href="#" class="link-read-more">Read more</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-panel" style="border-bottom: 1px solid #dbdbdb;">
-                            <div class="post_wrapper">
-
-                                <div class="post_date">
-                                    JUNE 21, 2018 / Economics and Agriculture Marketing
-                                </div>
-                                
-                                <div class="post_title">
-                                    <h3>Mixed Reality @ Microsoft – June 2018 Update</h3>
-                                </div>
-
-                                <div class="post_by">
-                                    By Raniel Garcia
-                                </div>
-
-                                <div class="post_description">
-                                    <p>
-                                        Recent Microsoft-Harvard Business Review Analytic Services survey
-                                        shows 87 percent of respondents are currently exploring, piloting, or
-                                        deploying mixed reality in their <a href="#" class="link-read-more">Read more</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="content-panel" style="border-bottom: 1px solid #dbdbdb;">
-                            <div class="post_wrapper">
-
-                                <div class="post_date">
-                                    JUNE 21, 2018 / Economics and Agriculture Marketing
-                                </div>
-                                
-                                <div class="post_title">
-                                    <h3>Mixed Reality @ Microsoft – June 2018 Update</h3>
-                                </div>
-
-                                <div class="post_by">
-                                    By Raniel Garcia
-                                </div>
-
-                                <div class="post_description">
-                                    <p>
-                                        Recent Microsoft-Harvard Business Review Analytic Services survey
-                                        shows 87 percent of respondents are currently exploring, piloting, or
-                                        deploying mixed reality in their <a href="#" class="link-read-more">Read more</a>
-                                    </p>
-                                </div>
-                            </div>
-                        </div> -->
-                            
                     </div>
 
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

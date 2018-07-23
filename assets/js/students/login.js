@@ -2,7 +2,7 @@
 $(".form-signin").on("submit", function(e){
 	e.preventDefault();
 
-	$(".loader").toggleClass("hidden-default");
+	// $(".loader").toggleClass("hidden-default");
 
 	// alert("HI");
 	var student_number = $(".student_number").val();
@@ -16,8 +16,14 @@ $(".form-signin").on("submit", function(e){
 		},
 		function(data){
 			// console.log(data);
+
+			$(".login-msg").html(data.msg).toggleClass("hidden-default");
+
 			if (data.done === 'TRUE'){
+				$(".login-msg").html(data.msg).addClass("alert-primary");
 				window.location = base_url + "home_page";
+			}else{
+				$(".login-msg").html(data.msg).addClass("alert-danger");
 			}
 		}
 	);

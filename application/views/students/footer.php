@@ -37,7 +37,9 @@
 
 		<script type="text/javascript" src="<?php echo base_url("assets/js/students/login.js"); ?>"></script>
 
-	<?php elseif($page_code == ""): ?>
+	<?php elseif($page_code == "view_lesson"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/students/view_lesson.js"); ?>"></script>
 
 	<?php endif; ?>
 

@@ -52,9 +52,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 // Students Routing:
 //
-
+$route['student_login_page'] = "students/index";
 $route['student_login'] = "students/login";
-
+$route['student_logout'] = "students/destroy_student_session";
+$route['view_lesson/(:any)/(:any)'] = "students/view_lesson/$1/$2";
+$route['add_lesson_comment'] = "students/add_lesson_comment";
+$route['get_all_lesson_comments'] = "students/get_all_lesson_comments";
 
 // Admin Routing:
 //

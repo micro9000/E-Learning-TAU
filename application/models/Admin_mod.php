@@ -355,6 +355,19 @@
 			return $results->row_array();
 		}
 
+		public function select_std_by_std_num($stdNum){
+
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");
+			$this->db->from("Students");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"stdNum" => $stdNum
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
 		public function select_std_by_id_and_email($id, $email){
 
 			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated");

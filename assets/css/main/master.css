@@ -11,6 +11,9 @@ body{
 	margin-bottom: 20px;
 }
 
+hr.style2 {
+	border-top: 3px double #8c8b8b;
+}
 
 .fa-angle-double-right, .fa-angle-right{
 	color: #e8e830;
@@ -34,6 +37,12 @@ body{
 
 .post_wrapper{
 	padding: 20px;
+}
+
+.post_title{
+	padding: 20px;
+	font-size: 1rem;
+	font-weight: bold;
 }
 
 .post_wrapper .post_date{
@@ -76,4 +85,101 @@ body{
 
 .lessons-without-cover{
 	border-bottom: 1px solid #dbdbdb;
+}
+
+
+.lesson-details-wrapper{
+	color: #313233;
+	background: #fff;
+	padding: 20px;
+	font-family: 'Poppins', sans-serif;
+}
+
+.lesson-details-wrapper .date, .lesson-details-wrapper .posted_by{
+	font-size:11px;
+}
+
+.lesson-details-wrapper .title{
+	color: black;
+	margin-top: 20px;
+	line-height: 2rem;
+	margin-bottom: 20px;
+	font-size:2rem;
+}
+
+.line{
+	margin-bottom: 5px;
+}
+
+
+.btns-quizzes a{
+	margin-top: 10px;
+	font-size: 11px;
+	background: #c7c8c9;
+	border-radius: 0px;
+	padding: 5px;
+}
+
+.lesson-details-wrapper .category{
+	font-size:11px;
+}
+
+.lesson-details-wrapper .contents img{
+	width: 100%;
+	height: auto;
+}
+
+.lesson-details-wrapper .contents, .lesson-details-wrapper .contents p{
+	/*line-height: 2rem;*/
+	color: #5f5e5e;
+	font-size: 14px;
+}
+
+.comments{
+	margin-top: 20px;
+}
+
+.comments_wrapper{
+
+	margin-bottom: 15px;
+}
+
+.comments_wrapper .card-header{
+	font-size: 12px;
+	color: #313233;
+}
+
+.comments_wrapper .card-footer button{
+	padding: 4px; 
+	font-size: 11px;
+}
+
+/*.comments_wrapper{
+	background: #ffffff;
+	width: 100%;
+	border: 1px solid #dddddd;;
+}*/
+
+.chapter_lessons{
+	padding: 10px;
+	padding-top: 20px;
+}
+
+
+.chapter_lessons .chapters_title{
+	color: black;
+}
+
+.chapter_lessons .chapter_lesson_list{
+	margin-top: 10px;
+}
+
+.chapter_lessons .chapter_lesson_list ul li{
+	list-style-type: none;
+	padding-top: 15px;
+	font-size: 12px;
+}
+
+.chapter_lessons .chapter_lesson_list ul li a.link-read-more{
+	font-size: 11px;
 }

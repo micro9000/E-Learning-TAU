@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS AgriPrinciples(
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
 
-
+SELECT * FROM AgriPrinciples;
 
 CREATE TABLE IF NOT EXISTS PrinciplesSubTopic(
 	id INT NOT NULL AUTO_INCREMENT,
@@ -79,6 +79,7 @@ CREATE TABLE IF NOT EXISTS PrinciplesSubTopic(
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
 
+SE
 
 CREATE TABLE IF NOT EXISTS TopicChapters(
 	id INT NOT NULL AUTO_INCREMENT,
@@ -125,10 +126,24 @@ CREATE TABLE IF NOT EXISTS Lesson_update_summary(
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
 
+
+
+CREATE TABLE IF NOT EXISTS Lesson_comments(
+	id INT NOT NULL AUTO_INCREMENT,
+	lessonID INT NOT NULL,
+	comments TEXT,
+	stdNum_facNum CHAR(20),
+	userType CHAR(3), -- STD - students , FAC - faculties
+	dateCommented DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY(lessonID) REFERENCES Lessons(id),
+	PRIMARY KEY(id)
+)ENGINE=INNODB;
+
+SELECT * FROM Lesson_comments;
+
 select * from Lesson_update_summary;
 
-SELECT LUS.id, LUS.lessonID, LUS.updateSummary, LUS.updatedByFacultyNum, 
-	DATE_FORMAT(LUS.dateUpdated, '%M %d, %Y %r') As dateUpdatedFormatted, CONCAT(FAC.firstName,' ', FAC.lastName) As UpdatedBy
+SELECT LUS.id, LUS.lessonID, LUS.updateSummary, LUS.updatedByFacultyNum, DATE_FORMAT(LUS.dateUpdated, '%M %d, %Y %r') As dateUpdatedFormatted, CONCAT(FAC.firstName,' ', FAC.lastName) As UpdatedBy
 FROM Lesson_update_summary As LUS, Faculties As FAC
 WHERE FAC.facultyIDNum=LUS.updatedByFacultyNum;
 

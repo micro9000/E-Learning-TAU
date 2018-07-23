@@ -14,15 +14,16 @@
 
                     <ul class="nav navbar-nav ml-auto">
                     		
-                        <li class="nav-item ">
-                            <a class="nav-link" href="#"><span class="fa fa-home"></span> Home</a>
-                        </li>
                         <li class="nav-item active">
-                            <a class="nav-link" href="#"><span class="fa fa-info"></span> About</a>
+                            <a class="nav-link" href="<?php echo base_url("home_page"); ?>"><span class="fa fa-home"></span> Home</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><span class="fa fa-user"></span> Profile</a>
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="#"><span class="fa fa-user"></span> Profile</a>
+                            <a class="nav-link" href="<?php echo base_url("student_logout"); ?>"><span class="fa fa-sign-out-alt"></span> Sign out</a>
                         </li>
 
                         <li class="nav-item" style="width: 300px;">
