@@ -18,9 +18,15 @@
 
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/tools.css"); ?>">
 
-	<?php if ($page_code == "login"): ?>
+
+
+	<?php if ($page_code == "login" || $page_code == "passwd_recovery_page" || $page_code == "pswd_recovery_code" || $page_code == "change_password"): ?>
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/login.css"); ?>">
+
+	<?php elseif($page_code == "registration" || $page_code == "registration_code"): ?>
+
+		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/registration.css"); ?>">
 
 	<?php elseif($page_code == "home" || $page_code == "view_lesson"): ?>
 

@@ -53,6 +53,21 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 // Students Routing:
 //
 $route['student_login_page'] = "students/index";
+
+$route['student_registration_page'] = "students/registration";
+$route['student_initial_registration'] = "students/initial_registration";
+$route['student_registration_code/(:any)'] = "students/registration_code/$1";
+$route['verify_registration_code'] = "students/verify_registration_code";
+$route['registration_done_msg'] = "students/registration_done_msg";
+
+$route['password_recovery'] = "students/password_recovery";
+$route['recover_password'] = "students/recover_password";
+$route['password_recovery_code/(:any)'] = "students/password_recovery_code/$1";
+$route['verify_pswd_recovery_code'] = "students/verify_pswd_recovery_code";
+$route['student_change_password_form'] = "students/student_change_password_form";
+$route['change_student_password'] = "students/change_student_password";
+$route['student_successfully_change_password'] = "students/pswd_recovery_done_msg";
+
 $route['student_login'] = "students/login";
 $route['student_logout'] = "students/destroy_student_session";
 $route['view_lesson/(:any)/(:any)'] = "students/view_lesson/$1/$2";

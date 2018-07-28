@@ -41,6 +41,14 @@
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/students/view_lesson.js"); ?>"></script>
 
+    <?php elseif($page_code == "registration" || $page_code == "registration_code"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/students/register.js"); ?>"></script>
+
+    <?php elseif($page_code == "passwd_recovery_page" || $page_code == "pswd_recovery_code" || $page_code == "change_password"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/students/password_recovery.js"); ?>"></script>
+
 	<?php endif; ?>
 
 </body>

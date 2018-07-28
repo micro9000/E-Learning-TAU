@@ -127,6 +127,271 @@
 			return $results->row_array();
 		}
 
+		public function get_code_exp_date(){
+			$this->db->select("DATE_ADD(CURRENT_TIMESTAMP,INTERVAL 1 HOUR) As curDate");
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function insert_student_init_reg($info){
+
+			$data = array(
+				'stdNum' => $info['student_id_num'],
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email'],
+				'pswd' => $info['hashPass'],
+				'expDate' => $info['expDate'],
+				'randomCode' => $info['regCode']
+			);
+
+			// $this->db->set($data);
+			// $sql = $this->db->get_compiled_insert('StdRegTempStorage');
+			// echo $sql;
+
+			$result = $this->db->insert('StdRegTempStorage', $data);
+			return $result;
+		}
+
+		public function is_std_reg_code_exists($code, $stdNum){
+
+			$this->db->select("COUNT(*) as count");
+			$this->db->from("StdRegTempStorage");
+			$this->db->where(array(
+							"randomCode" => $code,
+							"stdNum" => $stdNum
+						));
+
+			$results = $this->db->get();
+			$count = $results->row_array();
+
+			if ($count['count'] == 1){
+				return TRUE;
+			}else{
+				return FALSE;
+			}
+
+		}
+
+		public function is_std_reg_code_not_yet_exprd($code){
+
+			$this->db->select("COUNT(*) as count");
+			$this->db->from("StdRegTempStorage");
+			$this->db->where("isConfirm", "0");
+			$this->db->where("randomCode", $code);
+			$this->db->where("CONCAT(CURDATE(), ' ', CURTIME()) >= expDate");
+
+			// $sql = $this->db->get_compiled_select();
+
+			// echo $sql;
+			$results = $this->db->get();
+			$count = $results->row_array();
+
+			if ($count['count'] == 0){
+				return TRUE;
+			}else{
+				return FALSE;
+			}
+
+		}
+
+
+		public function is_std_reg_code_not_yet_confirm($code, $stdNum){
+
+			$this->db->select("COUNT(*) as count");
+			$this->db->from("StdRegTempStorage");
+			$this->db->where(array(
+							"randomCode" => $code,
+							"stdNum" => $stdNum,
+							"isConfirm" => 0
+						));
+
+			$this->db->order_by("id", "DESC");
+			$this->db->limit(1);
+
+			$results = $this->db->get();
+			$count = $results->row_array();
+
+			if ($count['count'] == 1){
+				return TRUE;
+			}else{
+				return FALSE;
+			}
+
+		}
+
+
+		public function confirm_std_registration($code, $stdNum){
+
+						
+			$this->db->where(array(
+								"randomCode" => $code,
+								"stdNum" => $stdNum
+							));
+			$this->db->order_by("id", "DESC");
+			$this->db->limit(1);
+
+			$this->db->set("isConfirm", 1);
+
+			// $sql = $this->db->get_compiled_update('StdRegTempStorage');
+			// echo $sql;
+
+			$result = $this->db->update('StdRegTempStorage');
+			return $result;
+		}
+
+
+		public function get_std_reg_data($code, $stdNum){
+
+			$this->db->where(array(
+							"randomCode" => $code,
+							"stdNum" => $stdNum
+						));
+			$results = $this->db->get("StdRegTempStorage");
+			return $results->row_array();
+		}
+
+
+		public function move_student_registered($info){
+
+			$data = array(
+				'stdNum' => $info['stdNum'],
+				'firstName' => $info['firstName'],
+				'lastName' => $info['lastName'],
+				'email' => $info['email'],
+				'pswd' => $info['pswd']
+			);
+
+			$result = $this->db->insert('Students', $data);
+			return $result;
+		}
+
+		public function get_std_data_for_pswd_recovery($stdNum, $stdEmail){
+
+			$this->db->select("count(*) As count");
+			$this->db->where(array(
+							"stdNum" => $stdNum,
+							"email" => $stdEmail
+						));
+			$this->db->order_by("id", "DESC");
+			$this->db->limit(1);
+
+			$results = $this->db->get("students");
+			return $results->row_array();
+		}
+
+
+		public function insert_student_for_pswd_recovery($info){
+
+			$data = array(
+				'stdNum' => $info['stdNum'],
+				'email' => $info['email'],
+				'randomCode' => $info['randomCode'],
+				'expDate' => $info['expDate']
+			);
+
+			$result = $this->db->insert('StdPswdRecoveryTempStorage', $data);
+			return $result;
+		}
+
+		public function is_std_recovery_code_exists($code, $stdNum){
+
+			$this->db->select("COUNT(*) as count");
+			$this->db->from("StdPswdRecoveryTempStorage");
+			$this->db->where(array(
+							"randomCode" => $code,
+							"stdNum" => $stdNum
+						));
+
+			$results = $this->db->get();
+			$count = $results->row_array();
+
+			if ($count['count'] == 1){
+				return TRUE;
+			}else{
+				return FALSE;
+			}
+
+		}
+
+
+		public function is_std_recovery_code_not_yet_exprd($code){
+
+			$this->db->select("COUNT(*) as count");
+			$this->db->from("StdPswdRecoveryTempStorage");
+			$this->db->where("isConfirm", "0");
+			$this->db->where("randomCode", $code);
+			$this->db->where("CONCAT(CURDATE(), ' ', CURTIME()) >= expDate");
+
+			$results = $this->db->get();
+			$count = $results->row_array();
+
+			if ($count['count'] == 0){
+				return TRUE;
+			}else{
+				return FALSE;
+			}
+
+		}
+
+
+		public function is_std_recovery_code_not_yet_confirm($code, $stdNum){
+
+			$this->db->select("COUNT(*) as count");
+			$this->db->from("StdPswdRecoveryTempStorage");
+			$this->db->where(array(
+							"randomCode" => $code,
+							"stdNum" => $stdNum,
+							"isConfirm" => 0
+						));
+
+			$this->db->order_by("id", "DESC");
+			$this->db->limit(1);
+
+			$results = $this->db->get();
+			$count = $results->row_array();
+
+			if ($count['count'] == 1){
+				return TRUE;
+			}else{
+				return FALSE;
+			}
+
+		}
+
+
+		public function confirm_std_pswd_recovery($code, $stdNum){
+	
+			$this->db->where(array(
+								"randomCode" => $code,
+								"stdNum" => $stdNum
+							));
+			$this->db->order_by("id", "DESC");
+			$this->db->limit(1);
+
+			$this->db->set("isConfirm", 1);
+
+			$result = $this->db->update('StdPswdRecoveryTempStorage');
+			return $result;
+		}
+
+
+		public function update_student_password($info){
+
+			$data = array(
+				'pswd' => $info['new_password_hash']
+			);
+
+			$this->db->where(array(
+								"stdNum" => $info['student_num'],
+								"isDeleted" => 0
+							));
+
+			$this->db->set($data);
+			$result = $this->db->update('Students');
+			return $result;
+		}
+
 	}
 
 ?>

@@ -124,6 +124,10 @@ hr.style2 {
 	font-size:11px;
 }
 
+.lesson-details-wrapper .contents{
+	min-height: 500px;
+}
+
 .lesson-details-wrapper .contents img{
 	width: 100%;
 	height: auto;

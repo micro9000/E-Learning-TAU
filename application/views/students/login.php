@@ -6,7 +6,7 @@
         <form class="form-signin">
         	<p style="text-align:center">Welcome to E-Learning</p>
             <span id="reauth-email" class="reauth-email"></span>
-            <input type="text" id="inputStdNum" class="form-control student_number" placeholder="Student number" maxlength="10" minlength="10" required autofocus>
+            <input type="text" id="inputStdNum" class="form-control student_number" placeholder="Student number" required autofocus>
             <input type="password" id="inputPassword" class="form-control password" placeholder="Password" required>
             <!-- <div id="remember" class="checkbox">
                 <label>
@@ -17,15 +17,15 @@
         </form><!-- /form -->
 
         <div class="login-alert">
-        	<div class="alert login-msg hidden-default">asdf</div>
+        	<div class="alert login-msg hidden-default"></div>
         	<div class="loader hidden-default"></div>
         </div>
 
-        <a href="#" class="forgot-password">
+        <a href="<?php echo base_url("password_recovery"); ?>" class="forgot-password">
             Forgot the password?
         </a>
         <p>Not Registered? 
-        <a href="#" class="forgot-password">
+        <a href="<?php echo base_url("student_registration_page"); ?>" class="forgot-password">
             Register here
         </a></p>
         

@@ -9,7 +9,7 @@ body{
 
 
 .card-container.card {
-    max-width: 350px;
+    max-width: 550px;
     padding: 40px 40px;
 }
 
@@ -40,26 +40,11 @@ body{
     box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
 }
 
-.profile-img-card {
-    width: 96px;
-    height: 96px;
-    margin: 0 auto 10px;
-    display: block;
-    -moz-border-radius: 50%;
-    -webkit-border-radius: 50%;
-    border-radius: 50%;
-}
 
 /*
  * Form styles
  */
-.profile-name-card {
-    font-size: 16px;
-    font-weight: bold;
-    text-align: center;
-    margin: 10px 0 0;
-    min-height: 1em;
-}
+
 
 .reauth-email {
     display: block;
@@ -76,12 +61,7 @@ body{
     box-sizing: border-box;
 }
 
-.form-signin #inputStdNum,
-.form-signin #inputPassword,
-.form-recover-password #inputRecoveryCode,
-.form-recover-password #inputStdEmail,
-.form-recover-password #inputStdNum,
-.form-recover-password #inputPassword {
+.form-signin .inputFld {
     direction: ltr;
     height: 44px;
     font-size: 16px;
@@ -90,11 +70,7 @@ body{
 .form-signin input[type=email],
 .form-signin input[type=password],
 .form-signin input[type=text],
-.form-signin button,
-.form-recover-password input[type=email],
-.form-recover-password input[type=password],
-.form-recover-password input[type=text],
-.form-recover-password button {
+.form-signin button {
     width: 100%;
     display: block;
     margin-bottom: 10px;
@@ -112,7 +88,7 @@ body{
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgb(104, 145, 162);
 }
 
-.btn.btn-signin, .btn-register, .btn-submit-for-pswd-recovery, .btn-submit-recovery-code, .btn-change-password {
+.btn.btn-signin, .btn-register, .btn-submit-registration-code{
     /*background-color: #4d90fe; */
     background-color: rgb(104, 145, 162);
     /* background-color: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
@@ -130,9 +106,9 @@ body{
     transition: all 0.218s;
 }
 
-.btn.btn-signin:hover, .btn-register:hover,
-.btn.btn-signin:active, .btn-register:active,
-.btn.btn-signin:focus, .btn-register:focus {
+.btn.btn-signin:hover, .btn-register:hover, .btn-submit-registration-code:hover,
+.btn.btn-signin:active, .btn-register:active, .btn-submit-registration-code:active,
+.btn.btn-signin:focus, .btn-register:focus, .btn-submit-registration-code:focus {
     background-color: rgb(12, 97, 33);
 }
 
