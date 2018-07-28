@@ -455,6 +455,51 @@
 		}
 
 
+		public function profile(){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$facultyID = $this->session->userdata('admin_session_faculty_id');
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+			
+			if (is_numeric($facultyID) && $facultyID > 0 && $facultyID != 0 && $facultyIDNum != ""){
+
+				$faculty_data = $this->admin_mod->select_faculty_by_id($facultyID);
+				$admin_data = $this->admin_mod->select_faculty_by_id_num($faculty_data['addedByAdminFacultyNum']);
+
+				if ($faculty_data == null){
+					show_404();
+				}else if (sizeof($faculty_data) == 0){
+					show_404();
+				}
+
+				$data['faculty_to_update_data'] = $faculty_data;
+				$data['admin_data'] = $admin_data;
+				$data['facultyID'] = $facultyID;
+				$data['session_data'] = $this->session->userdata();
+
+				$data['page_title'] = "Admin Profile";
+				$data['page_code'] = "admin_profile_panel";
+
+				$this->load->view("admin/header", $data);
+				$this->load->view("admin/sidebar");
+				$this->load->view("admin/content_start_div");
+				$this->load->view("admin/topbar");
+				$this->load->view("admin/profile");
+				$this->load->view("admin/footer");
+			}else{
+				show_404();
+			}
+		}
+
+
 		public function add_lessons($lessonID=0){
 
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -3745,6 +3790,140 @@
 					);
 				}
 
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function update_faculty_profile(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// $userType = $this->get_user_type();
+			// if ($userType == "faculty" || $userType == "dean"){
+			// 	redirect("/admin_main_panel");
+			// }
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyID = $this->session->userdata('admin_session_faculty_id');
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"facultyID" => $facultyID,
+				"faculty_id_num" => $this->input->post('faculty_id_num'),
+				"email" => $this->input->post('email'),
+				"lastname" => $this->input->post('lastname'),
+				"firstname" => $this->input->post('firstname'),
+				"facultyIDNum" => $facultyIDNum,
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+
+			$this->form_validation->set_rules("facultyID", "faculty ID", "trim|required"); 
+			$this->form_validation->set_rules("faculty_id_num", "Faculty ID number", "trim|required|is_natural");
+			$this->form_validation->set_rules("email", "email", "trim|required|valid_email");
+			$this->form_validation->set_rules("lastname", "Faculty Lastname", "trim|required");
+			$this->form_validation->set_rules("firstname", "Faculty Firstname", "trim|required");
+			$this->form_validation->set_rules("facultyIDNum", "Faculty id number", "trim|required"); 
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$is_faculty_id_or_email_valid = TRUE;
+
+				$faculty_data = $this->admin_mod->select_faculty_by_id_and_id_number($facultyID, $facultyIDNum);
+
+				if (sizeof($faculty_data) > 0){
+					$is_done = array(
+						"done" => "FALSE",
+						"msg" => "The faculty id number is already used"
+					);
+
+					$is_faculty_id_or_email_valid = FALSE;
+				}
+
+				$faculty_data = $this->admin_mod->select_faculty_by_id_and_email($facultyID, $data['email']);
+
+				if (sizeof($faculty_data) > 0){
+					$is_done = array(
+						"done" => "FALSE",
+						"msg" => "The email is already used"
+					);
+
+					$is_faculty_id_or_email_valid = FALSE;
+				}
+
+				if ($is_faculty_id_or_email_valid == TRUE){
+					$pswd = $this->input->post('password');
+					$pswd_conf = $this->input->post('confirm_pass');
+
+					// $facuCurData = $this->admin_mod->select_faculty_by_id($data['facultyID']);
+
+					if ($pswd != ""){
+
+						$pass = array(
+							"password" => $pswd,
+							"confirm_pass" => $pswd_conf
+						);
+
+						$pass = $this->security->xss_clean($pass);
+						$this->form_validation->set_data($pass);
+
+						$this->form_validation->set_rules("password", "Password", "trim|required"); 
+						$this->form_validation->set_rules("confirm_pass", "Password Confirmation", "trim|required|matches[password]");
+
+						if ($this->form_validation->run() === FALSE){
+							$is_done = array(
+								"done" => "FALSE",
+								"msg" => validation_errors('<span>', '</span>')
+							);
+						}else{
+							$hashPass = hashSHA512($pass['password']);
+
+							$data['password'] = $hashPass;
+							
+							// $facuCurData['cur_pswd'] = $this->admin_mod->select_faculty_password_by_id($data['facultyID']);
+
+							if ($this->admin_mod->update_faculty_with_pass($data) == 1){
+
+								// $this->faculty_update_audit_trail($facuCurData, $data, 'with_pass');
+
+								$is_done = array(
+									"done" => "TRUE",
+									"msg" => "Updated Successfully with password"
+								);
+							}
+						}
+						
+					}else{
+
+						if ($this->admin_mod->update_faculty_without_pass($data) == 1){
+
+							// $this->faculty_update_audit_trail($facuCurData, $data, 'without_pass');
+
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Updated Successfully"
+							);
+						}
+					}
+				}
+
+					
 			}
 
 			$this->output->set_content_type('application/json');

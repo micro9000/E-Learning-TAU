@@ -74,6 +74,9 @@ $route['view_lesson/(:any)/(:any)'] = "students/view_lesson/$1/$2";
 $route['add_lesson_comment'] = "students/add_lesson_comment";
 $route['get_all_lesson_comments'] = "students/get_all_lesson_comments";
 
+$route['student_profile'] = "students/profile";
+$route['update_student_data'] = "students/update_student_data";
+
 // Admin Routing:
 //
 
@@ -149,6 +152,8 @@ $route['search_faculties'] = "admin/search_faculty";
 $route['mark_faculty_as_admin_or_dean'] = "admin/mark_faculty_as_admin_or_dean";
 $route['get_faculty_by_id'] = "admin/get_faculty_by_id";
 
+$route['profile'] = "admin/profile";
+$route['update_faculty_profile'] = "admin/update_faculty_profile";
 
 
 
@@ -162,6 +167,8 @@ $route['delete_student'] = "admin/delete_student_data";
 $route['update_student'] = "admin/update_student";
 $route['search_students'] = "admin/search_students";
 $route['validate_student_number'] = "admin/validate_student_number";
+
+
 
 $route['admin_home'] = "admin/main_panel";
 

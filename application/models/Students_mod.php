@@ -392,6 +392,35 @@
 			return $result;
 		}
 
+		public function update_student_without_pass($info){
+
+			$data = array(
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email']
+			);
+
+			$this->db->set($data);
+			$this->db->where("id", $info['studentID']);
+			$result = $this->db->update('Students');
+			return $result;
+		}
+
+		public function update_student_with_pass($info){
+
+			$data = array(
+				'firstName' => $info['firstname'],
+				'lastName' => $info['lastname'],
+				'email' => $info['email'],
+				'pswd' => $info['pswd'],
+			);
+
+			$this->db->set($data);
+			$this->db->where("id", $info['studentID']);
+			$result = $this->db->update('Students');
+			return $result;
+		}
+
 	}
 
 ?>

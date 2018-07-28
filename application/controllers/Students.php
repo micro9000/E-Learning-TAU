@@ -231,6 +231,41 @@
 			$this->load->view("students/footer");
 		}
 
+		public function profile(){
+
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$studentID = $this->session->userdata('std_session_id');
+			$studentIDNum = $this->session->userdata('std_session_stdNum');
+
+			if (is_numeric($studentID) && $studentID > 0 && $studentID != 0 && $studentIDNum != ""){
+
+				$student_data = $this->admin_mod->select_std_by_id($studentID);
+
+				if ($student_data == null){
+					show_404();
+				}else if (sizeof($student_data) == 0){
+					show_404();
+				}
+
+				$data['student_to_update_data'] = $student_data;
+				$data['studentID'] = $studentID;
+			}
+
+			$data['session_data'] = $this->session->userdata();
+
+			$data['page_title'] = "Student Profile";
+			$data['page_code'] = "student_profile_panel";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+
+			$this->load->view("students/header", $data);
+			$this->load->view("main/sidebar");
+			$this->load->view("main/topbar");
+			$this->load->view("students/profile");
+			$this->load->view("students/footer");
+		}
 
 		private function send_email($stdEmail,$subject , $msg){
 
@@ -955,6 +990,126 @@
 			}
 
 			// print_r($is_done);
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function update_student_data(){
+
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$studentID = $this->session->userdata('std_session_id');
+			$studentIDNum = $this->session->userdata('std_session_stdNum');
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$data = array(
+				"studentID" => $studentID, 
+				"email" => $this->input->post('email'),
+				"lastname" => $this->input->post('lastname'),
+				"firstname" => $this->input->post('firstname'),
+				"password" => $this->input->post('password'),
+				"confirm_pass" => $this->input->post('confirm_pass')
+			);
+
+			// print_r($data);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("studentID", "Student ID", "trim|required");
+			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email");
+			$this->form_validation->set_rules("lastname", "Student Lastname", "trim|required");
+			$this->form_validation->set_rules("firstname", "Student Firstname", "trim|required");
+
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$is_email_valid = TRUE;
+
+				$std_data = $this->admin_mod->select_std_by_id_and_email($studentID, $data['email']);
+
+				if (sizeof($std_data) > 0){
+					$is_done = array(
+						"done" => "FALSE",
+						"msg" => "Invalid Email address, already used"
+					);
+
+					$is_email_valid = FALSE;
+				}
+
+				if ($is_email_valid == TRUE){
+					$pswd = $this->input->post('password');
+					$pswd_conf = $this->input->post('confirm_pass');
+
+					// $stdCurData = $this->admin_mod->select_std_by_id($data['studentID']);
+
+					if ($pswd != ""){
+
+						$pass = array(
+							"password" => $pswd,
+							"confirm_pass" => $pswd_conf
+						);
+
+						$pass = $this->security->xss_clean($pass);
+						$this->form_validation->set_data($pass);
+						$this->form_validation->set_rules("password", "Password", "trim|required"); 
+						$this->form_validation->set_rules("confirm_pass", "Password Confirmation", "trim|required|matches[password]");
+
+						if ($this->form_validation->run() === FALSE){
+
+							$is_done = array(
+								"done" => "FALSE",
+								"msg" => validation_errors('<span>', '</span>')
+							);
+
+						}else{
+
+							$hashPass = hashSHA512($pass['password']);
+							$data['pswd'] = $hashPass;		
+
+							// $stdCurData['password'] = $this->admin_mod->select_std_pswd_by_id($data['studentID']);				
+
+							if ($this->students_mod->update_student_with_pass($data) == 1){
+
+								// $this->student_update_audit_trail($stdCurData, $data, "with_pass");
+
+								$is_done = array(
+									"done" => "TRUE",
+									"msg" => "Updated Successfully with password"
+								);
+							}
+						}
+						
+					}else{
+					
+						if ($this->students_mod->update_student_without_pass($data) == 1){
+
+							// $this->student_update_audit_trail($stdCurData, $data, "without_pass");
+
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Updated Successfully"
+							);
+						}
+					}
+				}
+				
+				
+
+			}
+
 
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));

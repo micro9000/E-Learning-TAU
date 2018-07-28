@@ -88,7 +88,7 @@ hr.style2 {
 }
 
 
-.lesson-details-wrapper{
+.lesson-details-wrapper, .profile-wrapper{
 	color: #313233;
 	background: #fff;
 	padding: 20px;

@@ -105,7 +105,7 @@
                                         <span class="fa fa-chevron-left"></span> Back
                                     </button>
                                 <?php else: ?>
-                                    <p>Faculty data does not exists</p>
+                                    <p>Student data does not exists</p>
                                 <?php endif; ?>
 
                             <?php else: ?>

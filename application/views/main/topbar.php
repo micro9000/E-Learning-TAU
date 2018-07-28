@@ -19,7 +19,7 @@
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link" href="#"><span class="fa fa-user"></span> Profile</a>
+                            <a class="nav-link" href="<?php echo base_url("student_profile"); ?>"><span class="fa fa-user"></span> Profile</a>
                         </li>
 
                         <li class="nav-item">

@@ -89,6 +89,10 @@
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/view_lesson.js"); ?>"></script>
 
+    <?php elseif($page_code == "admin_profile_panel"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/profile.js"); ?>"></script>
+
 	<?php endif; ?>
 
     <?php if ($page_code !== "login"): ?>

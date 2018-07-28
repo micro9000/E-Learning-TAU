@@ -16,7 +16,7 @@
                             <a class="nav-link" href="#">Page</a>
                         </li> -->
                         <li class="nav-item">
-                            <a class="nav-link" href="#">
+                            <a class="nav-link" href="<?php echo base_url("profile/"); ?>">
                                 <span class="fas fa-user-circle"></span>Profile
                             </a>
                         </li>
