@@ -1,15 +1,16 @@
 
-<!--     <pre>
-    	<?php print_r($topic_to_update_data); ?>
-    </pre> -->
     <div class="container">
         <div class="row">
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>Sub topics</h4>
+                <div class="line"></div>
+            </div>
+
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             	<div class="form-group">
                     <label for="select_principleID">Select Principle</label>
                     
-
-
                     <select class="form-control principleID" id="select_principleID">
 					  	<option value=""></option>
 					  	<?php
@@ -122,6 +123,8 @@
             </div>
         </div>
     </div>
+
+    <div class="loader_blocks"></div>
     
     <!-- Hidden by default -->
     <div id="deleteDialog" title="Delete Sub Topic">

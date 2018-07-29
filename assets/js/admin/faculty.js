@@ -31,6 +31,7 @@ function check_faculty_permissions(facultyIDTmp){
 
 $(".switch-mark-as-admin").on('switchChange.bootstrapSwitch', function(event, state) {
 
+	
   	var faculty_id = $(this).attr("data-id");
 
   	var data = {};
@@ -92,6 +93,12 @@ $(".switch-mark-as-dean").on('switchChange.bootstrapSwitch', function(event, sta
 		data,
 		function(data){
 			console.log(data);
+
+			if (data.done == "FALSE"){
+				$(".actionMsg").html(data.msg);
+				$("#actionMsgDialog").dialog('open');
+			}
+				
 		}
 	);
 });
@@ -249,6 +256,9 @@ function get_faculty_data_with_validation(task){
 }
 
 $(".btn-add-faculty-data").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var faculty_data = get_faculty_data_with_validation("INSERT");
 
 	if (faculty_data.length > 0){
@@ -263,14 +273,20 @@ $(".btn-add-faculty-data").on("click", function(){
 					setTimeout(function(){
 						window.location.reload();
 					}, 500)
+				}else{
+					$(".loader_blocks").css("display", "none");
 				}
 			}
 		);
+	}else{
+		$(".loader_blocks").css("display", "none");
 	}
 });
 
 
 $(".btn-update-faculty-data").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var facultyID = $(this).attr("data-id");
 
@@ -291,9 +307,13 @@ $(".btn-update-faculty-data").on("click", function(){
 					setTimeout(function(){
 						window.location.reload();
 					}, 500)
+				}else{
+					$(".loader_blocks").css("display", "none");
 				}
 			}
 		);
+	}else{
+		$(".loader_blocks").css("display", "none");
 	}
 
 });
@@ -347,10 +367,15 @@ function display_faculties(data){
 	});
 
 	$("#faculty_list_tb").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 
 function get_all_faculties(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_faculties",
 		function(data){
@@ -361,13 +386,18 @@ function get_all_faculties(){
 }
 
 function delete_faculty_data(facultyID){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "delete_faculty",
 		{
 			"facultyID" : facultyID
 		},
 		function(data){
-			console.log(data);
+			// console.log(data);
+
+			$(".loader_blocks").css("display", "none");
 
 			$(".actionMsg").html(data.msg);
 			$("#actionMsgDialog").dialog('open');
@@ -426,6 +456,9 @@ $(document).ready(function(){
 
 
 $(document).on("click", ".btn-edit-faculty", function(){
+	
+	$(".loader_blocks").css("display", "block");
+
 	var faculty_id = $(this).attr("data-id");
 	window.location = base_url + "faculties/" + faculty_id;
 })
@@ -447,6 +480,8 @@ $(document).on("click", ".btn-delete-faculty" ,function(){
 
 $(".btn-search-faculty").on("click", function(){
 
+	$(".loader_blocks").css("display", "block");
+
 	var search_faculty = $(".search-faculty").val();
 
 	if (search_faculty != ""){
@@ -458,6 +493,8 @@ $(".btn-search-faculty").on("click", function(){
 				display_faculties(data);
 			}
 		);
+	}else{
+		$(".loader_blocks").css("display", "none");
 	}
 });
 

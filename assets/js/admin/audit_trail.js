@@ -4,6 +4,7 @@ $(document).ready(function(){
 });
 
 function get_all_audit_trails(){
+	$(".loader_blocks").css("display", "block");
 	$.post(
 		base_url + "get_all_audit_trails",
 		function(data){
@@ -38,9 +39,14 @@ function display_audit_trails(data){
 	});
 
 	$(".audit_trail_list").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 $(".btn-search-audit-trail").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var affectedModule = $(".affectedModule").val();
 	var start_date = $(".start_date").val();
 	var end_date = $(".end_date").val();

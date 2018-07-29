@@ -74,10 +74,15 @@ function display_students(data){
 	});
 
 	$(".deleted_students").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 
 function get_all_deleted_students(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_deleted_students",
 		function(data){
@@ -115,6 +120,8 @@ $(".btn-refresh").on("click", function(){
 });
 
 $(".btn-search-deleted-students").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var search_students = $(".search-students").val();
 

@@ -155,6 +155,9 @@ function get_student_data_with_validation(task){
 
 
 $(".btn-add-student-data").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var student_data = get_student_data_with_validation("INSERT");
 
 	if (student_data.length > 0){
@@ -169,9 +172,13 @@ $(".btn-add-student-data").on("click", function(){
 					setTimeout(function(){
 						window.location.reload();
 					}, 500)
+				}else{
+					$(".loader_blocks").css("display", "none");
 				}
 			}
 		);
+	}else{
+		$(".loader_blocks").css("display", "none");
 	}
 });
 
@@ -210,6 +217,8 @@ function display_students(data){
 	});
 
 	$("#stdNum_list_tb").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 function pagination_and_display(data){
@@ -225,6 +234,9 @@ function pagination_and_display(data){
 }
 
 function get_all_students(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_student",
 		function(data){
@@ -244,6 +256,8 @@ function delete_student(studentID){
 
 			$(".actionMsg").html(data.msg);
 			$("#actionMsgDialog").dialog('open');
+
+			$(".loader_blocks").css("display", "none");
 		}
 	);
 }
@@ -309,6 +323,9 @@ $(".btn-cancel-update-student-data").on("click", function(){
 })
 
 $(".btn-update-student-data").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var student_data = get_student_data_with_validation("UPDATE");
 	
 
@@ -330,16 +347,25 @@ $(".btn-update-student-data").on("click", function(){
 						setTimeout(function(){
 							window.location.reload();
 						}, 500)
+					}else{
+						$(".loader_blocks").css("display", "none");
 					}
 				}
 			);
+		}else{
+			$(".loader_blocks").css("display", "none");
 		}
+	}else{
+		$(".loader_blocks").css("display", "none");
 	}
 
 });
 
 
 $(".btn-search-student").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var search_str = $(".search-student").val();
 
 	if (search_str !== ""){
@@ -364,19 +390,118 @@ $(".btn-refresh").on("click", function(){
     }
 });
 
-$('.student_id_num').on('keyup', function() {
+// $('.student_id_num').on('keyup', function() {
 
-	var stdNum = $(this).val();
+// 	var stdNum = $(this).val();
 
-    $.post(
-   		base_url + "validate_student_number",
-   		{
-   			"student_id_num" : stdNum
-   		},
-   		function(data){
-   			// console.log(data);
-   			$("#student_data_msg").html(data.msg);
-   		}
-   	);
+//     $.post(
+//    		base_url + "validate_student_number",
+//    		{
+//    			"student_id_num" : stdNum
+//    		},
+//    		function(data){
+//    			console.log(data);
+//    			$("#student_data_msg").html(data.msg);
+//    		}
+//    	);
+
+// });
+
+
+$(".btn-upload-student-numbers").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
+	var formData = new FormData();
+
+	formData.append("student_numbers", $(".student-numbers")[0].files[0]);
+		
+	var request = $.ajax({
+        url: base_url + "student_number_mass_upload",
+        type: "POST",
+        data: formData,
+        contentType: false,
+        cache: false,
+        processData: false
+    });
+
+    request.done(function(data){
+        // console.log(data);
+        if (data.done == "TRUE"){
+
+        	$("#student_num_mass_upload_msg").html(data.msg);
+
+        	$(".loader_blocks").css("display", "none");
+        }
+    });
+
+});
+
+function pagination_and_display(data){
+
+	$("#students_nums_len").html(data.length);
+
+	$('#student_nums_pagination').pagination({
+	    dataSource: data,
+	    pageSize: 15,
+        autoHidePrevious: true,
+	    autoHideNext: true,
+	    callback: function(data, pagination) {
+	        display_student_numbers(data);
+	    }
+	});
+}
+
+function display_student_numbers(data){
+
+	var stdNums = "";
+
+	$.each(data, function(i, numbers){
+		stdNums += "<tr>";
+			stdNums += "<td>"+ (i + 1) +"</td>";
+			stdNums += "<td>"+ numbers.stdNum +"</td>";
+		stdNums += "</tr>";
+	});
+
+	$("#student_numbers_list").html(stdNums);
+
+	$(".loader_blocks").css("display", "none");
+
+}
+
+function get_all_student_numbers(){
+
+	$(".loader_blocks").css("display", "block");
+
+	$.post(
+		base_url + "get_all_student_numbers",
+		function(data){
+			// console.log(data);
+			pagination_and_display(data);
+		}
+	);
+}
+
+$(".btn-view-student-numbers").on("click", function(){
+	get_all_student_numbers();
+})
+
+$(".btn-search-student-number").on("click", function(){
+
+	var stdNumSearch = $(".search-student-number").val();
+
+	if (stdNumSearch !== ""){
+
+		$.post(
+			base_url + "search_student_nums",
+			{
+				"search" : stdNumSearch
+			},
+			function(data){
+				pagination_and_display(data);
+			}
+		);
+
+	}	
 
 });

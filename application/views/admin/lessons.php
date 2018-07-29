@@ -114,6 +114,7 @@
       </div>
     </div>
 
+    <div class="loader_blocks"></div>
 
         <!-- Hidden by default -->
     <div id="deleteDialog" title="Delete Student data">

@@ -79,6 +79,8 @@
 
     </div>
 
+    <div class="loader_blocks"></div>
+    
     <script type="text/javascript">
         var lessonID = <?php echo $lessonID; ?>;
     </script>

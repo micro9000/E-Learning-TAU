@@ -78,10 +78,15 @@ function display_chapters(data){
 	});
 
 	$(".deleted_chapters").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 
 function get_all_deleted_chapters(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_deleted_topics_chapters",
 		function(data){
@@ -117,6 +122,8 @@ $(".btn-refresh").on("click", function(){
 });
 
 $(".btn-search-deleted-chapters").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var search_chapter = $(".search-chapters").val();
 

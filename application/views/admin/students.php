@@ -3,6 +3,29 @@
         <div class="row">
 
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>Students</h4>
+                <div class="line"></div>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+
+                <div class="form-group">
+                    <label for="exampleFormControlFile1">Students Number list Mass Upload (.csv file)</label>
+                    <input type="file" class="form-control-file student-numbers" id="exampleFormControlFile1">
+                    <br/>
+                    <button type="submit" class="btn btn-primary btn-upload-student-numbers"><span class="fa fa-upload"></span> Upload</button>
+
+                    <button class="btn btn-primary btn-view-student-numbers" type="button" data-toggle="modal" data-target="#exampleModalCenter">
+                        <span class="fa fa-eye"></span> View Student Numbers
+                    </button>
+
+                    <br/><div id="student_num_mass_upload_msg" style="font-size: 10px; width: 500px; height: auto"></div>
+                </div>
+                
+                <div class="line"></div>
+            </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="form-group">
@@ -174,6 +197,57 @@
 
         </div>
     </div>
+
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Student Numbers <p><span>Results: <span id="students_nums_len"></span></span></p></h5>
+                <button type="button" class="close btn-close-advance-search" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <div class="container">
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control search-student-number" placeholder="Search" aria-describedby="basic-addon2">
+                            <div class="input-group-append">
+                                <button class="btn btn-primary btn-search-student-number" type="button">
+                                    <span class="fa fa-search"></span>Search
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="student_nums_pagination"></div>
+
+
+
+                        <table class="table table-sm table-striped table-bordered table-hover std_nums_list_tb">
+                            <thead>
+                                <tr>
+                                    <th class="col-sm-2">#</th>
+                                    <th class="col-sm-10">Student Numbers</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student_numbers_list"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                        
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <span class="fa fa-times"></span> Close
+                </button>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="loader_blocks"></div>
 
     <!-- Hidden by default -->
     <div id="deleteDialog" title="Delete Student data">

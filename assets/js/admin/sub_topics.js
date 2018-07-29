@@ -1,6 +1,8 @@
 
 $(".btn-add-sub-topic").on("click", function(){
 
+	$(".loader_blocks").css("display", "block");
+
 	var principleID = $(".principleID").val();
 	var principle_sub_topic = $(".principle_sub_topic").val();
 
@@ -20,19 +22,25 @@ $(".btn-add-sub-topic").on("click", function(){
 				setTimeout(function(){
 					window.location.reload();
 				}, 500);
+			}else {
+				$(".loader_blocks").css("display", "none");
 			}
-				
 		}
 	);
 
 });
 
 function get_all_principles_sub_topics(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_principles_sub_topic",
 		function(data){
 			// console.log(data);
 			display_sub_topics(data);
+
+
 		}
 	);
 }
@@ -76,9 +84,14 @@ function display_sub_topics(data){
 	});
 
 	$("#sub_topics_list_tb").html(sub_topics);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 function delete_principle_sub_topic(topicID){
+
+	$(".loader_blocks").css("display", "block");
+
 	if (topicID != ""){
 		$.post(
 			base_url + "delete_principle_sub_topic",
@@ -88,6 +101,7 @@ function delete_principle_sub_topic(topicID){
 			function(data){
 				// console.log(data);
 
+				$(".loader_blocks").css("display", "none");
 				$(".actionMsg").html(data.msg);
 				$("#actionMsgDialog").dialog('open');
 
@@ -149,6 +163,9 @@ $(document).on("click", ".btn-delete-topic", function(){
 });
 
 $(document).on("click", ".btn-edit-topic", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var topicID = $(this).attr("data-id");
 
 	window.location = base_url + "admin_principles_sub_topics/" + topicID;
@@ -159,6 +176,8 @@ $(".btn-cancel-update-sub-topic").on("click", function(){
 });
 
 $(".btn-update-sub-topic").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
 	
 	var topicID = $(this).attr('data-id');
 	var principle_sub_topic = $(".principle_sub_topic").val();
@@ -173,6 +192,9 @@ $(".btn-update-sub-topic").on("click", function(){
 		},
 		function(data){
 			// console.log(data);
+
+			$(".loader_blocks").css("display", "none");
+
 			$(".actionMsg").html(data.msg);
 			$("#actionMsgDialog").dialog('open');
 		}
@@ -183,6 +205,8 @@ $(".btn-update-sub-topic").on("click", function(){
 $(".btn-search-topic").on("click", function(){
 	var search_topic = $('.search-topic').val();
 
+	$(".loader_blocks").css("display", "block");
+	
 	$.post(
 		base_url + "search_principles_sub_topics",
 		{

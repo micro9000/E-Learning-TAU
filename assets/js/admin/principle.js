@@ -1,6 +1,8 @@
 
 $(".btn-add-principle").on("click", function(){
 
+	$(".loader_blocks").css("display", "block");
+
 	var agriculture_principle = $(".agriculture_principle").val();
 
 	$.post(
@@ -17,6 +19,8 @@ $(".btn-add-principle").on("click", function(){
 				setTimeout(function(){
 					window.location = base_url + "admin_agriculture_principles";
 				}, 500);
+			}else{
+				$(".loader_blocks").css("display", "none");
 			}
 
 			
@@ -66,16 +70,24 @@ function display_principles_on_table(data){
 }
 
 function get_all_principles(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_principles",
 		function(data){
 			// console.log(data);
 			display_principles_on_table(data);
+
+			$(".loader_blocks").css("display", "none");
 		}
 	);
 }
 
 function delete_principle(principleID){
+
+	$(".loader_blocks").css("display", "block");
+
 	if (principleID != ""){
 		$.post(
 			base_url + "delete_principle",
@@ -84,6 +96,8 @@ function delete_principle(principleID){
 			},
 			function(data){
 				// console.log(data);
+
+				$(".loader_blocks").css("display", "none");
 
 				$(".actionMsg").html(data.msg);
 				$("#actionMsgDialog").dialog('open');
@@ -146,6 +160,9 @@ $(document).on("click", ".btn-delete-principle", function(){
 });
 
 $(document).on("click", ".btn-edit-principle", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var principleID = $(this).attr("data-id");
 	window.location = base_url + "admin_agriculture_principles/" + principleID;
 });
@@ -155,6 +172,9 @@ $(".btn-cancel-update-principle").on("click", function(){
 })
 
 $(".btn-update-principle").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var principleID = $(this).attr("data-id");
 	var agriculture_principle = $(".agriculture_principle").val();
 
@@ -169,6 +189,8 @@ $(".btn-update-principle").on("click", function(){
 			// if (data.done == "TRUE"){
 				
 			// }
+
+			$(".loader_blocks").css("display", "none");
 			$(".actionMsg").html(data.msg);
 			$("#actionMsgDialog").dialog('open');
 		}
@@ -178,6 +200,9 @@ $(".btn-update-principle").on("click", function(){
 
 
 $(".btn-search-principle").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var search_principle = $('.search-principle').val();
 
 	$.post(
@@ -188,6 +213,8 @@ $(".btn-search-principle").on("click", function(){
 		function(data){
 			// console.log(data);
 			display_principles_on_table(data);
+
+			$(".loader_blocks").css("display", "none");
 		}
 	);
 });

@@ -78,9 +78,14 @@ function display_deleted_lessons(data){
 	});
 
 	$(".deleted_principles").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 function get_all_deleted_lessons_by_current_user(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_deleted_lessons_by_current_user",
 		function(data){
@@ -117,6 +122,9 @@ $(".btn-refresh").on("click", function(){
 });
 
 $(".btn-search-deleted-lessons").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var search_lesson = $(".search-lessons").val();
 
 	$.post(

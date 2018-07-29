@@ -167,7 +167,9 @@ $route['delete_student'] = "admin/delete_student_data";
 $route['update_student'] = "admin/update_student";
 $route['search_students'] = "admin/search_students";
 $route['validate_student_number'] = "admin/validate_student_number";
-
+$route['student_number_mass_upload'] = "admin/student_number_mass_upload";
+$route['get_all_student_numbers'] = "admin/get_all_student_numbers";
+$route['search_student_nums'] = "admin/search_student_nums";
 
 
 $route['admin_home'] = "admin/main_panel";

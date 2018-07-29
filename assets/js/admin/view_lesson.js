@@ -30,9 +30,14 @@ function display_comments(data){
 	});
 
 	$(".comments_list").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 function get_all_lesson_comments(lessonIDTmp){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_lesson_comments",
 		{'lessonID' : lessonIDTmp},
@@ -44,6 +49,8 @@ function get_all_lesson_comments(lessonIDTmp){
 }
 
 $(".btn-add-comment").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var comments = $(".lesson_comments").val();
 	var lessonID = $(this).attr("data-lesson-id");

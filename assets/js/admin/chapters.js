@@ -2,6 +2,8 @@
 
 $(".principleID").on("change", function(){
 
+	$(".loader_blocks").css("display", "block");
+
 	var principleID = $(this).val();
 
 	$.post(
@@ -21,6 +23,8 @@ $(".principleID").on("change", function(){
 			});
 
 			$(".sub_topic_ID").html(options);
+
+			$(".loader_blocks").css("display", "none");
 		}
 	);
 
@@ -28,6 +32,9 @@ $(".principleID").on("change", function(){
 
 
 $(".btn-add-chapter").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var principleID = $(".principleID").val();
 	var sub_topic_ID = $(".sub_topic_ID").val();
 	var topic_chapter = $(".topic_chapter").val();
@@ -91,9 +98,14 @@ function display_chapters(data){
 	});
 
 	$("#chapters_list_tb").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 function get_all_chapters(){
+	
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_chapters",
 		function(data){
@@ -104,6 +116,9 @@ function get_all_chapters(){
 }
 
 function get_chapter_by_id(chapterID){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_chapter_by_id",
 		{
@@ -123,6 +138,9 @@ function get_chapter_by_id(chapterID){
 }
 
 function delete_topic_chapter(chapterID){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "delete_topic_chapter",
 		{
@@ -130,6 +148,8 @@ function delete_topic_chapter(chapterID){
 		},
 		function(data){
 			// console.log(data);
+
+			$(".loader_blocks").css("display", "none");
 
 			$(".actionMsg").html(data.msg);
 			$("#actionMsgDialog").dialog('open');
@@ -182,6 +202,8 @@ $(document).ready(function(){
 
 $(".btn-update-chapter").on("click", function(){
 
+	$(".loader_blocks").css("display", "block");
+
 	var chapterID = $(this).attr("data-id");
 	var principleID = $(".principleID").val();
 	var sub_topic_ID = $(".sub_topic_ID").val();
@@ -214,6 +236,8 @@ $(".btn-cancel-update-chapter").on("click", function(){
 });
 
 $(document).on("click", ".btn-edit-chapter", function(){
+	$(".loader_blocks").css("display", "block");
+
 	var chapter = $(this).attr("data-id");
 	window.location = base_url + "sub_topic_chapters/" + chapter;
 });
@@ -237,6 +261,9 @@ $(".btn-refresh").on("click", function(){
 });
 
 $(".btn-search-chapter").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var search_str = $(".search-chapter").val();
 
 	$.post(

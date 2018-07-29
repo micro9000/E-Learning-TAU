@@ -743,9 +743,11 @@
 
 			$std_data = $this->admin_mod->select_std_num($stdIDNum);
 
-			if (sizeof($std_data) == 0){
-				$this->form_validation->set_message('check_is_student_enrolled', 'Invalid {field}, you are not in the master list, please contact system admin.');
-				return FALSE;
+			if ($std_data != NULL){
+				if (sizeof($std_data) == 0){
+					$this->form_validation->set_message('check_is_student_enrolled', 'Invalid {field}, you are not in the master list, please contact system admin.');
+					return FALSE;
+				}
 			}
 
 			return TRUE;
@@ -756,10 +758,13 @@
 
 			$std_data = $this->admin_mod->select_std_by_id_and_id_number(0, $stdIDNum);
 
-			if (sizeof($std_data) > 0){
-				$this->form_validation->set_message('check_std_id_number_already_used_on_insert', 'Invalid {field}, the {field} already used.');
-				return FALSE;
+			if ($std_data != NULL){
+				if (sizeof($std_data) > 0){
+					$this->form_validation->set_message('check_std_id_number_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+					return FALSE;
+				}
 			}
+				
 
 			return TRUE;
 		}
@@ -769,9 +774,11 @@
 
 			$std_data = $this->admin_mod->select_std_by_id_and_email(0, $email);
 
-			if (sizeof($std_data) > 0){
-				$this->form_validation->set_message('check_std_email_already_used_on_insert', 'Invalid {field}, the {field} already used.');
-				return FALSE;
+			if ($std_data != NULL){
+				if (sizeof($std_data) > 0){
+					$this->form_validation->set_message('check_std_email_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+					return FALSE;
+				}
 			}
 
 			return TRUE;
@@ -806,32 +813,35 @@
 
 				$std_data = $this->students_mod->get_std_data_for_pswd_recovery($data['stdNum'], $data['email']);
 
-				if (sizeof($std_data) > 0 && $std_data['count'] == "1"){
+				if ($std_data != NULL){
+					if (sizeof($std_data) > 0 && $std_data['count'] == "1"){
 
-					$get_reg_exp_date = $this->students_mod->get_code_exp_date();
-					$exp_date = $get_reg_exp_date['curDate'];
-					$data['expDate'] = $this->toValidMySQLDateWithHrsMins($exp_date);
+						$get_reg_exp_date = $this->students_mod->get_code_exp_date();
+						$exp_date = $get_reg_exp_date['curDate'];
+						$data['expDate'] = $this->toValidMySQLDateWithHrsMins($exp_date);
 
-					if ($this->students_mod->insert_student_for_pswd_recovery($data) == 1){
+						if ($this->students_mod->insert_student_for_pswd_recovery($data) == 1){
 
-						// send email
+							// send email
 
-						$this->session->set_userdata("student_num_recovery", $data['stdNum']);
+							$this->session->set_userdata("student_num_recovery", $data['stdNum']);
 
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Successfully submitted, please check your email account to get the recovery code"
+							);
+
+						}
+
+					}else{
 						$is_done = array(
-							"done" => "TRUE",
-							"msg" => "Successfully submitted, please check your email account to get the recovery code"
+							"done" => "FALSE",
+							"msg" => "Invalid student number or email"
 						);
 
 					}
-
-				}else{
-					$is_done = array(
-						"done" => "FALSE",
-						"msg" => "Invalid student number or email"
-					);
-
 				}
+					
 				
 			}
 
@@ -1040,13 +1050,15 @@
 
 				$std_data = $this->admin_mod->select_std_by_id_and_email($studentID, $data['email']);
 
-				if (sizeof($std_data) > 0){
-					$is_done = array(
-						"done" => "FALSE",
-						"msg" => "Invalid Email address, already used"
-					);
+				if ($std_data != NULL){
+					if (sizeof($std_data) > 0){
+						$is_done = array(
+							"done" => "FALSE",
+							"msg" => "Invalid Email address, already used"
+						);
 
-					$is_email_valid = FALSE;
+						$is_email_valid = FALSE;
+					}
 				}
 
 				if ($is_email_valid == TRUE){

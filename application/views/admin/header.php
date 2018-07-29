@@ -24,6 +24,9 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/login.css"); ?>">
 
 	<?php elseif ($page_code == "main_panel"): ?>
+
+		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/admin/master.css"); ?>">
+
 		<style type="text/css">
 			#admin_home_page{
 				color: #fff;

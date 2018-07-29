@@ -1,6 +1,6 @@
 $(document).ready(function(){
 
-		$("#restoreDialog").dialog({
+	$("#restoreDialog").dialog({
         autoOpen: false,
         resizable: false,
         modal: true,
@@ -78,9 +78,14 @@ function display_sub_topics(data){
 	});
 
 	$(".deleted_sub_topics").html(sub_topics);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 function get_all_deleted_sub_topics(){
+	
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_deleted_principles_sub_topics",
 		function(data){
@@ -121,6 +126,9 @@ function restore_sub_topic(topicID){
 
 
 $(".btn-search-deleted-sub-topic").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var search_sub_topic = $(".search-sub-topic").val();
 
 	$.post(

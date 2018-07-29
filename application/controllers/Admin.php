@@ -1179,20 +1179,30 @@
 
 			if ($this->form_validation->run() === TRUE){
 
-				$facuCurData = $this->admin_mod->select_faculty_by_id($data['facultyID']);
+				$dean_count = $this->admin_mod->select_Dean_count($data['facultyID']);
 
-				if ($this->admin_mod->mark_faculty_as_admin_or_dean($data['facultyID'], $data['status'], $data['mark_as']) == 1){
+				if ($dean_count['count'] == "0" && $dean_count['count'] == 0){
+					$facuCurData = $this->admin_mod->select_faculty_by_id($data['facultyID']);
 
-					// audit trail
-					$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-					$actionDone = "Faculty ". $facuCurData['lastName'] .", ". $facuCurData['firstName'] . " mark as " . $data['mark_as'];
-					$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+					if ($this->admin_mod->mark_faculty_as_admin_or_dean($data['facultyID'], $data['status'], $data['mark_as']) == 1){
 
+						// audit trail
+						$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+						$actionDone = "Faculty ". $facuCurData['lastName'] .", ". $facuCurData['firstName'] . " mark as " . $data['mark_as'];
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+
+						$is_done = array(
+							"done" => "TRUE",
+							"msg" => "Successfully changed mark ".$data['mark_as']." status"
+						);
+					}
+				}else{
 					$is_done = array(
-						"done" => "TRUE",
-						"msg" => "Successfully changed mark ".$data['mark_as']." status"
+						"done" => "FALSE",
+						"msg" => "Can't mark multiple dean"
 					);
 				}
+
 			}else{
 				$is_done = array(
 					"done" => "FALSE",
@@ -1218,9 +1228,11 @@
 			$facultyID = $this->input->post('facultyID');
 			$faculty_data = $this->admin_mod->select_faculty_by_id_and_id_number($facultyID, $facultyIDNum);
 
-			if (sizeof($faculty_data) > 0){
-				$this->form_validation->set_message('check_id_number_already_used_on_update', 'The {field} already used.');
-				return FALSE;
+			if ($faculty_data != NULL){
+				if (sizeof($faculty_data) > 0){
+					$this->form_validation->set_message('check_id_number_already_used_on_update', 'The {field} already used.');
+					return FALSE;
+				}
 			}
 
 			return TRUE;
@@ -1240,10 +1252,13 @@
 			
 			$faculty_data = $this->admin_mod->select_faculty_by_id_and_id_number(0, $facultyIDNum);
 
-			if (sizeof($faculty_data) > 0){
-				$this->form_validation->set_message('check_id_number_already_used_on_insert', 'Invalid {field}, the {field} already used.');
-				return FALSE;
+			if ($faculty_data != NULL){
+				if (sizeof($faculty_data) > 0){
+					$this->form_validation->set_message('check_id_number_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+					return FALSE;
+				}
 			}
+				
 
 			return TRUE;
 		}
@@ -1262,10 +1277,13 @@
 			$facultyID = $this->input->post('facultyID');
 			$faculty_data = $this->admin_mod->select_faculty_by_id_and_email($facultyID, $email);
 
-			if (sizeof($faculty_data) > 0){
-				$this->form_validation->set_message('check_email_already_used_on_update', 'The {field} already used.');
-				return FALSE;
+			if ($faculty_data != NULL){
+				if (sizeof($faculty_data) > 0){
+					$this->form_validation->set_message('check_email_already_used_on_update', 'The {field} already used.');
+					return FALSE;
+				}
 			}
+			
 
 			return TRUE;
 		}
@@ -1284,10 +1302,13 @@
 			
 			$faculty_data = $this->admin_mod->select_faculty_by_id_and_email(0, $email);
 
-			if (sizeof($faculty_data) > 0){
-				$this->form_validation->set_message('check_email_already_used_on_insert', 'Invalid {field}, the {field} already used.');
-				return FALSE;
+			if ($faculty_data != NULL){
+				if (sizeof($faculty_data) > 0){
+					$this->form_validation->set_message('check_email_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+					return FALSE;
+				}
 			}
+				
 
 			return TRUE;
 		}
@@ -1310,10 +1331,12 @@
 			for($i=0; $i<$facultyLen; $i++){
 				$admin_data = $this->admin_mod->select_faculty_by_id_num($faculties[$i]['addedByAdminFacultyNum']);
 
-				if (sizeof($admin_data) > 0){
-					$faculties[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+				if ($admin_data != NULL){
+					if (sizeof($admin_data) > 0){
+						$faculties[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					}
 				}
-				
+					
 			}
 
 			$this->output->set_content_type('application/json');
@@ -1338,8 +1361,10 @@
 			for($i=0; $i<$facultyLen; $i++){
 				$admin_data = $this->admin_mod->select_deleted_faculty_by_id_num($faculties[$i]['addedByAdminFacultyNum']);
 
-				if (sizeof($admin_data) > 0){
-					$faculties[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+				if ($admin_data != NULL){
+					if (sizeof($admin_data) > 0){
+						$faculties[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					}
 				}
 				
 			}
@@ -1376,9 +1401,12 @@
 				for($i=0; $i<$facultyLen; $i++){
 					$admin_data = $this->admin_mod->select_faculty_by_id_num($results[$i]['addedByAdminFacultyNum']);
 
-					if (sizeof($admin_data) > 0){
-						$results[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					if ($admin_data != NULL){
+						if (sizeof($admin_data) > 0){
+							$results[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+						}
 					}
+						
 					
 				}
 			}
@@ -1415,9 +1443,12 @@
 				for($i=0; $i<$facultyLen; $i++){
 					$admin_data = $this->admin_mod->select_deleted_faculty_by_id_num($results[$i]['addedByAdminFacultyNum']);
 
-					if (sizeof($admin_data) > 0){
-						$results[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					if ($admin_data != NULL){
+						if (sizeof($admin_data) > 0){
+							$results[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+						}
 					}
+						
 					
 				}
 			}
@@ -1450,13 +1481,17 @@
 			if ($this->form_validation->run() === TRUE){
 				$results = $this->admin_mod->select_faculty_by_id($data['facultyID']);
 
+				// print_r($results);
 				$facultyLen = sizeof($results);
 				for($i=0; $i<$facultyLen; $i++){
-					$admin_data = $this->admin_mod->select_faculty_by_id_num($results[$i]['addedByAdminFacultyNum']);
+					$admin_data = $this->admin_mod->select_faculty_by_id_num($results['addedByAdminFacultyNum']);
 
-					if (sizeof($admin_data) > 0){
-						$results[$i]['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					if ($admin_data != NULL){
+						if (sizeof($admin_data) > 0){
+							$results['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+						}
 					}
+					
 					
 				}
 			}
@@ -1466,6 +1501,171 @@
 		}
 
 		## Students -------------------------------------------------------------------------------------
+
+		public function get_all_student_numbers(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$results = $this->admin_mod->select_all_std_nums();
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+		public function search_student_nums(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$userType = $this->get_user_type();
+			if ($userType == "faculty" || $userType == "dean"){
+				redirect("/admin_main_panel");
+			}
+
+			$search = $this->input->post('search');
+
+			$data = array('search' => $search);
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("search", "Search String", "trim|required");
+
+			$results = array();
+
+			if ($this->form_validation->run() === TRUE){
+				$results = $this->admin_mod->search_std_nums($data['search']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+		public function student_number_mass_upload(){
+
+			$className = "student_numbers";
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+
+			$fileName = $_FILES[$className]['name'];
+            $ext = explode(".", basename($fileName));
+            $fileExtension = strtolower(end($ext));
+
+
+            if ($fileExtension == "csv"){
+
+				$file = $_FILES[$className]['tmp_name'];
+
+	        	$handle = fopen($file, "r");
+
+
+	        	if ($file == NULL){
+	        		
+	        		$is_done = array(
+						"done" => "FALSE",
+						"msg" => "Can't read file"
+					);
+
+	        	}else{
+
+	        		ini_set('max_execution_time', 9600);
+
+	        		$invalidStdNum = array();
+	        		$existStdNum = array();
+
+	        		while (($filesop = fgetcsv($handle, 1000, ",")) !== false) {
+
+	   					$stdNum = $filesop[0];
+
+	   					if (is_numeric($stdNum)){
+
+	   						$stdNumExist = $this->admin_mod->select_std_num($stdNum);
+
+	   						if ($stdNumExist != NULL){
+
+	   							array_push($existStdNum, $stdNum);
+
+	   						}else{
+	   							$result = $this->admin_mod->insert_student_number($stdNum);
+
+		   						if ($result != 1){
+		   							array_push($invalidStdNum, $stdNum);
+		   						}
+	   						}
+
+	   					}else{
+	   						array_push($invalidStdNum, $stdNum);
+	   					}
+
+					}
+
+					$invalidStdNumStr = "";
+					$invalidStdNumLen = sizeof($invalidStdNum);
+
+					for($i=0; $i<$invalidStdNumLen; $i++){
+						$invalidStdNumStr .= $invalidStdNum[$i];
+
+						if ($i == ($invalidStdNumLen - 1)){
+	                        $invalidStdNumStr .= "";
+	                    }else{
+	                        $invalidStdNumStr .= ",";
+	                    }
+					}
+
+					$existsStdNumStr = "";
+					$existsStdNumLen = sizeof($existStdNum);
+
+					for($i=0; $i<$existsStdNumLen; $i++){
+						$existsStdNumStr .= $existStdNum[$i];
+
+						if ($i == ($existsStdNumLen - 1)){
+	                        $existsStdNumStr .= "";
+	                    }else{
+	                        $existsStdNumStr .= ",";
+	                    }
+					}
+
+					$msg = "DONE!";
+					$msg .= "<br/> Number of invalid student numbers:". $invalidStdNumLen;
+
+					if ($invalidStdNumLen > 0){
+						$msg .= "<br/> Invalid Student Numbers: >" . $invalidStdNumStr;
+					}
+
+					if ($existsStdNumLen > 0){
+						$msg .= "<br/> Already Added : " . $existsStdNumStr;
+					}
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => $msg
+					);
+
+	        	}
+
+            }else{
+
+            	$is_done = array(
+					"done" => "FALSE",
+					"msg" => "Invalid file extension (required CSV)"
+				);
+
+            }
+
+            $this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
 
 		public function add_student(){
 			
@@ -1708,10 +1908,15 @@
 			
 			$std_data = $this->admin_mod->select_std_num($stdIDNum);
 
-			if (sizeof($std_data) == 0){
+			if ($std_data == NULL){
+				// if (sizeof($std_data) == 0){
+				// 	$this->form_validation->set_message('check_is_student_enrolled', 'Invalid {field}, student number not exists in the master list.');
+				// 	return FALSE;
+				// }
 				$this->form_validation->set_message('check_is_student_enrolled', 'Invalid {field}, student number not exists in the master list.');
 				return FALSE;
 			}
+				
 
 			return TRUE;
 		}
@@ -1739,10 +1944,19 @@
 
 			}else{
 
-				$is_done = array(
-					"done" => "TRUE",
-					"msg" => "Student number is enrolled in the master list"
-				);
+				$std_data = $this->admin_mod->select_std_num($stdIDNum);
+
+				if ($std_data == NULL){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Student number not exists in the master list"
+					);
+				}else{
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Student number is enrolled in the master list"
+					);
+				}
 
 			}
 			$this->output->set_content_type('application/json');
@@ -1762,10 +1976,13 @@
 			
 			$std_data = $this->admin_mod->select_std_by_id_and_id_number(0, $stdIDNum);
 
-			if (sizeof($std_data) > 0){
-				$this->form_validation->set_message('check_std_id_number_already_used_on_insert', 'Invalid {field}, the {field} already used.');
-				return FALSE;
+			if ($std_data != NULL){
+				if (sizeof($std_data) > 0){
+					$this->form_validation->set_message('check_std_id_number_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+					return FALSE;
+				}
 			}
+				
 
 			return TRUE;
 		}
@@ -1785,10 +2002,13 @@
 
 			$std_data = $this->admin_mod->select_std_by_id_and_id_number($studentID, $stdIDNum);
 
-			if (sizeof($std_data) > 0){
-				$this->form_validation->set_message('check_std_id_number_already_used_on_update', 'Invalid {field}, the {field} already used.');
-				return FALSE;
+			if ($std_data != NULL){
+				if (sizeof($std_data) > 0){
+					$this->form_validation->set_message('check_std_id_number_already_used_on_update', 'Invalid {field}, the {field} already used.');
+					return FALSE;
+				}
 			}
+				
 
 			return TRUE;
 		}
@@ -1806,10 +2026,13 @@
 			
 			$std_data = $this->admin_mod->select_std_by_id_and_email(0, $email);
 
-			if (sizeof($std_data) > 0){
-				$this->form_validation->set_message('check_std_email_already_used_on_insert', 'Invalid {field}, the {field} already used.');
-				return FALSE;
+			if ($std_data != NULL){
+				if (sizeof($std_data) > 0){
+					$this->form_validation->set_message('check_std_email_already_used_on_insert', 'Invalid {field}, the {field} already used.');
+					return FALSE;
+				}
 			}
+				
 
 			return TRUE;
 		}
@@ -1829,10 +2052,13 @@
 			$studentID = $this->input->post("studentID");
 			$std_data = $this->admin_mod->select_std_by_id_and_email($studentID, $email);
 
-			if (sizeof($std_data) > 0){
-				$this->form_validation->set_message('check_std_email_already_used_on_update', 'Invalid {field}, the {field} already used.');
-				return FALSE;
+			if ($std_data != NULL){
+				if (sizeof($std_data) > 0){
+					$this->form_validation->set_message('check_std_email_already_used_on_update', 'Invalid {field}, the {field} already used.');
+					return FALSE;
+				}
 			}
+				
 
 			return TRUE;
 		}
@@ -1912,14 +2138,15 @@
 					
 				if ($this->admin_mod->mark_student_data_as_deleted($data['studentID']) == 1){
 
-					if (sizeof($stdCurData) > 0){
-						// Audit Trail
-						$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
-						$actionDone = "Remove student (". $stdCurData['lastName'] .", ". $stdCurData['firstName'] .")";
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $facultyIDNum);
+					if ($stdCurData != NULL){
+						if (sizeof($stdCurData) > 0){
+							// Audit Trail
+							$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+							$actionDone = "Remove student (". $stdCurData['lastName'] .", ". $stdCurData['firstName'] .")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $facultyIDNum);
+						}
 					}
 						
-
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully Deleted"
@@ -1973,12 +2200,15 @@
 					
 				if ($this->admin_mod->restore_deleted_student_data($data['studentID']) == 1){
 
-					if (sizeof($stdCurData) > 0){
-						// Audit Trail
-						$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
-						$actionDone = "Restore student (". $stdCurData['lastName'] .", ". $stdCurData['firstName'] .")";
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $facultyIDNum);
+					if ($stdCurData != NULL){
+						if (sizeof($stdCurData) > 0){
+							// Audit Trail
+							$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+							$actionDone = "Restore student (". $stdCurData['lastName'] .", ". $stdCurData['firstName'] .")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'STUD', $facultyIDNum);
+						}
 					}
+						
 						
 					$is_done = array(
 						"done" => "TRUE",
@@ -2186,10 +2416,13 @@
 				if ($this->admin_mod->mark_principle_as_deleted($data['principleID']) == 1){
 
 					// Audit Trail
-					if (sizeof($principleData) > 0){
-						$actionDone = "Remove agriculture principle (".$principleData['principle'].")";
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+					if ($principleData != NULL){
+						if (sizeof($principleData) > 0){
+							$actionDone = "Remove agriculture principle (".$principleData['principle'].")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+						}
 					}
+						
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -2244,10 +2477,13 @@
 				if ($this->admin_mod->mark_principle_as_undeleted($data['principleID']) == 1){
 
 					// Audit Trail
-					if (sizeof($principleData) > 0){
-						$actionDone = "Restore agriculture principle (".$principleData['principle'].")";
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+					if ($principleData != NULL){
+						if (sizeof($principleData) > 0){
+							$actionDone = "Restore agriculture principle (".$principleData['principle'].")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+						}
 					}
+						
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -2306,10 +2542,13 @@
 				if ($this->admin_mod->update_principle($data['principleID'], $data['principle'], $data['facultyIDNum']) == 1){
 
 					// Audit Trail
-					if (sizeof($principleData) > 0){
-						$actionDone = "Update agriculture principle from ".$principleData['principle']." to " . $data['principle'];
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+					if ($principleData != NULL){
+						if (sizeof($principleData) > 0){
+							$actionDone = "Update agriculture principle from ".$principleData['principle']." to " . $data['principle'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'PRPL', $facultyIDNum);
+						}
 					}
+						
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -2473,11 +2712,14 @@
 				
 				if ($this->admin_mod->update_principle_sub_topic($data['topicID'], $data['principleID'], $data['sub_topic'], $data['facultyIDNum']) == 1){
 
-					// Audit Trail
-					if (sizeof($subTopicData) > 0){
-						$actionDone = "Update agriculture principle sub topic from " . $subTopicData['topic'] ." to ". $data['sub_topic'];
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+					if ($subTopicData != NULL){
+						// Audit Trail
+						if (sizeof($subTopicData) > 0){
+							$actionDone = "Update agriculture principle sub topic from " . $subTopicData['topic'] ." to ". $data['sub_topic'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+						}
 					}
+						
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -2627,11 +2869,14 @@
 
 				if ($this->admin_mod->mark_principle_sub_topic_as_deleted($data['topicID']) == 1){
 
-					// Audit Trail
-					if (sizeof($subTopicData) > 0){
-						$actionDone = "Remove agriculture principle sub topic (" . $subTopicData['topic'] . ")";
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+					if ($subTopicData != NULL){
+						// Audit Trail
+						if (sizeof($subTopicData) > 0){
+							$actionDone = "Remove agriculture principle sub topic (" . $subTopicData['topic'] . ")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+						}
 					}
+						
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -2684,11 +2929,14 @@
 
 				if ($this->admin_mod->restore_deleted_principle_sub_topic($data['topicID']) == 1){
 
-					// Audit Trail
-					if (sizeof($subTopicData) > 0){
-						$actionDone = "Restore agriculture principle sub topic (" . $subTopicData['topic'] . ")";
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+					if ($subTopicData != NULL){
+						// Audit Trail
+						if (sizeof($subTopicData) > 0){
+							$actionDone = "Restore agriculture principle sub topic (" . $subTopicData['topic'] . ")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'SBTP', $facultyIDNum);
+						}
 					}
+						
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -2949,10 +3197,13 @@
 					
 				if ($this->admin_mod->update_topic_chapter($data['chapterID'], $data['principleID'], $data['topicID'], $data['chapterTitle'], $data['addedByFacultyNum']) == 1){
 					
-					if (sizeof($chapterCurrentData) > 0){
-						$actionDone = "Update topic chapter from " . $chapterCurrentData['chapterTitle'] . " to ". $data['chapterTitle'];
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+					if ($chapterCurrentData != NULL){
+						if (sizeof($chapterCurrentData) > 0){
+							$actionDone = "Update topic chapter from " . $chapterCurrentData['chapterTitle'] . " to ". $data['chapterTitle'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+						}
 					}
+						
 					
 					$is_done = array(
 						"done" => "TRUE",
@@ -3005,10 +3256,13 @@
 
 				if ($this->admin_mod->mark_topic_chapter_as_deleted($data['chapterID']) == 1){
 
-					if (sizeof($chapterCurrentData) > 0){
-						$actionDone = "Remove topic chapter (" . $chapterCurrentData['chapterTitle'] . ")";
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+					if ($chapterCurrentData != NULL){
+						if (sizeof($chapterCurrentData) > 0){
+							$actionDone = "Remove topic chapter (" . $chapterCurrentData['chapterTitle'] . ")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+						}
 					}
+					
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -3061,11 +3315,13 @@
 
 				if ($this->admin_mod->restore_deleted_topic_chapter($data['chapterID']) == 1){
 
-					if (sizeof($chapterCurrentData) > 0){
-						$actionDone = "Restore topic chapter (" . $chapterCurrentData['chapterTitle'] . ")";
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+					if ($chapterCurrentData != NULL){
+						if (sizeof($chapterCurrentData) > 0){
+							$actionDone = "Restore topic chapter (" . $chapterCurrentData['chapterTitle'] . ")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'CHAP', $facultyIDNum);
+						}
 					}
-
+						
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Successfully Deleted"
@@ -3433,7 +3689,7 @@
 				}
 
 				// Audit trail
-				if ($is_done['done'] == "TRUE"){
+				if ($is_done['done'] == "TRUE" && $lessonCurData != NULL){
 					if (sizeof($lessonCurData) > 0){
 						$actionDone = "Deleted lesson (".$lessonCurData[0]['title'].")";
 						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'LESS', $facultyIDNum);
@@ -3489,7 +3745,7 @@
 				}
 
 				// Audit trail
-				if ($is_done['done'] == "TRUE"){
+				if ($is_done['done'] == "TRUE" && $lessonCurData != NULL){
 					if (sizeof($lessonCurData) > 0){
 						$actionDone = "Restore lesson (".$lessonCurData[0]['title'].")";
 						$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'LESS', $facultyIDNum);
@@ -3847,26 +4103,31 @@
 
 				$faculty_data = $this->admin_mod->select_faculty_by_id_and_id_number($facultyID, $facultyIDNum);
 
-				if (sizeof($faculty_data) > 0){
-					$is_done = array(
-						"done" => "FALSE",
-						"msg" => "The faculty id number is already used"
-					);
+				if ($faculty_data != NULL){
+					if (sizeof($faculty_data) > 0){
+						$is_done = array(
+							"done" => "FALSE",
+							"msg" => "The faculty id number is already used"
+						);
 
-					$is_faculty_id_or_email_valid = FALSE;
+						$is_faculty_id_or_email_valid = FALSE;
+					}
 				}
+					
 
 				$faculty_data = $this->admin_mod->select_faculty_by_id_and_email($facultyID, $data['email']);
 
-				if (sizeof($faculty_data) > 0){
-					$is_done = array(
-						"done" => "FALSE",
-						"msg" => "The email is already used"
-					);
+				if ($faculty_data != NULL){
+					if (sizeof($faculty_data) > 0){
+						$is_done = array(
+							"done" => "FALSE",
+							"msg" => "The email is already used"
+						);
 
-					$is_faculty_id_or_email_valid = FALSE;
+						$is_faculty_id_or_email_valid = FALSE;
+					}
 				}
-
+					
 				if ($is_faculty_id_or_email_valid == TRUE){
 					$pswd = $this->input->post('password');
 					$pswd_conf = $this->input->post('confirm_pass');

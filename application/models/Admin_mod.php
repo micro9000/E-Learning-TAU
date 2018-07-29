@@ -172,6 +172,19 @@
 			return $results->row_array();
 		}
 
+		public function select_Dean_count(){
+
+			$this->db->select("COUNT(*) As count");
+			$this->db->from("Faculties");
+			$this->db->where(array(
+					"isDeleted" => 0,
+					"isDean" => "1"
+			));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
 		public function select_deleted_faculty_by_id($id){
 
 			$this->db->select("id, isAdmin, isDean,  facultyIDNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, addedByAdminFacultyNum");
@@ -272,6 +285,16 @@
 		## Students
 		##
 
+		public function insert_student_number($stdNum){
+
+			$data = array(
+				'stdNum' => $stdNum
+			);
+
+			$result = $this->db->insert('ValidStudentNumbers', $data);
+			return $result;
+		}
+
 		public function insert_new_student($info, $pswd){
 
 			$data = array(
@@ -339,6 +362,27 @@
 
 			$results = $this->db->get();
 			return $results->row_array();
+		}
+
+		public function select_all_std_nums(){
+
+			$this->db->select("id, stdNum");
+			$this->db->from("ValidStudentNumbers");
+			$this->db->order_by("stdNum");
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+		public function search_std_nums($stdNum){
+
+			$this->db->select("id, stdNum");
+			$this->db->from("ValidStudentNumbers");
+			$this->db->like("stdNum", $stdNum);
+			$this->db->order_by("stdNum");
+
+			$results = $this->db->get();
+			return $results->result_array();
 		}
 
 		public function select_std_by_id_and_id_number($id, $stdNum){

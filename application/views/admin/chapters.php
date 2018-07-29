@@ -4,6 +4,12 @@
     </pre> -->
     <div class="container">
         <div class="row">
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>Chapters</h4>
+                <div class="line"></div>
+            </div>
+
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             	<div class="form-group">
                     <label for="select_principleID">Select Principle</label>
@@ -127,6 +133,8 @@
             </div>
         </div>
     </div>
+    
+    <div class="loader_blocks"></div>
     
     <!-- Hidden by default -->
     <div id="deleteDialog" title="Delete Chapter">

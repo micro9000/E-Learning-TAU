@@ -87,6 +87,8 @@
         </div>
     </div>
 
+    <div class="loader_blocks"></div>
+    
     <script type="text/javascript">
     	var lessonID = <?php echo $lesson_data[0]['id']; ?>;
     	var stdNum = <?php echo $this->session->userdata('std_session_stdNum'); ?>;

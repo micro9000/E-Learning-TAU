@@ -2,6 +2,12 @@
     <?php //print_r($principle_to_update_data); ?>
     <div class="container">
         <div class="row">
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                <h4>Principles</h4>
+                <div class="line"></div>
+            </div>
+
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                <div class="form-group">
                     <label for="input_agriculture_principle">Agriculure Principle</label>
@@ -95,6 +101,8 @@
             </div>
         </div>
     </div>
+    
+    <div class="loader_blocks"></div>
     
     <!-- Hidden by default -->
     <div id="deleteDialog" title="Delete Principle">

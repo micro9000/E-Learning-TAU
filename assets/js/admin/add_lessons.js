@@ -1,5 +1,7 @@
 $(".principleID").on("change", function(){
 
+	$(".loader_blocks").css("display", "block");
+
 	var principleID = $(this).val();
 
 	$.post(
@@ -19,6 +21,8 @@ $(".principleID").on("change", function(){
 			});
 
 			$(".sub_topic_ID").html(options);
+
+			$(".loader_blocks").css("display", "none");
 		}
 	);
 
@@ -26,6 +30,8 @@ $(".principleID").on("change", function(){
 
 
 $(".sub_topic_ID").on("change", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var sub_topic_ID = $(this).val();
 
@@ -44,17 +50,24 @@ $(".sub_topic_ID").on("change", function(){
 			});
 
 			$("#select_chapter_ID").html(options);
+
+			$(".loader_blocks").css("display", "none");
 		}
 	);
 
 });
 
 $(".chapter_id").on("change", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	if ($(this).val() === null){
 		$(this).css("border", "1px solid red");
 	}else{
 		$(this).css("border", "1px solid #ced4da");
 	}
+
+	$(".loader_blocks").css("display", "none");
 });
 
 
@@ -148,6 +161,8 @@ tinymce.init({
 			var data = new FormData();
 			data.append('upload_file', file);
 
+			$(".loader_blocks").css("display", "block");
+
 			$.ajax({
 			    url: base_url + "upload_lesson_img",
 			    type: 'POST',
@@ -168,6 +183,8 @@ tinymce.init({
 						  	timeout: 5000
 						});
 			    	}
+
+			    	$(".loader_blocks").css("display", "none");
 			      	
 			    }
 			    
@@ -175,6 +192,7 @@ tinymce.init({
         });
 
         save_lesson_content.on("click", function(){
+
         	var content = editor.getContent(); //tinymce.get("lesson_content").getContent();
 
 			var chapter_id = $(".chapter_id").val();
@@ -252,6 +270,8 @@ tinymce.init({
 
 			if (lessonID === 0){ // ########### INSERTING
 
+				$(".loader_blocks").css("display", "block");
+
 				var request = $.ajax({
 		            url: base_url + "add_new_lesson",
 		            type: "POST",
@@ -284,12 +304,16 @@ tinymce.init({
 						  	type: 'error',
 						  	timeout: 5000
 						});
+
+						$(".loader_blocks").css("display", "none");
 		            }
 
 		            
 		        });
 
 			}else{ // UPDATING
+
+				$(".loader_blocks").css("display", "block");
 
 				formData.append("lesson_id", lessonID);
 
@@ -320,6 +344,8 @@ tinymce.init({
 						  	type: 'error',
 						  	timeout: 5000
 						});
+
+						$(".loader_blocks").css("display", "none");
 		            }
 
 		            setTimeout(function(){

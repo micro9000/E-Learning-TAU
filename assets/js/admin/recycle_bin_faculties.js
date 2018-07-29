@@ -88,10 +88,15 @@ function display_faculties(data){
 	});
 
 	$(".deleted_faculties").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 
 function get_all_deleted_faculties(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_deleted_faculties",
 		function(data){
@@ -125,6 +130,8 @@ $(".btn-refresh").on("click", function(){
 });
 
 $(".btn-search-deleted-faculties").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var search_faculty = $(".search-faculties").val();
 

@@ -77,9 +77,14 @@ function display_principles_on_table(data){
 	});
 
 	$(".deleted_principles").html(principles);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 function get_all_delete_principles(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_deleted_principles",
 		function(data){
@@ -101,6 +106,7 @@ $(document).on("click", ".btn-undo-principle", function(){
 });
 
 function restore_principle(principleID){
+
 	$.post(
 		base_url + "restore_principle",
 		{
@@ -116,6 +122,8 @@ function restore_principle(principleID){
 }
 
 $(".btn-search-deleted-principle").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var search_principle = $(".search-principle").val();
 

@@ -9,6 +9,9 @@ $(".btn-refresh").on("click", function(){
 });
 
 function get_all_lessons_by_current_user(){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "get_all_lessons_by_current_user",
 		function(data){
@@ -117,24 +120,36 @@ function display_lessons(data){
 	});
 
 	$("#search_lessons_results").html(display);
+
+	$(".loader_blocks").css("display", "none");
 }
 
 $(".btn-search-lessons").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var search_str = $(".search-lessons").val();
 
-	$.post(
-		base_url + "search_lessons",
-		{
-			"search_str" : search_str
-		},
-		function(data){
-			// console.log(data);
-			pagination_and_display(data);
-		}
-	);
+	if (search_str !== ""){
+		$.post(
+			base_url + "search_lessons",
+			{
+				"search_str" : search_str
+			},
+			function(data){
+				// console.log(data);
+				pagination_and_display(data);
+			}
+		);
+	}else{
+		$(".loader_blocks").css("display", "none");
+	}
+		
 });
 
 $(".principleID").on("change", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var principleID = $(this).val();
 
@@ -155,6 +170,8 @@ $(".principleID").on("change", function(){
 			});
 
 			$(".sub_topic_ID").html(options);
+
+			$(".loader_blocks").css("display", "none");
 		}
 	);
 
@@ -162,6 +179,8 @@ $(".principleID").on("change", function(){
 
 
 $(".sub_topic_ID").on("change", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var sub_topic_ID = $(this).val();
 
@@ -180,6 +199,8 @@ $(".sub_topic_ID").on("change", function(){
 			});
 
 			$("#select_chapter_ID").html(options);
+
+			$(".loader_blocks").css("display", "none");
 		}
 	);
 
@@ -187,6 +208,9 @@ $(".sub_topic_ID").on("change", function(){
 
 
 $(".btn-advance-search-lesson").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
+
 	var principleID = $(".principleID").val();
 	var topicID = $(".sub_topic_ID").val();
 	var chapterID = $(".chapter_id").val();
@@ -216,6 +240,9 @@ $(".btn-advance-search-lesson").on("click", function(){
 });
 
 function delete_lesson(id){
+
+	$(".loader_blocks").css("display", "block");
+
 	$.post(
 		base_url + "delete_lesson",
 		{
@@ -223,6 +250,9 @@ function delete_lesson(id){
 		},
 		function(data){
 			// console.log(data);
+
+			$(".loader_blocks").css("display", "none");
+
 			$(".actionMsg").html(data.msg);
 			$("#actionMsgDialog").dialog('open');
 		}

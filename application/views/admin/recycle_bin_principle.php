@@ -1,7 +1,7 @@
     
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">Agriculture Principles</div>
+            <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12"><strong>Recycle bin: Agriculture Principles</strong></div>
             <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control search-principle" placeholder="Principle" aria-describedby="basic-addon2">
@@ -40,6 +40,8 @@
     <div id="restoreDialog" title="Restore Principle">
         <p>Are you sure you want to restore this item?</p>
     </div>
+
+    <div class="loader_blocks"></div>
 
     <!-- Hidden by default -->
     <div id="actionMsgDialog" title="Message">
