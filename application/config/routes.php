@@ -77,6 +77,9 @@ $route['get_all_lesson_comments'] = "students/get_all_lesson_comments";
 $route['student_profile'] = "students/profile";
 $route['update_student_data'] = "students/update_student_data";
 
+$route['main_search_lessons/(:any)'] = "students/search_lessons/$1";
+$route['search_lessons_view/(:any)'] = "students/search_lessons_view/$1";
+
 // Admin Routing:
 //
 

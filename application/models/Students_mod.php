@@ -18,6 +18,31 @@
 			return $results->row_array();
 		}
 
+		public function select_latest_lessons_with_or_without_cover($limit=25){
+
+			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
+								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
+								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
+			$this->db->order_by('Les.id', 'DESC');
+			$this->db->from('Lessons As Les');
+			$this->db->join('TopicChapters As Chap', 'Les.chapterID = Chap.id');
+			$this->db->join('PrinciplesSubTopic As Top', 'Chap.topicID = Top.id');
+			$this->db->join('AgriPrinciples As Prin', 'Top.principleID = Prin.id');
+			$this->db->join('Faculties As Fac', 'Fac.facultyIDNum=Les.addedByFacultyNum');
+			$this->db->where(array(
+							'Les.isDeleted' => 0,
+							'Chap.isDeleted' => 0,
+							'Top.isDeleted' => 0,
+							'Prin.isDeleted' => 0
+						));
+			$this->db->order_by("Les.id", "DESC");
+			$this->db->limit($limit);
+
+			$results = $this->db->get();
+			return $results->result_array();
+
+		}
+
 		public function select_latest_lessons_cover_img($limit=15){
 			$this->db->select("id, coverPhoto");
 			$this->db->where(array(

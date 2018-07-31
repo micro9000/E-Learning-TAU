@@ -28,7 +28,7 @@
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/registration.css"); ?>">
 
-	<?php elseif($page_code == "home" || $page_code == "view_lesson" || $page_code == "student_profile_panel"): ?>
+	<?php elseif($page_code == "home" || $page_code == "view_lesson" || $page_code == "student_profile_panel" || $page_code == "search_lessons"): ?>
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/main/master.css"); ?>">
 

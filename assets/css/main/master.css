@@ -31,8 +31,9 @@ hr.style2 {
 
 .cover_portrait img{
 	width: 100%;
-	height: 320px;
+	height: 400px;
     max-height: 100%;
+    object-fit: cover;
 }
 
 .post_wrapper{
@@ -40,7 +41,9 @@ hr.style2 {
 }
 
 .post_title{
-	padding: 20px;
+	padding-top: 20px;
+	padding-bottom: 20px;
+	/*padding: 20px;*/
 	font-size: 1rem;
 	font-weight: bold;
 }
@@ -88,14 +91,14 @@ hr.style2 {
 }
 
 
-.lesson-details-wrapper, .profile-wrapper{
+.lesson-details-wrapper, .profile-wrapper, .search_lessons{
 	color: #313233;
 	background: #fff;
 	padding: 20px;
 	font-family: 'Poppins', sans-serif;
 }
 
-.lesson-details-wrapper .date, .lesson-details-wrapper .posted_by{
+.lesson-details-wrapper .date, .lesson-details-wrapper .posted_by, .search_lessons{
 	font-size:11px;
 }
 

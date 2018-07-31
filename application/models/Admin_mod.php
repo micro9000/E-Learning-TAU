@@ -1203,6 +1203,9 @@
 			$this->db->group_start();
 			$this->db->like("Les.title", $search_str);
 			$this->db->or_like("Les.content", $search_str);
+			$this->db->or_like("Chap.chapterTitle", $search_str);
+			$this->db->or_like("Top.topic", $search_str);
+			$this->db->or_like("Prin.principle", $search_str);
 			$this->db->group_end();
 
 			$results = $this->db->get();

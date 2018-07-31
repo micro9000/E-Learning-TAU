@@ -18,7 +18,7 @@ $(".form-signin").on("submit", function(e){
 		function(data){
 			// console.log(data);
 
-			$(".login-msg").html(data.msg).toggleClass("hidden-default");
+			$(".login-msg").html(data.msg).removeClass("hidden-default");
 
 			if (data.done === 'TRUE'){
 				window.location = base_url + "admin_main_panel";

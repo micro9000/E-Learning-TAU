@@ -27,14 +27,17 @@
                         </li>
 
                         <li class="nav-item" style="width: 300px;">
-                            <div class="input-group">
-					        	<input type="text" class="form-control search-article" placeholder="Search" name="search">
-					        	<div class="input-group-btn">
-					          	<button class="btn btn-default btn-search-article" type="submit">
-					            	<i class="fa fa-search"></i>
-					          	</button>
-					        	</div>
-					     	</div>
+                            <form class="frm-search-lessons">
+                                <div class="input-group">
+                                    <input type="text" class="form-control search-article search-lessons-str" placeholder="Search">
+                                    <div class="input-group-btn">
+                                    <button class="btn btn-default btn-search-article btn-search-lessons" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                    </div>
+                                </div>
+                            </form>
+                                
                         </li>
                         
                     </ul>

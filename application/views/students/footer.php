@@ -52,8 +52,10 @@
     <?php elseif($page_code == "student_profile_panel"): ?>
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/students/profile.js"); ?>"></script>
-
+    
 	<?php endif; ?>
+
+    <script type="text/javascript" src="<?php echo base_url("assets/js/students/search_lessons.js"); ?>"></script>
 
 </body>
 </html>

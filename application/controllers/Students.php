@@ -267,6 +267,63 @@
 			$this->load->view("students/footer");
 		}
 
+		public function search_lessons_view($search_str=""){
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$data = array(
+				"search_str" => $search_str
+			);
+
+			$data['lessons_data'] = array();
+
+			if ($data['search_str'] != ""){
+
+				$data = $this->security->xss_clean($data);
+
+				$this->form_validation->set_data($data);
+				$this->form_validation->set_rules("search_str", "Search String", "trim|required");
+
+				if ($this->form_validation->run() === TRUE){
+					$data['lessons_data'] = $this->admin_mod->select_lessons($data['search_str']);
+				}else{
+					$data['lessons_data'] = $this->students_mod->select_latest_lessons_with_or_without_cover();
+				}
+
+			}else{
+				$data['lessons_data'] = $this->students_mod->select_latest_lessons_with_or_without_cover();
+			}
+
+			$data['lessons_data_len'] = sizeof($data['lessons_data']);
+
+			$data['page_title'] = "Search Lesson - Students";
+			$data['page_code'] = "search_lessons";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+
+			// $data['search_string'] = rawurldecode(rawurldecode($search_str));
+			
+			$this->load->view("students/header", $data);
+			$this->load->view("main/sidebar");
+			$this->load->view("main/topbar");
+			$this->load->view("main/search_lessons");
+			$this->load->view("students/footer");
+		}
+
+		public function search_lessons($search_str=""){
+
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$search_str = rawurlencode($search_str);
+			redirect(base_url("search_lessons_view/". $search_str));
+		}
+
+		//
+		//
+		//
+
 		private function send_email($stdEmail,$subject , $msg){
 
 			// $config['protocol'] = 'sendmail';
