@@ -1,4 +1,53 @@
+    <div class="wrapper">
+        <div class="content">
+            <div style="width: 100%; background-color: #53ad5a; color: #fff; padding-top: 30px; padding-bottom: 30px;">
+                <div class="container">
+                    <div class="row">
 
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <h4>E-LEARNING</h4>
+                            <hr>
+                        </div>
+
+                        <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12" style="margin: auto;">
+                            <a href="#"><img src="<?php echo base_url("assets/imgs/TAU.png") ?>"></a>
+                        </div>
+
+                        <div class="col-lg-5 col-md-5 col-sm-12 col-xs-12">
+
+                            <h4>PRINCIPLES</h4>
+
+                            <ul style="list-style-type: none; padding-left: 0;">
+                                <?php 
+
+                                    $principleLen = sizeof($agriculture_matrix);
+
+                                    for($prinIdx=0; $prinIdx < $principleLen; $prinIdx++){
+                                        echo "<li>".$agriculture_matrix[$prinIdx]['principle']."</li>";
+                                    }
+                                ?>
+                            </ul>
+
+                        </div>
+
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <hr>
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div>
+                                Copyright &copy 2018 ELearning. All Right Reserved. <br/>
+                                <a href="http://www.tca.edu.ph/">Tarlac Agricultural University Official Website</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                        
+            </div>
+        </div>
+    </div>
 		
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/jquery.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/popper.min.js"); ?>"></script>

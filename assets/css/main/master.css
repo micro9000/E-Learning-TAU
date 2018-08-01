@@ -1,5 +1,5 @@
 body{
-	background: #c7ccc8;
+	background: #ddf2d0;
 }
 
 .wrapper{
@@ -82,8 +82,8 @@ hr.style2 {
 .cover_img img{
 	width: 100%; 
 	height: auto; 
-	min-height: 300px;
-	max-height: 400px;
+	min-height: 500px;
+	max-height: 500px;
 }
 
 .lessons-without-cover{

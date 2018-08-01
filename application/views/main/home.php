@@ -9,51 +9,72 @@
                         <div class="content-panel" style="margin-bottom: 0;">
                             <div class="row">
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                                    <div id="lessons_cover" class="carousel slide" data-ride="carousel">
-
-                                      <!-- Indicators -->
-                                      <ul class="carousel-indicators">
-                                        <?php
-                                            $coverLen = sizeof($latest_lessons_cover_img);
-
-                                            if ($coverLen > 0){
-
-                                                echo "<li data-target='#lessons_cover' data-slide-to='0' class='active'></li>";
-                                                for($i=1; $i<$coverLen; $i++){
-                                                    echo "<li data-target='#lessons_cover' data-slide-to='". $i ."'></li>";
-                                                }
-                                            }
-                                        ?>
-                                      </ul>
-                                      
-                                      <!-- The slideshow -->
-                                      <div class="carousel-inner">
-
-                                        <?php
-                                            $coverLen = sizeof($latest_lessons_cover_img);
-
-                                            if ($coverLen > 0){
-
-                                                echo "<div class='carousel-item active cover_img'>";
-                                                echo "<img src=" . base_url("uploads/lessons/cover/". $latest_lessons_cover_img[0]['coverPhoto']) .">";
-                                                echo "</div>";
-
-                                                for($i=1; $i<$coverLen; $i++){
-                                                    echo "<div class='carousel-item cover_img'>";
-                                                    echo "<img src=" . base_url("uploads/lessons/cover/". $latest_lessons_cover_img[$i]['coverPhoto']) .">";
-                                                    echo "</div>";
-                                                }
-                                            }
-                                        ?>
-                                      </div>
-                                      
-                                      <!-- Left and right controls -->
-                                      <a class="carousel-control-prev" href="#lessons_cover" data-slide="prev">
-                                        <span class="carousel-control-prev-icon"></span>
-                                      </a>
-                                      <a class="carousel-control-next" href="#lessons_cover" data-slide="next">
-                                        <span class="carousel-control-next-icon"></span>
-                                      </a>
+                                    <div id="carouselExampleIndicators" class="lessons_cover carousel slide" data-ride="carousel">
+                                        <ol class="carousel-indicators">
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="3"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="4"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="5"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="6"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="7"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="8"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="9"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="10"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="11"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="12"></li>
+                                            <li data-target="#carouselExampleIndicators" data-slide-to="13"></li>
+                                        </ol>
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item active cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/1.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/2.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/3.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/4.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/5.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/6.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/7.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/8.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/9.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/10.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/11.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/12.jpg") ?>" alt="First slide">
+                                            </div>
+                                            <div class="carousel-item cover_img">
+                                              <img class="d-block w-100" src="<?php echo base_url("assets/imgs/slide/13.jpg") ?>" alt="First slide">
+                                            </div>
+                                        </div>
+                                        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -183,35 +204,12 @@
 
                     </div>
 
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                        
-                        <div class="row">
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <h5>Economics And Agricultural Marketing</h5>
-                            </div> 
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <h5>Economics And Agricultural Marketing</h5>
-                            </div>  
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <h5>Economics And Agricultural Marketing</h5>
-                            </div>  
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <h5>Economics And Agricultural Marketing</h5>
-                            </div>  
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <h5>Economics And Agricultural Marketing</h5>
-                            </div>  
-                            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
-                                <h5>Economics And Agricultural Marketing</h5>
-                            </div>  
-                              
-                        </div>
-
-                    </div>
+            
                 </div>
             </div>
-            	
+            
         </div>
     </div>
+
 
     <!-- <div class="overlay"></div> -->
