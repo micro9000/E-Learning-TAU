@@ -7,8 +7,7 @@
 	                <div class="row">
 	                    <div class="col-lg-8 col-md-8 col-sm-12 col-xs-12">
 	                    	<!-- <pre>
-								<?php //print_r($chapter_lessons[0]); ?>
-								<?php // print_r($lesson_data[0]); ?>
+								<?php //print_r($quizzes); ?>
 							</pre> -->
 	                       	
 	                       	<div class="lesson-details-wrapper">
@@ -21,8 +20,15 @@
 	                       		<div class="posted_by"><?php echo $lesson_data[0]['AddedByUser'] ." / ". $lesson_data[0]['chapterTitle']; ?></div>
 
 	                       		<div class="btns-quizzes">
-	                       			<a href="#" class="btn">Chapter Quiz #1</a>
-	                       			<a href="#" class="btn">Chapter Quiz #1</a>
+	                       			<?php
+	                       				$quizzesLen = sizeof($quizzes);
+
+	                       				if ($quizzesLen > 0){
+	                       					for($i=0; $i<$quizzesLen; $i++){
+	                       						echo "<a href='". base_url("chapter_take_quiz/".$quizzes[$i]['id']."/".$quizzes[$i]['quizTitleSlug']) ."' class='btn'>". $quizzes[$i]['quizTitle'] ."</a>";
+	                       					}
+	                       				}
+	                       			?>
 	                       		</div>
 	                       		<hr class="style2"></hr>
 

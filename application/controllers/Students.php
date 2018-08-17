@@ -10,6 +10,7 @@
 
 			$data['page_title'] = "Login - Students";
 			$data['page_code'] = "login";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$this->load->view("students/header", $data);
 			$this->load->view("students/topbar");
@@ -26,6 +27,7 @@
 
 			$data['page_title'] = "Registration";
 			$data['page_code'] = "registration";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$this->load->view("students/header", $data);
 			$this->load->view("students/topbar");
@@ -55,6 +57,7 @@
 
 			$data['page_code'] = "registration_code";
 			$data['page_title'] = "Registration";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$this->load->view("students/header", $data);
 			$this->load->view("students/topbar");
@@ -77,6 +80,7 @@
 
 			$data['page_title'] = "Registration";
 			$data['page_code'] = "registration_code";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$this->load->view("students/header", $data);
 			$this->load->view("students/topbar");
@@ -94,6 +98,7 @@
 
 			$data['page_title'] = "Password Recovery";
 			$data['page_code'] = "passwd_recovery_page";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$this->load->view("students/header", $data);
 			$this->load->view("students/topbar");
@@ -119,6 +124,7 @@
 
 			$data['page_code'] = "pswd_recovery_code";
 			$data['page_title'] = "Password Recovery";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$this->load->view("students/header", $data);
 			$this->load->view("students/topbar");
@@ -142,6 +148,7 @@
 				
 				$data['page_code'] = "change_password";
 				$data['page_title'] = "Password Recovery";
+				$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 				$this->load->view("students/header", $data);
 				$this->load->view("students/topbar");
@@ -166,6 +173,8 @@
 
 			$data['page_title'] = "Registration";
 			$data['page_code'] = "registration_code";
+			
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$this->load->view("students/header", $data);
 			$this->load->view("students/topbar");
@@ -184,7 +193,7 @@
 			$data['page_code'] = "home";
 			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
-			$data['latest_lessons_cover_img'] = $this->students_mod->select_latest_lessons_cover_img();
+			// $data['latest_lessons_cover_img'] = $this->students_mod->select_latest_lessons_cover_img();
 
 			$latest_lessons_with_cover = $this->students_mod->select_latest_lessons_with_cover();
 			$data['latest_lessons_with_cover_len'] = sizeof($latest_lessons_with_cover);
@@ -218,11 +227,15 @@
 			$data['page_code'] = "view_lesson";
 			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
+
 			$lessonData = $this->admin_mod->select_lesson_by_id($lessonData['id']);
 			$data['lesson_data'] = $lessonData;
 
 			$chapter_lessons = $this->admin_mod->select_lesson_by_chapter_id($lessonData[0]['chapterID']);
 			$data['chapter_lessons'] = $chapter_lessons;
+
+			$quizzes = $this->admin_mod->select_all_chapter_quiz($lessonData[0]['chapterID']);
+			$data['quizzes'] = $quizzes;
 
 			$this->load->view("students/header", $data);
 			$this->load->view("main/sidebar");
@@ -310,6 +323,36 @@
 			$this->load->view("students/footer");
 		}
 
+		public function add_chapter_quiz($chapterID=0){
+
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$lessonData = array(
+						'id' => $lessonID,
+						'slug' => $slug
+					);
+
+			$lessonData = $this->security->xss_clean($lessonData);
+
+			$data['page_title'] = "Home - Students";
+			$data['page_code'] = "view_lesson";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+
+			$lessonData = $this->admin_mod->select_lesson_by_id($lessonData['id']);
+			$data['lesson_data'] = $lessonData;
+
+			$chapter_lessons = $this->admin_mod->select_lesson_by_chapter_id($lessonData[0]['chapterID']);
+			$data['chapter_lessons'] = $chapter_lessons;
+
+			$this->load->view("students/header", $data);
+			$this->load->view("main/sidebar");
+			$this->load->view("main/topbar");
+			$this->load->view("main/view_lesson");
+			$this->load->view("students/footer");
+		}
+
 		public function search_lessons($search_str=""){
 
 			if ($this->is_student_still_logged_in() === FALSE){
@@ -318,6 +361,162 @@
 
 			$search_str = rawurlencode($search_str);
 			redirect(base_url("search_lessons_view/". $search_str));
+		}
+
+
+		public function chapter_take_quiz($quizID="", $quiz_slug){
+
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$quizData = array(
+						'quizID' => $quizID,
+						'quiz_slug' => $quiz_slug,
+					);
+
+			$quizData = $this->security->xss_clean($quizData);
+
+			$quiz_data = $this->admin_mod->select_chapter_quiz_by_id($quizData['quizID']);
+
+			if ($quiz_data == null){
+				show_404();
+			} else if (sizeof($quiz_data) == 0){
+				show_404();
+			}
+		
+			$data['quiz_data'] = $quiz_data;
+			$data['quizID'] = $quizID;
+
+			$chapterData = $this->admin_mod->select_chapter_by_id($quiz_data['chapterID']);
+			$data['chapterData'] = $chapterData;
+
+			$topicData = $this->admin_mod->select_principles_sub_topic_by_topic_id($chapterData['topicID']);
+			$data['topicData'] = $topicData;
+			
+			$principleData = $this->admin_mod->select_principle_by_id($chapterData['principleID']);
+			$data['principleData'] = $principleData;
+
+			$data['page_title'] = "Quiz - Students";
+			$data['page_code'] = "chapter_take_quiz";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+
+			$data['quiz_questions_choices_matrix'] = $this->get_quiz_questions_and_choices_matrix($quizData['quizID']);
+
+			$this->load->view("students/header", $data);
+			$this->load->view("main/sidebar");
+			$this->load->view("main/topbar");
+			$this->load->view("main/take_chapter_quiz");
+			$this->load->view("students/footer");
+		}
+
+
+		public function chapter_take_quiz_results($resultsID){
+
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$studentIDNum = $this->session->userdata('std_session_stdNum');
+
+			$resultsID = $this->security->xss_clean($resultsID);
+
+			$quiz_results = $this->students_mod->get_std_last_chapter_quiz($resultsID, $studentIDNum);
+
+			if ($quiz_results != NULL){
+
+				$data['quiz_results'] = $quiz_results;
+
+				$quizData = array(
+							'chapterID' => $quiz_results['chapterID'],
+							'quizID' => $quiz_results['quizID']
+						);
+
+				$quizData = $this->security->xss_clean($quizData);
+
+				$data['quiz_answers'] = $this->students_mod->get_std_last_chapter_quiz_answers($quiz_results['id'], $studentIDNum);
+
+				$numberOfRightAns = $this->students_mod->get_quiz_number_right_answers($quizData['quizID']);
+
+				if ($numberOfRightAns != NULL){
+					$data['numberOfRightAns'] = $numberOfRightAns;
+				}else{
+					$data['numberOfRightAns'] = 0;
+				}
+
+				$quiz_data = $this->admin_mod->select_chapter_quiz_by_id($quizData['quizID']);
+
+				if ($quiz_data == null){
+					show_404();
+				} else if (sizeof($quiz_data) == 0){
+					show_404();
+				}
+			
+				$data['quiz_data'] = $quiz_data;
+				$data['quizID'] = $quizData['quizID'];
+
+				$chapterData = $this->admin_mod->select_chapter_by_id($quiz_data['chapterID']);
+				$data['chapterData'] = $chapterData;
+
+				$topicData = $this->admin_mod->select_principles_sub_topic_by_topic_id($chapterData['topicID']);
+				$data['topicData'] = $topicData;
+				
+				$principleData = $this->admin_mod->select_principle_by_id($chapterData['principleID']);
+				$data['principleData'] = $principleData;
+
+				$data['page_title'] = "Quiz - Students";
+				$data['page_code'] = "chapter_take_quiz";
+				$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+
+				$data['quiz_questions_choices_matrix'] = $this->get_quiz_questions_and_choices_matrix($quizData['quizID']);
+
+
+
+
+				$this->load->view("students/header", $data);
+				$this->load->view("main/sidebar");
+				$this->load->view("main/topbar");
+				$this->load->view("main/take_chapter_quiz_results");
+				$this->load->view("students/footer");
+			}else{
+				show_404();
+			}
+		}
+
+
+		public function quizzes_results(){
+
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			// $studentID = $this->session->userdata('std_session_id');
+			$studentIDNum = $this->session->userdata('std_session_stdNum');
+
+			$quizzes_results = $this->students_mod->get_std_quizzes_results($studentIDNum);
+			$quizzesLen = sizeof($quizzes_results);
+
+			for($i=0; $i<$quizzesLen; $i++){
+				$rightAnsLen = $this->students_mod->get_quiz_number_right_answers($quizzes_results[$i]['quizID']);
+
+				if ($rightAnsLen != NULL){
+					$quizzes_results[$i]['rightAnsLen'] = $rightAnsLen['count'];
+				}else{
+					$quizzes_results[$i]['rightAnsLen'] = 0;
+				}
+			}
+
+			$data['quizzes_results'] = $quizzes_results;
+
+			$data['page_title'] = "Student Profile";
+			$data['page_code'] = "quizzes_results";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+
+			$this->load->view("students/header", $data);
+			$this->load->view("main/sidebar");
+			$this->load->view("main/topbar");
+			$this->load->view("students/quizzes_results");
+			$this->load->view("students/footer");
 		}
 
 		//
@@ -1179,6 +1378,183 @@
 
 			}
 
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function get_quiz_questions_and_choices_matrix($quizID){
+			
+			$matrix = array();
+
+			$data = array(
+				"quizID" => $quizID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("quizID", "Quiz ID", "trim|required|is_natural");
+
+			if ($this->form_validation->run() === TRUE){
+				$quiz_questions = $this->admin_mod->select_all_quiz_questions($data['quizID']);
+
+				$questions_len = sizeof($quiz_questions);
+
+				for($i=0; $i<$questions_len; $i++){
+					$questionIDTmp = $quiz_questions[$i]['id'];
+					$facultyIDNum = $quiz_questions[$i]['addedByFacultyNum'];
+
+					$choices = $this->admin_mod->select_question_choices_by_id($questionIDTmp);
+					$correctAnsLenArr = $this->admin_mod->select_number_of_correct_ans($questionIDTmp);
+
+					$correctAnsLen = 0;
+					if ($correctAnsLenArr != NULL){
+						$correctAnsLen = $correctAnsLenArr['count'];
+					}
+
+					if ($choices == NULL){
+						$quiz_questions[$i]['choicesCorrectAnsLen'] = 0;
+						$quiz_questions[$i]['choices'] = array();
+					}else{
+						$quiz_questions[$i]['choicesCorrectAnsLen'] = $correctAnsLen;
+						$quiz_questions[$i]['choices'] = $choices;
+					}
+					
+
+					$facultyData = $this->admin_mod->select_faculty_by_id_num($facultyIDNum);
+
+					if ($facultyData != null){
+						if (sizeof($facultyData) > 0){
+							$quiz_questions[$i]['facultyName'] = $facultyData['firstName'] ." ". $facultyData['lastName'];
+						}else{
+							$quiz_questions[$i]['facultyName'] = "Not found";
+						}
+					}
+					
+				}
+
+				$matrix = $quiz_questions;
+			}
+
+			return $matrix;
+			// $this->output->set_content_type('application/json');
+			// $this->output->set_output(json_encode($matrix));
+
+		}
+
+		public function insert_student_quiz_answer(){
+
+			$quiz_results_ID = 0;
+			// print_r($_POST);
+			// exit();
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$studentIDNum = $this->session->userdata('std_session_stdNum');
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => "",
+				"quiz_results_ID" => 0
+			);
+
+			$answersInput = $this->input->post();
+			$answers = $answersInput['ans'];
+			
+			$ansLen = sizeof($answers);
+
+			$countAns = 0;
+
+			$scoreCount = 0;
+
+			if ($ansLen > 0){
+
+				$dataResults = array(
+						"chapterID" => $answers[0]['chapterID'],
+						"quizID" => $answers[0]['quizID']
+					);
+
+				$dataResults = $this->security->xss_clean($dataResults);
+				$this->form_validation->set_data($dataResults);
+				$this->form_validation->set_rules("chapterID", "Chapter ID", "trim|required|is_natural");
+				$this->form_validation->set_rules("quizID", "Quiz ID", "trim|required|is_natural");
+
+				if ($this->form_validation->run() === TRUE){
+
+					for($i=0; $i<$ansLen; $i++){
+
+						$data = array(
+							"questionID" => $answers[$i]['questionID'],
+							"choiceID" => $answers[$i]['choiceID']
+						);
+
+						$data = $this->security->xss_clean($data);
+
+						$this->form_validation->set_data($data);
+						$this->form_validation->set_rules("questionID", "Question ID", "trim|required|is_natural");
+						$this->form_validation->set_rules("choiceID", "Choice ID", "trim|required|is_natural");
+
+						if ($this->form_validation->run() === TRUE){
+
+							$is_choice_right_ans = $this->students_mod->is_choice_is_right_ans($data['choiceID'], $data['questionID']);
+
+							if ($is_choice_right_ans != NULL){
+								if (sizeof($is_choice_right_ans) > 0){
+									if ($is_choice_right_ans['count'] == "1"){
+										$scoreCount += 1;
+									}
+								}
+							}
+						}
+					}// COMPUTING RIGHT ANSWERS
+
+					// INSERT QUIZ RESULTS
+					$quiz_results_ID = $this->students_mod->insert_student_quiz_results($dataResults['chapterID'], $dataResults['quizID'], $scoreCount, $studentIDNum);
+
+					if ($quiz_results_ID !== NULL){
+						if ($quiz_results_ID > 0){
+
+							for($i=0; $i<$ansLen; $i++){
+
+								$data = array(
+									"resultsID" => $quiz_results_ID,
+									"stdNum" => $studentIDNum,
+									"questionID" => $answers[$i]['questionID'],
+									"choiceID" => $answers[$i]['choiceID']
+								);
+
+								$data = $this->security->xss_clean($data);
+
+								$this->form_validation->set_data($data);
+								$this->form_validation->set_rules("questionID", "Question ID", "trim|required|is_natural");
+								$this->form_validation->set_rules("choiceID", "Choice ID", "trim|required|is_natural");
+								$this->form_validation->set_rules("resultsID", "Results ID", "trim|required|is_natural");
+
+								if ($this->form_validation->run() === TRUE){
+
+									if ($this->students_mod->insert_student_quiz_answer($data) == 1){
+										$countAns += 1;
+									}
+									
+								}
+							}
+
+						}
+					}// INSERTING ANSWERS
+					
+				}
+
+			}
+
+			if ($ansLen == $countAns){
+				$is_done = array(
+					"done" => "TRUE",
+					"msg" => "Successfully submitted",
+					"quiz_results_ID" => $quiz_results_ID
+				);
+			}
 
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));

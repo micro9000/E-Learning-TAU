@@ -14,12 +14,16 @@
 
                     <ul class="nav navbar-nav ml-auto">
                     		
-                        <li class="nav-item active">
+                        <li class="nav-item " id="menu_home">
                             <a class="nav-link" href="<?php echo base_url("home_page"); ?>"><span class="fa fa-home"></span> Home</a>
                         </li>
                         
-                        <li class="nav-item">
+                        <li class="nav-item" id="menu_profile">
                             <a class="nav-link" href="<?php echo base_url("student_profile"); ?>"><span class="fa fa-user"></span> Profile</a>
+                        </li>
+
+                        <li class="nav-item" id="menu_quiz_results">
+                            <a class="nav-link" href="<?php echo base_url("quizzes_results"); ?>"><span class="fa fa-pencil-alt"></span> Quiz Results</a>
                         </li>
 
                         <li class="nav-item">

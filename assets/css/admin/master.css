@@ -103,3 +103,23 @@ body{
 .action_buttons table tr td a:hover{
     cursor: pointer;
 }
+
+
+#question_choices .ans{
+    text-align: center;
+}
+
+#question_choices .choice_str{
+    padding: 5px;
+}
+
+#question_choices .choice_str .form-group{
+    margin-bottom: 0;
+}
+
+.choice-btns a{
+    margin: 10px;
+    padding: 5px;
+    text-decoration: underline;
+
+}

@@ -394,6 +394,12 @@
 					show_404();
 				}
 
+				if ($admin_data == null){
+					show_404();
+				}else if (sizeof($admin_data) == 0){
+					show_404();
+				}
+
 				$data['faculty_to_update_data'] = $faculty_data;
 				$data['admin_data'] = $admin_data;
 				$data['facultyID'] = $facultyID;
@@ -477,6 +483,12 @@
 				if ($faculty_data == null){
 					show_404();
 				}else if (sizeof($faculty_data) == 0){
+					show_404();
+				}
+
+				if ($admin_data == null){
+					show_404();
+				}else if (sizeof($admin_data) == 0){
 					show_404();
 				}
 
@@ -586,7 +598,8 @@
 			$data['lesson_update_summary'] = $lesson_update_summary;
 			$data['lesson_update_summary_len'] = sizeof($lesson_update_summary);
 
-			$data['lesson_data'] = $this->admin_mod->select_lesson_by_id($lessonData['id']);
+			$lesson_data = $this->admin_mod->select_lesson_by_id($lessonData['id']);
+			$data['lesson_data'] = ($lesson_data != null) ? (sizeof($lesson_data) > 0) ? $lesson_data : array() : array();
 
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
@@ -783,10 +796,11 @@
 
 			$data['page_title'] = "Admin view lesson";
 			$data['page_code'] = "view_lesson";
-			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+			// $data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
 
 			$lessonData = $this->admin_mod->select_lesson_by_id($lessonData['id']);
-			$data['lesson_data'] = $lessonData;
+
+			$data['lesson_data'] = ($lessonData != null) ? sizeof($lessonData) > 0 ? $lessonData : array() : array();
 
 			$chapter_lessons = $this->admin_mod->select_lesson_by_chapter_id($lessonData[0]['chapterID']);
 			$data['chapter_lessons'] = $chapter_lessons;
@@ -798,6 +812,52 @@
 			$this->load->view("admin/faculty_view_lesson");
 			$this->load->view("admin/footer");
 		}
+
+		public function add_quiz_questions($quizID, $quiz_slug){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			$quizData = array(
+						'quizID' => $quizID,
+						'quiz_slug' => $quiz_slug,
+					);
+
+			$quizData = $this->security->xss_clean($quizData);
+
+			$quiz_data = $this->admin_mod->select_chapter_quiz_by_id($quizData['quizID']);
+
+			if ($quiz_data == null){
+				show_404();
+			} else if (sizeof($quiz_data) == 0){
+				show_404();
+			}
+
+			
+			$data['quiz_data'] = $quiz_data;
+			$data['quizID'] = $quizID;
+
+			$data['page_title'] = "Admin quiz questions";
+			$data['page_code'] = "quiz_questions";
+
+			// $data['quiz_questions'] = $this->get_quiz_questions_and_choices_matrix($quizData['quizID']);
+
+			$this->load->view("admin/header", $data);
+			$this->load->view("admin/sidebar");
+			$this->load->view("admin/content_start_div");
+			$this->load->view("admin/topbar");
+			$this->load->view("admin/add_quiz_questions");
+			$this->load->view("admin/footer");
+
+		}
+
 
 		##
 		##
@@ -1001,25 +1061,48 @@
 						$hashPass = hashSHA512($pass['password']);
 
 						$data['password'] = $hashPass;
-						
-						$facuCurData['cur_pswd'] = $this->admin_mod->select_faculty_password_by_id($data['facultyID']);
 
-						if ($this->admin_mod->update_faculty_with_pass($data) == 1){
+						if ($facuCurData != null){
+							if (sizeof($facuCurData) > 0){
 
-							$this->faculty_update_audit_trail($facuCurData, $data, 'with_pass');
+								$facuCurData['cur_pswd'] = $this->admin_mod->select_faculty_password_by_id($data['facultyID']);
 
+								if ($this->admin_mod->update_faculty_with_pass($data) == 1){
+
+									$this->faculty_update_audit_trail($facuCurData, $data, 'with_pass');
+
+									$is_done = array(
+										"done" => "TRUE",
+										"msg" => "Updated Successfully with password"
+									);
+								}
+
+							}else{
+								$is_done = array(
+										"done" => "FALSE",
+										"msg" => "Can't update the faculty data"
+									);
+							}
+						}else{
 							$is_done = array(
-								"done" => "TRUE",
-								"msg" => "Updated Successfully with password"
-							);
+									"done" => "FALSE",
+									"msg" => "Can't update the faculty data"
+								);
 						}
+						
+								
 					}
 					
 				}else{
 
 					if ($this->admin_mod->update_faculty_without_pass($data) == 1){
 
-						$this->faculty_update_audit_trail($facuCurData, $data, 'without_pass');
+						if ($facuCurData != null){
+							if (sizeof($facuCurData) > 0){
+								$this->faculty_update_audit_trail($facuCurData, $data, 'without_pass');
+							}
+						}
+								
 
 						$is_done = array(
 							"done" => "TRUE",
@@ -1072,10 +1155,15 @@
 
 				if ($this->admin_mod->mark_faculty_data_as_deleted($data['facultyID']) == 1){
 
-					// audit trail
-					$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-					$actionDone = "Remove faculty " . $facuCurData['lastName'] .", ". $facuCurData['firstName'];
-					$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+					if ($facuCurData != null){
+						if (sizeof($facuCurData) > 0){
+							// audit trail
+							$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+							$actionDone = "Remove faculty " . $facuCurData['lastName'] .", ". $facuCurData['firstName'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+						}
+					}
+						
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -1127,10 +1215,16 @@
 
 				if ($this->admin_mod->restore_deleted_faculty_data($data['facultyID']) == 1){
 
-					// audit trail
-					$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-					$actionDone = "Restore faculty " . $facuCurData['lastName'] .", ". $facuCurData['firstName'];
-					$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+					if ($facuCurData != null){
+
+						if (sizeof($facuCurData) > 0){
+							// audit trail
+							$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+							$actionDone = "Restore faculty " . $facuCurData['lastName'] .", ". $facuCurData['firstName'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+						}
+					}
+						
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -1186,10 +1280,15 @@
 
 					if ($this->admin_mod->mark_faculty_as_admin_or_dean($data['facultyID'], $data['status'], $data['mark_as']) == 1){
 
-						// audit trail
-						$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
-						$actionDone = "Faculty ". $facuCurData['lastName'] .", ". $facuCurData['firstName'] . " mark as " . $data['mark_as'];
-						$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+						if ($facuCurData != null){
+							if (sizeof($facuCurData) > 0){
+								// audit trail
+								$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+								$actionDone = "Faculty ". $facuCurData['lastName'] .", ". $facuCurData['firstName'] . " mark as " . $data['mark_as'];
+								$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+							}
+						}
+								
 
 						$is_done = array(
 							"done" => "TRUE",
@@ -1482,18 +1581,21 @@
 				$results = $this->admin_mod->select_faculty_by_id($data['facultyID']);
 
 				// print_r($results);
-				$facultyLen = sizeof($results);
-				for($i=0; $i<$facultyLen; $i++){
-					$admin_data = $this->admin_mod->select_faculty_by_id_num($results['addedByAdminFacultyNum']);
+				if ($results != NULL){
 
-					if ($admin_data != NULL){
-						if (sizeof($admin_data) > 0){
-							$results['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+					$facultyLen = sizeof($results);
+					for($i=0; $i<$facultyLen; $i++){
+						$admin_data = $this->admin_mod->select_faculty_by_id_num($results['addedByAdminFacultyNum']);
+
+						if ($admin_data != NULL){
+							if (sizeof($admin_data) > 0){
+								$results['addedBy'] = $admin_data['firstName'] ." ". $admin_data['lastName'];
+							}
 						}
 					}
-					
-					
+
 				}
+					
 			}
 
 			$this->output->set_content_type('application/json');
@@ -1860,19 +1962,37 @@
 					}else{
 
 						$hashPass = hashSHA512($pass['password']);
-						$data['pswd'] = $hashPass;		
+						$data['pswd'] = $hashPass;
 
-						$stdCurData['password'] = $this->admin_mod->select_std_pswd_by_id($data['studentID']);				
+						if ($stdCurData != NULL){
+							if (sizeof($stdCurData) > 0){
 
-						if ($this->admin_mod->update_student_with_pass($data) == 1){
+								$stdCurData['password'] = $this->admin_mod->select_std_pswd_by_id($data['studentID']);				
 
-							$this->student_update_audit_trail($stdCurData, $data, "with_pass");
+								if ($this->admin_mod->update_student_with_pass($data) == 1){
 
+									$this->student_update_audit_trail($stdCurData, $data, "with_pass");
+
+									$is_done = array(
+										"done" => "TRUE",
+										"msg" => "Updated Successfully with password"
+									);
+								}
+
+							}else{
+								$is_done = array(
+										"done" => "FALSE",
+										"msg" => "Can't update this student data"
+									);
+							}
+						}else{
 							$is_done = array(
-								"done" => "TRUE",
-								"msg" => "Updated Successfully with password"
-							);
+									"done" => "FALSE",
+									"msg" => "Can't update this student data"
+								);
 						}
+
+								
 					}
 					
 				}else{
@@ -3109,6 +3229,11 @@
 
 			if ($this->form_validation->run() === TRUE){
 				$chapters = $this->admin_mod->select_chapter_by_id($data['chapterID']);
+
+				if ($chapters == NULL){
+					$chapters = array();
+				}
+
 			}
 			
 			$this->output->set_content_type('application/json');
@@ -3867,6 +3992,10 @@
 					$lessons = $this->admin_mod->select_lesson_by_id($data['lesson_id']);
 				}
 
+				if ($lessons == NULL){
+					$lessons = array();
+				}
+
 			}
 			
 			$this->output->set_content_type('application/json');
@@ -4185,6 +4314,625 @@
 				}
 
 					
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function add_new_chapter_quiz(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$chapterID = $this->input->post('chapterID');
+			$quiz_title = $this->input->post('quiz_title');
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"chapterID" => $chapterID,
+				"quiz_title" => $quiz_title,
+				"facultyIDNum" => $facultyIDNum
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("chapterID", "Chapter ID", "trim|required");
+			$this->form_validation->set_rules("quiz_title", "Quiz Title", "trim|required");
+			$this->form_validation->set_rules("facultyIDNum", "Faculty ID Number", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+				
+				$slug = url_title($data['quiz_title'],'underscore', TRUE);
+
+				if ($this->admin_mod->insert_new_chapter_quiz($data['chapterID'], $data['quiz_title'], $slug, $data['facultyIDNum']) == 1){
+
+					$chapterData = $this->admin_mod->select_chapter_by_id($data['chapterID']);
+
+					if ($chapterData != null){
+						if (sizeof($chapterData) > 0){
+
+							// Audit Trail
+							$actionDone = "Added new quiz (". $chapterData['chapterTitle'] ." - ". $data['quiz_title'] .")";
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'QUIZ', $facultyIDNum);
+
+						}
+					}
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Inserted Successfully"
+					);
+				}
+			}
+
+			// print_r($is_done);
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+
+		}
+
+
+		public function get_all_chapter_quizes(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$results = array();
+
+			$chapterID = $this->input->post('chapterID');
+
+			$data = array(
+				"chapterID" => $chapterID
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("chapterID", "Chapter ID", "trim|required");
+
+			if ($this->form_validation->run() === TRUE){
+				$results = $this->admin_mod->select_all_chapter_quiz($data['chapterID']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($results));
+		}
+
+
+		public function add_quiz_question(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => "",
+				"questionID" => 0
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"quizID" => $this->input->post('quizID'),
+				"question" => $this->input->post('question'),
+				"addedByFacultyNum" => $facultyIDNum
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("quizID", "Quiz ID", "trim|required|is_natural");
+			$this->form_validation->set_rules("question", "Question", "trim|required");
+			$this->form_validation->set_rules("addedByFacultyNum", "Faculty Number", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>'),
+					"questionID" => 0
+				);
+			}else{
+
+				$questionID = $this->admin_mod->insert_new_quiz_question($data['quizID'], $data['question'], $data['addedByFacultyNum']);
+
+				if ($questionID != false){
+
+					$quizData = $this->admin_mod->select_chapter_quiz_by_id($data['quizID']);
+
+					if ($quizData != null){
+						if (sizeof($quizData) > 0){
+							// Audit Trail
+							$actionDone = "Add new quiz question - ". $quizData['quizTitle'] ." -> " . $data['question'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'QUES', $facultyIDNum);
+						}
+					}
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Inserted Successfully",
+						"questionID" => $questionID
+					);
+				}
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function get_quiz_questions_by_id(){
+			
+			$question_data = array();
+
+			$data = array(
+				"questionID" => $this->input->post('questionID'),
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("questionID", "Question ID", "trim|required|is_natural");
+
+			if ($this->form_validation->run() === TRUE){
+				$question_data = $this->admin_mod->select_quiz_question_by_id($data['questionID']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($question_data));
+
+		}
+
+
+		public function update_quiz_question(){
+				
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"questionID" => $this->input->post('questionID'),
+				"question" => $this->input->post('question')
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("questionID", "Question ID", "trim|required|is_natural");
+			$this->form_validation->set_rules("question", "Question", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$question_data = $this->admin_mod->select_quiz_question_by_id($data['questionID']);
+
+				// print_r($question_data);
+				if ($this->admin_mod->update_quiz_question($data['questionID'], $data['question']) == 1){
+
+					if ($question_data != NULL){
+						if (sizeof($question_data) > 0){
+							// Audit Trail
+							$actionDone = "Update quiz question - ". $question_data['question'] ." -> " . $data['question'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'QUES', $facultyIDNum);
+						}
+					}
+
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Updated Successfully"
+					);
+				}
+
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+		public function add_question_choice(){
+			
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$questionID = $this->input->post('questionID');
+			$choiceLen = $this->input->post('choiceLen');
+
+			$data = array(
+				"questionID" => $this->input->post('questionID'),
+				"choiceLen" => $this->input->post('choiceLen'),
+				"addedByFacultyNum" => $facultyIDNum
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("questionID", "Question ID", "trim|required|is_natural");
+			$this->form_validation->set_rules("choiceLen", "Number of Choices", "trim|required");
+			$this->form_validation->set_rules("addedByFacultyNum", "Faculty Number", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$choiceLen = (int) $data['choiceLen'];
+
+				$countAddedSuccessful = 0;
+
+				for($i=0; $i<$choiceLen; $i++){
+
+					$choice = $this->input->post('choice_'.$i);
+					$isChoiceRight = $this->input->post('isChoiceIsRightAns_'.$i);
+
+					if (! empty($choice) && is_numeric($isChoiceRight)){
+
+						if ($this->admin_mod->insert_question_choice($data['questionID'], $choice, $isChoiceRight, $data['addedByFacultyNum']) == 1){
+
+							$questionData = $this->admin_mod->select_quiz_question_by_id($data['questionID']);
+
+							if ($questionData != null){
+								if (sizeof($questionData) > 0){
+									// Audit Trail
+									$actionDone = "Add new question's choice - ". $questionData['question'] ." -> " . $choice;
+									$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'ANS', $facultyIDNum);
+								}
+							}
+
+							$countAddedSuccessful += 1;
+							
+						}
+
+					}
+
+				}
+
+				// echo $countAddedSuccessful ." - ". $data['choiceLen'];
+				if ($countAddedSuccessful == ((int) $data['choiceLen'])){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Inserted Successfully"
+					);
+				}else{
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => $countAddedSuccessful . " choices inserted successfully"
+					);
+				}
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function update_question_choice(){
+				
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"choiceID" => $this->input->post('choiceID'),
+				"choice" => $this->input->post('choice')
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("choiceID", "Choice ID", "trim|required|is_natural");
+			$this->form_validation->set_rules("choice", "Choice", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$choice_data = $this->admin_mod->select_choices_by_id($data['choiceID']);
+
+				if ($this->admin_mod->update_question_choice($data['choiceID'], $data['choice']) == 1){
+
+					if ($choice_data != NULL){
+						if (sizeof($choice_data) > 0){
+							// Audit Trail
+							$actionDone = "Update question choice - ". $choice_data['choiceStr'] ." -> " . $data['choice'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'ANS', $facultyIDNum);
+						}
+					}
+
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Updated Successfully"
+					);
+				}
+
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function add_new_question_choice(){
+				
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"questionID" => $this->input->post('questionID'),
+				"choice" => $this->input->post('choice'),
+				"isAns" => $this->input->post('isAns')
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("questionID", "Question ID", "trim|required|is_natural");
+			$this->form_validation->set_rules("choice", "Choice", "trim|required");
+			$this->form_validation->set_rules("isAns", "isAns", "trim|required|is_natural");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				if ($this->admin_mod->insert_question_choice($data['questionID'], $data['choice'], $data['isAns'], $facultyIDNum) == 1){
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Added Successfully"
+					);
+				}
+			}	
+
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function get_questions_choice_by_id(){
+			
+			$choice_data = array();
+
+			$data = array(
+				"choiceID" => $this->input->post('choiceID'),
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("choiceID", "Choice ID", "trim|required|is_natural");
+
+			if ($this->form_validation->run() === TRUE){
+				$choice_data = $this->admin_mod->select_choices_by_id($data['choiceID']);
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($choice_data));
+
+		}
+
+		public function get_quiz_questions_and_choices_matrix(){
+			
+			$matrix = array();
+
+			$data = array(
+				"quizID" => $this->input->post('quizID'),
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("quizID", "Quiz ID", "trim|required|is_natural");
+
+			if ($this->form_validation->run() === TRUE){
+				$quiz_questions = $this->admin_mod->select_all_quiz_questions($data['quizID']);
+
+				$questions_len = sizeof($quiz_questions);
+
+				for($i=0; $i<$questions_len; $i++){
+					$questionIDTmp = $quiz_questions[$i]['id'];
+					$facultyIDNum = $quiz_questions[$i]['addedByFacultyNum'];
+
+					$choices = $this->admin_mod->select_question_choices_by_id($questionIDTmp);
+					$correctAnsLenArr = $this->admin_mod->select_number_of_correct_ans($questionIDTmp);
+
+					$correctAnsLen = 0;
+					if ($correctAnsLenArr != NULL){
+						$correctAnsLen = $correctAnsLenArr['count'];
+					}
+					
+					if ($choices == NULL){
+						$quiz_questions[$i]['choices'] = array();
+						$quiz_questions[$i]['choicesCorrectAnsLen'] = 0;
+					}else{	
+						$quiz_questions[$i]['choices'] = $choices;
+						$quiz_questions[$i]['choicesCorrectAnsLen'] = $correctAnsLen;					
+					}
+					
+
+					$facultyData = $this->admin_mod->select_faculty_by_id_num($facultyIDNum);
+
+					if ($facultyData != null){
+						if (sizeof($facultyData) > 0){
+							$quiz_questions[$i]['facultyName'] = $facultyData['firstName'] ." ". $facultyData['lastName'];
+						}else{
+							$quiz_questions[$i]['facultyName'] = "Not found";
+						}
+					}
+					
+				}
+
+				$matrix = $quiz_questions;
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($matrix));
+
+		}
+
+
+		public function delete_quiz_question(){
+			
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$questionID = $this->input->post('questionID');
+			// $quizID = $this->input->post('quizID');
+
+			$data = array(
+				"questionID" => $questionID
+			);
+			// "quizID" => $quizID
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("questionID", "Question ID", "trim|required");
+			// $this->form_validation->set_rules("quizID", "Quiz ID", "trim|required");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+				
+				$questionData = $this->admin_mod->select_quiz_question_by_id($data['questionID']);
+				// $quizID = $this->admin_mod->select_quiz_question_by_id($data['questionID']);
+
+				if ($this->admin_mod->mark_quiz_question_data_as_deleted($data['questionID']) == 1){
+
+					if ($questionData != NULL){
+						// audit trail
+						$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+						$actionDone = "Remove Question -> " . $questionData['question'];
+						$this->admin_mod->insert_audit_trail_new_entry($actionDone, "QUES", $facultyIDNum);
+					}
+					
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Successfully Deleted"
+					);
+				}
+			}
+			
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function delete_question_choice(){
+				
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			$is_done = array(
+				"done" => "FALSE",
+				"msg" => ""
+			);
+
+			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
+
+			$data = array(
+				"choiceID" => $this->input->post('choiceID')
+			);
+
+			$data = $this->security->xss_clean($data);
+
+			$this->form_validation->set_data($data);
+			$this->form_validation->set_rules("choiceID", "Choice ID", "trim|required|is_natural");
+
+			if ($this->form_validation->run() === FALSE){
+				$is_done = array(
+					"done" => "FALSE",
+					"msg" => validation_errors('<span>', '</span>')
+				);
+			}else{
+
+				$choice_data = $this->admin_mod->select_choices_by_id($data['choiceID']);
+
+				if ($this->admin_mod->mark_question_choice_as_deleted($data['choiceID']) == 1){
+
+					if ($choice_data != NULL){
+						if (sizeof($choice_data) > 0){
+							// Audit Trail
+							$actionDone = "Deleted question choice - ". $choice_data['choiceStr'];
+							$this->admin_mod->insert_audit_trail_new_entry($actionDone, 'ANS', $facultyIDNum);
+						}
+					}
+
+
+					$is_done = array(
+						"done" => "TRUE",
+						"msg" => "Deleted Successfully"
+					);
+				}
+
 			}
 
 			$this->output->set_content_type('application/json');

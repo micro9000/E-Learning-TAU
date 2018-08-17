@@ -1,6 +1,6 @@
-    <div class="wrapper">
+    <div class="wrapper" style="bottom: 0; margin-bottom: 0">
         <div class="content">
-            <div style="width: 100%; background-color: #53ad5a; color: #fff; padding-top: 30px; padding-bottom: 30px;">
+            <div style="width: 100%; background-color: #53ad5a; color: #fff; padding-top: 30px; padding-bottom: 30px">
                 <div class="container">
                     <div class="row">
 
@@ -54,6 +54,7 @@
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/bootstrap/js/bootstrap.min.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/jquery.mCustomScrollbar.concat.min.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/plugins/pagination.min.js"); ?>"></script>
+    <script type="text/javascript" src="<?php echo base_url("assets/plugins/jquery-ui/jquery-ui.min.js"); ?>"></script>
 
     <script type="text/javascript" src="<?php echo base_url("assets/js/validations.js"); ?>"></script>
     <script type="text/javascript" src="<?php echo base_url("assets/js/sha512.min.js"); ?>"></script>
@@ -101,8 +102,29 @@
     <?php elseif($page_code == "student_profile_panel"): ?>
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/students/profile.js"); ?>"></script>
-    
+
+         <script type="text/javascript">
+            $("#menu_profile").addClass("active");
+        </script>
+
+    <?php elseif($page_code == "chapter_take_quiz"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/students/chapter_take_quiz.js"); ?>"></script>
+
+    <?php elseif($page_code == "home"): ?>
+
+        <script type="text/javascript">
+            $("#menu_home").addClass("active");
+        </script>
+
+    <?php elseif($page_code == "quizzes_results"): ?>
+
+        <script type="text/javascript">
+            $("#menu_quiz_results").addClass("active");
+        </script>
+
 	<?php endif; ?>
+
 
     <script type="text/javascript" src="<?php echo base_url("assets/js/students/search_lessons.js"); ?>"></script>
 

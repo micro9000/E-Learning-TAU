@@ -110,6 +110,7 @@
                             <th scope="col">Date Added</th>
                             <th scope="col">Date Modify</th>
                             <th scope="col">Control</th>
+                            <th scope="col">Add Quiz</th>
                         </tr>
                     </thead>
                     <?php if (isset($chapterID) && $chapterID > 0): ?>
@@ -123,6 +124,39 @@
                                     <td><?php echo $chapter_to_update_data['facultyName']; ?></td>
                                     <td><?php echo $chapter_to_update_data['dateAddedFormated']; ?></td>
                                     <td><?php echo $chapter_to_update_data['dateModifyFormated']; ?></td>
+                                    <td>
+                                        <table class='table-control-btns'>
+                                            <tr>
+                                                <td>
+                                                    <abbr title="Edit">
+                                                        <a href='#' class='btn-edit-chapter' data-id='<?php echo $chapter_to_update_data['id']; ?>'>
+                                                            <img src='<?php echo base_url("assets/imgs/icons/edit.png") ?>' class='icon-edit'>
+                                                        </a>
+                                                    </abbr>
+                                                </td>
+                                                <td>
+                                                    <abbr title='Delete' class='btn-delete-chapter' data-id='<?php echo $chapter_to_update_data['id']; ?>'>
+                                                        <a href='#'>
+                                                            <img src='<?php echo base_url("assets/imgs/icons/delete.png"); ?>' class='icon-delete'>
+                                                        </a>
+                                                    </abbr>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td>
+                                        <table class='table-control-btns'>
+                                            <tr>
+                                                <td>
+                                                    <abbr title='Add Quiz'>
+                                                        <a href='#' class='btn-add-chapter-quiz' data-toggle="modal" data-target="#exampleModalCenter" data-id='<?php echo $chapter_to_update_data['id']; ?>'>
+                                                            <img src='<?php echo base_url("assets/imgs/icons/add.png"); ?>' class='icon-add'>
+                                                        </a>
+                                                    </abbr>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
                                 </tr>
                             </tbody>
                         <?php endif; ?>
@@ -134,6 +168,63 @@
         </div>
     </div>
     
+    <!-- Add Quizes -->
+    <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle"></h5>
+                <button type="button" class="close btn-close-advance-search" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            
+                            <div class="form-group">
+                                <label for="input_quiz_title">Quiz Title</label>
+                                <input type="text" class="form-control quiz_title" id="input_quiz_title" placeholder="Title *">
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary btn-add-quiz">
+                                <span class="fa fa-plus-square"></span> Add</button>
+                            </div>
+                            <p id="add_quiz_msg"></p>
+
+                            <hr>
+
+                            <table class="table table-sm table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Control</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="quizzes_list"></tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <span class="fa fa-times"></span> Close
+                </button>
+                <button type="button" class="btn btn-primary btn-add-new-quiz">
+                    <span class="fa fa-search"></span> ADD
+                </button>
+            </div> -->
+        </div>
+      </div>
+    </div>
+
     <div class="loader_blocks"></div>
     
     <!-- Hidden by default -->

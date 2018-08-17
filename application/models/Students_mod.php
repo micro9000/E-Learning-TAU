@@ -437,13 +437,132 @@
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
-				'pswd' => $info['pswd'],
+				'pswd' => $info['pswd']
 			);
 
 			$this->db->set($data);
 			$this->db->where("id", $info['studentID']);
 			$result = $this->db->update('Students');
 			return $result;
+		}
+
+
+		public function insert_student_quiz_results($chapterID, $quizID, $score, $stdNum){
+
+			$data = array(
+				'chapterID' => $chapterID,
+				'quizID' => $quizID,
+				'score' => $score,
+				'stdNum' => $stdNum
+			);
+			// print_r($data);
+			$result = $this->db->insert('StudentQuizResults', $data);
+			
+			if ($result == 1){
+				return $this->db->insert_id();
+			}
+
+			return false;
+		}
+
+		public function insert_student_quiz_answer($answer){
+
+			$data = array(
+				'resultsID' => $answer['resultsID'],
+				'questionID' => $answer['questionID'],
+				'choiceID' => $answer['choiceID'],
+				'stdNum' => $answer['stdNum']
+			);
+
+			$result = $this->db->insert('StudentQuizAnswers', $data);
+			return $result;
+		}
+
+
+		public function is_choice_is_right_ans($choiceID, $questionID){
+
+			$this->db->select("count(*) As count");
+			$this->db->where(array(
+							"id" => $choiceID,
+							"questionID" => $questionID,
+							"isRightAns" => 1
+						));
+			$this->db->order_by("id", "DESC");
+			$this->db->limit(1);
+
+			$results = $this->db->get("QuestionChoices");
+			return $results->row_array();
+		}
+
+
+		public function count_question_right_answer($questionID){
+
+			$this->db->select("count(*) As count");
+			$this->db->where(array(
+							"questionID" => $questionID,
+							"isRightAns" => 1
+						));
+			$this->db->order_by("id", "DESC");
+			$this->db->limit(1);
+
+			$results = $this->db->get("QuestionChoices");
+			return $results->row_array();
+		}
+
+
+		public function get_std_last_chapter_quiz($resultsID, $stdNum){
+
+			$this->db->select("id, chapterID, quizID, score, stdNum, dateTaken, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTaketFormat");
+
+			$this->db->where(array(
+								"id" => $resultsID,
+								"stdNum" => $stdNum
+							));
+
+			$results = $this->db->get("StudentQuizResults");
+			return $results->row_array();
+		}
+
+		public function get_std_last_chapter_quiz_answers($resultsID, $stdNum){
+
+			$this->db->where(array(
+						"resultsID" => $resultsID,
+						"stdNum" => $stdNum
+					));
+
+			$results = $this->db->get("StudentQuizAnswers");
+			return $results->result_array();
+		}
+
+		public function get_quiz_number_right_answers($quizID){
+
+			$this->db->select("COUNT(QC.id) As count");
+			$this->db->from("QuestionChoices As QC");
+			$this->db->join("QuizQuestions As QQ", "QC.questionID=QQ.id");
+			$this->db->where(array(
+						"QQ.isDeleted" => 0,
+						"QC.isDeleted" => 0,
+						"QC.isRightAns" => 1,
+						"QQ.quizID" => $quizID
+					));
+
+			$results = $this->db->get();
+			return $results->row_array();
+		}
+
+		public function get_std_quizzes_results($stdNum){
+
+			$this->db->select("R.*, C.chapterTitle, Q.quizTitle, R.score, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTakenFormat");
+			$this->db->from("StudentQuizResults As R");
+			$this->db->join("TopicChapters As C", "R.chapterID=C.id");
+			$this->db->join("Quizzes As Q", "R.quizID=Q.id");
+			$this->db->where(array(
+						"R.stdNum" => $stdNum
+					));
+			$this->db->order_by("R.id", "DESC");
+
+			$results = $this->db->get();
+			return $results->result_array();
 		}
 
 	}

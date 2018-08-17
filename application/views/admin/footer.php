@@ -93,6 +93,10 @@
 
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/profile.js"); ?>"></script>
 
+    <?php elseif($page_code == "quiz_questions"): ?>
+
+        <script type="text/javascript" src="<?php echo base_url("assets/js/admin/add_quiz_questions.js"); ?>"></script>
+
 	<?php endif; ?>
 
     <?php if ($page_code !== "login"): ?>

@@ -1514,6 +1514,164 @@
 
 			return $agriculture_matrix;
 		}
+
+
+		public function insert_new_chapter_quiz($chapterID, $quiz_title, $quiz_title_slug, $facultyIDNum){
+
+			$data = array(
+				'chapterID' => $chapterID,
+				'quizTitle' => $quiz_title,
+				'quizTitleSlug' => $quiz_title_slug,
+				'addedByFacultyNum' => $facultyIDNum
+			);
+
+			$result = $this->db->insert('Quizzes', $data);
+			return $result;
+		}
+
+		public function select_all_chapter_quiz($chapterID){
+			$this->db->where("chapterID" , $chapterID);
+			$results = $this->db->get("Quizzes");
+			return $results->result_array();
+		}
+
+		public function select_chapter_quiz_by_id($quizID){
+			$this->db->where("id" , $quizID);
+			$results = $this->db->get("Quizzes");
+			return $results->row_array();
+		}
+
+		public function insert_new_quiz_question($quizID, $question, $addedByFacultyNum){
+
+			$data = array(
+				'quizID' => $quizID,
+				'question' => $question,
+				'addedByFacultyNum' => $addedByFacultyNum
+			);
+
+			$result = $this->db->insert('QuizQuestions', $data);
+
+			if ($result == 1){
+				return $this->db->insert_id();
+			}
+
+			return false;
+		}
+
+
+		public function update_quiz_question($questionID, $question){
+
+			$this->db->set('question', $question);
+			$this->db->where("id",  $questionID);
+			$result = $this->db->update('QuizQuestions');
+
+			return $result;
+		}
+
+		public function select_quiz_question_by_id($questionID){
+			$this->db->where("id" , $questionID);
+			$results = $this->db->get("QuizQuestions");
+			return $results->row_array();
+		}
+
+		public function select_all_quiz_questions($quizID){
+
+			$this->db->select("id, quizID, question, DATE_FORMAT(dateAdded, '%M %d, %Y %r') As dateAddedFormatted, addedByFacultyNum");
+			// $this->db->where("quizID", $quizID);
+			$this->db->where(array(
+							"quizID" => $quizID,
+							"isDeleted" => "0"
+						));
+			$results = $this->db->get("QuizQuestions");
+			return $results->result_array();
+		}
+
+		public function insert_question_choice($questionID, $choiceStr, $isRightAns, $facultyIDNum){
+
+			$data = array(
+				'questionID' => $questionID,
+				'choiceStr' => $choiceStr,
+				'isRightAns' => $isRightAns,
+				'addedByFacultyNum' => $facultyIDNum
+			);
+
+			$result = $this->db->insert('QuestionChoices', $data);
+			return $result;
+		}
+
+		public function update_question_choice($choiceID, $choice){
+
+			$this->db->set('choiceStr', $choice);
+			$this->db->where("id",  $choiceID);
+			$result = $this->db->update('QuestionChoices');
+
+			return $result;
+		}
+
+		public function select_number_of_correct_ans($questionID){
+			$this->db->where(array(
+							"questionID" => $questionID,
+							"isRightAns" => 1,
+							"isDeleted" => 0
+						));
+			$this->db->select("COUNT(*) As count");
+			$results = $this->db->get("QuestionChoices");
+			return $results->row_array();
+		}
+
+		public function select_question_choices_by_id($questionID){
+			$this->db->where(array(
+							"questionID" => $questionID,
+							"isDeleted" => 0
+						));
+			$results = $this->db->get("QuestionChoices");
+			return $results->result_array();
+		}
+
+
+		public function select_choices_by_id($choiceID){
+			$this->db->where(array(
+							"id" => $choiceID,
+							"isDeleted" => 0
+						));
+			$results = $this->db->get("QuestionChoices");
+			return $results->row_array();
+		}
+
+		public function mark_quiz_question_data_as_deleted($questionID){
+			$this->db->set('isDeleted', 1);
+			$this->db->where('id', $questionID);
+			$result = $this->db->update('QuizQuestions');
+			return $result;
+		}
+
+
+		public function mark_question_choice_as_deleted($choiceID){
+
+			$this->db->set('isDeleted', 1);
+			$this->db->where("id",  $choiceID);
+			$result = $this->db->update('QuestionChoices');
+
+			return $result;
+		}
+
+
+		public function get_std_quizzes_results($stdNum){
+
+			$this->db->select("R.*, C.chapterTitle, Q.quizTitle, R.score, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTakenFormat");
+			$this->db->from("StudentQuizResults As R");
+			$this->db->join("TopicChapters As C", "R.chapterID=C.id");
+			$this->db->join("Quizzes As Q", "R.quizID=Q.id");
+			$this->db->where(array(
+						"R.stdNum" => $stdNum
+					));
+			$this->db->order_by("R.id", "DESC");
+
+			$results = $this->db->get();
+			return $results->result_array();
+		}
+
+
 	}
 
 ?>

@@ -16,6 +16,10 @@
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/solid.js"); ?>"></script>
 	<script type="text/javascript" src="<?php echo base_url("assets/plugins/fontawesome.js"); ?>"></script>
 
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/plugins/jquery-ui/jquery-ui.min.css"); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/plugins/jquery-ui/jquery-ui.theme.min.css"); ?>">
+	<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/plugins/jquery-ui/jquery-ui.structure.min.css"); ?>">
+
 	<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/tools.css"); ?>">
 
 
@@ -28,9 +32,11 @@
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/students/registration.css"); ?>">
 
-	<?php elseif($page_code == "home" || $page_code == "view_lesson" || $page_code == "student_profile_panel" || $page_code == "search_lessons"): ?>
+	<?php elseif($page_code == "home" || $page_code == "view_lesson" || $page_code == "student_profile_panel" || $page_code == "search_lessons" || $page_code == "chapter_take_quiz" || $page_code == "quizzes_results"): ?>
 
 		<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/css/main/master.css"); ?>">
+
+		
 
 	<?php endif; ?>
 

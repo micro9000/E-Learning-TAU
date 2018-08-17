@@ -182,7 +182,10 @@ $(".btn-add-student-data").on("click", function(){
 	}
 });
 
+
 function display_students(data){
+
+	// console.log(data);
 	
 	var display = "";
 	$.each(data, function(i, student){
@@ -228,6 +231,7 @@ function pagination_and_display(data){
         autoHidePrevious: true,
 	    autoHideNext: true,
 	    callback: function(data, pagination) {
+	    	// console.log(data);
 	        display_students(data);
 	    }
 	});
@@ -240,6 +244,7 @@ function get_all_students(){
 	$.post(
 		base_url + "get_all_student",
 		function(data){
+			// console.log(data);
 			pagination_and_display(data);
 		}
 	);
@@ -437,7 +442,9 @@ $(".btn-upload-student-numbers").on("click", function(){
 
 });
 
-function pagination_and_display(data){
+function pagination_and_display_students(data){
+
+	// console.log(data);
 
 	$("#students_nums_len").html(data.length);
 
@@ -477,7 +484,7 @@ function get_all_student_numbers(){
 		base_url + "get_all_student_numbers",
 		function(data){
 			// console.log(data);
-			pagination_and_display(data);
+			pagination_and_display_students(data);
 		}
 	);
 }

@@ -21,6 +21,8 @@
                                 <option value="LESS">Lessons</option>
                                 <option value="FACU">Faculties</option>
                                 <option value="STUD">Students</option>
+                                <option value="QUES">Questions</option>
+                                <option value="ANS">Aswers</option>
                             </select>
                         </div>
                     </div>

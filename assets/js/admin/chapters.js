@@ -93,6 +93,20 @@ function display_chapters(data){
 					display += "</tr>";
 				display += "</table>";
 			display += "</td>";
+
+			display += "<td>";
+				display += "<table class='table-control-btns'>";
+					display += "<tr>";
+						display += "<td>";
+							display += "<abbr title='Add Quiz' class='btn-add-chapter-quiz' data-toggle='modal' data-target='#exampleModalCenter'  data-id='"+ chapter.id +"'>";
+								display += "<a href='#'>";
+									display += "<img src='"+ base_url +"assets/imgs/icons/add.png' class='icon-add'>";
+								display += "</a>";	
+							display += "</abbr>";
+						display += "</td>";
+					display += "</tr>";
+				display += "</table>";
+			display += "</td>";
 		display += "</tr>";
 
 	});
@@ -276,4 +290,84 @@ $(".btn-search-chapter").on("click", function(){
 			display_chapters(data);
 		}
 	);
-})
+});
+
+
+function display_quizes(data){
+	var display = "";
+
+	$.each(data, function(i, quiz){
+		display += "<tr>";
+			display += "<td>"+ (i+1) +"</td>";
+			display += "<td>"+ quiz.quizTitle +"</td>";
+			display += "<td><a href='"+ base_url + "add_quiz_questions/"+ quiz.id +"/"+ quiz.quizTitleSlug +"' style='text-decoration: underline'>Add questions</a></td>";
+		display += "</tr>";
+	});
+
+	$(".quizzes_list").html(display);
+}
+
+function get_all_chapter_quizes(chapterID){
+	$.post(
+		base_url + "get_all_chapter_quizes",
+		{
+			"chapterID" : chapterID
+		},
+		function(data){
+			// console.log(data);
+			display_quizes(data);
+		}
+	);
+}
+
+$(document).on("click", ".btn-add-chapter-quiz", function(){
+
+	var chapter_id = $(this).attr("data-id");
+
+	$.post(
+		base_url + "get_chapter_by_id",
+		{
+			"chapterID" : chapter_id
+		},
+		function(data){
+
+			// console.log(data);
+
+			$(".btn-add-quiz").attr("data-chapter-id", data.id);
+			get_all_chapter_quizes(data.id);
+
+			$("#exampleModalLongTitle").html("Add Quiz for \"" + data.chapterTitle + "\"");
+
+		}
+	);
+
+});
+
+
+$(".btn-add-quiz").on("click", function(){
+	var chapter_id = $(this).attr("data-chapter-id");
+	var quiz_title = $(".quiz_title").val();
+
+	if (chapter_id !== "" && typeof chapter_id !== "undefined" && quiz_title !== ""){
+
+		$.post(
+			base_url + "add_new_chapter_quiz",
+			{
+				"chapterID" : chapter_id,
+				"quiz_title" : quiz_title
+			},
+			function(data){
+				// console.log(data);
+				$("#add_quiz_msg").html(data.msg);
+
+				setTimeout(function(){
+					get_all_chapter_quizes(chapter_id);
+					$("#add_quiz_msg").html("");
+				}, 500);
+
+			}
+		);
+
+	}
+
+});

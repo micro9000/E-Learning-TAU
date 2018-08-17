@@ -12,7 +12,10 @@
 			    </div>
 
 			    <ul class="list-unstyled components">
-			        <p>E-Learning System</p>
+			        <p>
+			        	E-Learning System <br/>
+			        	Student: <?php echo $this->session->userdata('std_session_stdNum'); ?>
+			        </p>
 
 			        <?php
 

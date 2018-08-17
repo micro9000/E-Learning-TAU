@@ -134,6 +134,101 @@ CREATE TABLE IF NOT EXISTS TopicChapters(
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
 
+SELECT * FROM TopicChapters;
+
+
+CREATE TABLE IF NOT EXISTS Quizzes(
+	id INT NOT NULL AUTO_INCREMENT,
+	chapterID INT NOT NULL,
+	quizTitle VARCHAR(255),
+	quizTitleSlug VARCHAR(255),
+	dateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
+	isDeleted TINYINT DEFAULT 0,
+	addedByFacultyNum CHAR(20),
+	FOREIGN KEY(chapterID) REFERENCES TopicChapters(id),
+	PRIMARY KEY(id)
+)ENGINE=INNODB;
+
+SELECT * FROM Quizzes;
+
+	-- numOfChoices INT, -- select if from choices
+	-- numOfRightAns INT,-- select if from choices
+CREATE TABLE IF NOT EXISTS QuizQuestions(
+	id INT NOT NULL AUTO_INCREMENT,
+	quizID INT NOT NULL,
+	question VARCHAR(255),
+	dateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
+	isDeleted TINYINT DEFAULT 0,
+	addedByFacultyNum CHAR(20),
+	FOREIGN KEY(quizID) REFERENCES Quizzes(id),
+	PRIMARY KEY(id)
+)ENGINE=INNODB;
+
+SELECT * FROM QuizQuestions;
+
+SELECT id, quizID, question, DATE_FORMAT(dateAdded, '%M %d, %Y %r') As dateAddedFormatted, addedByFacultyNum
+FROM QuizQuestions WHERE quizID=1;
+
+CREATE TABLE IF NOT EXISTS QuestionChoices(
+	id INT NOT NULL AUTO_INCREMENT,
+	questionID INT NOT NULL,
+	choiceStr VARCHAR(255),
+	isRightAns INT DEFAULT 0,
+	dateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
+	isDeleted TINYINT DEFAULT 0,
+	addedByFacultyNum CHAR(20),
+	FOREIGN KEY(questionID) REFERENCES QuizQuestions(id),
+	PRIMARY KEY(id)
+)ENGINE=INNODB;
+
+SELECT * FROM QuestionChoices WHERE isDeleted=0;
+
+SELECT COUNT(QC.id) As count
+FROM QuestionChoices As QC, QuizQuestions As QQ 
+WHERE QC.isDeleted=0 AND QQ.isDeleted=0 AND QC.isRightAns=1 AND QC.questionID=QQ.id AND QQ.quizID=14;
+
+CREATE TABLE IF NOT EXISTS StudentQuizResults(
+	id INT NOT NULL AUTO_INCREMENT,
+	chapterID INT NOT NULL,
+	quizID INT NOT NULL,
+	score INT DEFAULT 0,
+	stdNum CHAR(20),
+	dateTaken DATETIME DEFAULT CURRENT_TIMESTAMP,
+	FOREIGN KEY(chapterID) REFERENCES TopicChapters(id),
+	FOREIGN KEY(quizID) REFERENCES Quizzes(id),
+	PRIMARY KEY(id)
+)ENGINE=INNODB;
+
+SELECT * FROM Quizzes;
+SELECT * FROM TopicChapters;
+
+SELECT * FROM StudentQuizResults WHERE chapterID=14 and quizID=1 AND stdNum='2012101218' ORDER BY id DESC LIMIT 1;
+-- 
+-- 
+SELECT R.*, C.chapterTitle, Q.quizTitle, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTakenFormat, CONCAT(S.firstName,' ', S.lastName) As stdName
+FROM TopicChapters As C, Quizzes As Q, StudentQuizResults As R, Students As S
+WHERE R.chapterID=C.id AND R.quizID=Q.id AND R.stdNum='2012101218' AND S.stdNum=R.stdNum ORDER BY R.id DESC;
+
+SELECT * FROM Students;
+
+CREATE TABLE IF NOT EXISTS StudentQuizAnswers(
+	id INT NOT NULL AUTO_INCREMENT,
+	resultsID INT NOT NULL,
+	questionID INT NOT NULL,
+	choiceID INT NOT NULL,
+	stdNum CHAR(20),
+	dateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
+	isDeleted TINYINT DEFAULT 0,
+	FOREIGN KEY(resultsID) REFERENCES StudentQuizResults(id),
+	FOREIGN KEY(questionID) REFERENCES QuizQuestions(id),
+	FOREIGN KEY(choiceID) REFERENCES QuestionChoices(id),
+	PRIMARY KEY(id)
+)ENGINE=INNODB;
+
+
+SELECT * FROM StudentQuizAnswers;
+
+
 
 CREATE TABLE IF NOT EXISTS Lessons(
 	id INT NOT NULL AUTO_INCREMENT,

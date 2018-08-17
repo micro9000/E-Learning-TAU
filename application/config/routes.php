@@ -80,6 +80,13 @@ $route['update_student_data'] = "students/update_student_data";
 $route['main_search_lessons/(:any)'] = "students/search_lessons/$1";
 $route['search_lessons_view/(:any)'] = "students/search_lessons_view/$1";
 
+$route['quizzes_results'] = "students/quizzes_results";
+
+// Take Quiz
+$route['chapter_take_quiz/(:any)/(:any)'] = "students/chapter_take_quiz/$1/$2";
+$route['insert_student_quiz_answer'] = "students/insert_student_quiz_answer";
+$route['chapter_take_quiz_results/(:any)'] = "students/chapter_take_quiz_results/$1";
+
 // Admin Routing:
 //
 
@@ -121,6 +128,25 @@ $route['get_all_chapters'] = "admin/get_all_topics_chapters";
 $route['get_chapter_by_id'] = "admin/get_chapter_by_id";
 $route['search_topics_chapters'] = "admin/search_topics_chapters";
 
+
+$route['add_new_chapter_quiz'] = "admin/add_new_chapter_quiz";
+$route['get_all_chapter_quizes'] = "admin/get_all_chapter_quizes";
+$route['add_quiz_questions/(:any)/(:any)'] = "admin/add_quiz_questions/$1/$2";
+
+$route['add_quiz_question'] = "admin/add_quiz_question";
+$route['update_quiz_question'] = "admin/update_quiz_question";
+$route['add_question_choice'] = "admin/add_question_choice";
+$route['update_question_choice'] = "admin/update_question_choice";
+
+$route['get_quiz_questions_and_choices_matrix'] = "admin/get_quiz_questions_and_choices_matrix";
+
+$route['delete_quiz_question'] = "admin/delete_quiz_question";
+$route['get_quiz_questions_by_id'] = "admin/get_quiz_questions_by_id";
+
+$route['delete_question_choice'] = "admin/delete_question_choice";
+$route['get_questions_choice_by_id'] = "admin/get_questions_choice_by_id";
+
+$route['add_new_question_choice'] = "admin/add_new_question_choice";
 
 // Lessons
 
@@ -223,7 +249,6 @@ $route['recycle_bin_students'] = "admin/recycle_bin_students";
 $route['get_all_deleted_students'] = "admin/get_all_deleted_students";
 $route['restore_deleted_student_data'] = "admin/restore_deleted_student_data";
 $route['search_deleted_students'] = "admin/search_deleted_students";
-
 
 
 $route['default_controller'] = 'students';

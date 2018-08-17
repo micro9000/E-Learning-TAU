@@ -19,3 +19,10 @@ $(document).on("mouseleave", ".icon-undo", function() {
 $(document).on("mouseenter", ".icon-undo", function() {
     $(this).attr("src", base_url + "assets/imgs/icons/undo-hover.png");
 });
+
+$(document).on("mouseleave", ".icon-add", function() {
+    $(this).attr("src", base_url + "assets/imgs/icons/add.png");
+});
+$(document).on("mouseenter", ".icon-add", function() {
+    $(this).attr("src", base_url + "assets/imgs/icons/add-hover.png");
+});
