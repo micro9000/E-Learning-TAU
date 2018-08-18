@@ -87,6 +87,7 @@ $route['chapter_take_quiz/(:any)/(:any)'] = "students/chapter_take_quiz/$1/$2";
 $route['insert_student_quiz_answer'] = "students/insert_student_quiz_answer";
 $route['chapter_take_quiz_results/(:any)'] = "students/chapter_take_quiz_results/$1";
 
+
 // Admin Routing:
 //
 
@@ -94,6 +95,9 @@ $route['admin_login_page'] = "admin/login_page";
 $route['admin_login'] = "admin/login";
 $route['admin_logout'] = "admin/destroy_admin_session";
 $route['admin_main_panel'] = "admin/main_panel";
+
+$route['get_all_stds_quizzes_results'] = "admin/get_all_stds_quizzes_results";
+$route['std_quiz_view_results/(:any)/(:any)'] = "admin/std_quiz_view_results/$1/$2";
 
 // Principles
 

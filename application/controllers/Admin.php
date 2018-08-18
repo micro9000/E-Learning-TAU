@@ -184,14 +184,6 @@
 			$data['page_title'] = "Admin Main Panel";
 			$data['page_code'] = "main_panel";
 
-			// $this->load->library('pagination');
-
-			// $config['base_url'] = base_url("admin_agriculture_principles");
-			// $config['total_rows'] = 200;
-			// $config['per_page'] = 20;
-
-			// $this->pagination->initialize($config);
-
 			$this->load->view("admin/header", $data);
 			$this->load->view("admin/sidebar");
 			$this->load->view("admin/content_start_div");
@@ -855,6 +847,90 @@
 			$this->load->view("admin/topbar");
 			$this->load->view("admin/add_quiz_questions");
 			$this->load->view("admin/footer");
+
+		}
+
+
+		public function std_quiz_view_results($resultsID, $stdNum){
+
+			if ($this->is_admin_still_logged_in() === FALSE){
+				redirect("/admin_login_page");
+			}
+
+			// Needs inside sidebar
+			$userType = $this->get_user_type();
+			$actualUserType = $this->get_actual_user_type($userType);
+			$data['userType'] = $userType;
+			$data['actualUserType'] = $actualUserType;
+
+			$post_quizData = array(
+						'resultsID' => $resultsID,
+						"stdNum" => $stdNum
+					);
+
+			$post_quizData = $this->security->xss_clean($post_quizData);
+
+			$quiz_results = $this->admin_mod->get_std_last_chapter_quiz($post_quizData['resultsID'], $post_quizData['stdNum']);
+
+			// echo "<pre>";
+			// print_r($quiz_results);
+			// echo "</pre>";
+
+			if ($quiz_results != NULL){
+
+				$data['quiz_results'] = $quiz_results;
+
+				$quizData = array(
+							'chapterID' => $quiz_results['chapterID'],
+							'quizID' => $quiz_results['quizID']
+						);
+				$quizData = $this->security->xss_clean($quizData);
+
+				$data['quiz_answers'] = $this->students_mod->get_std_last_chapter_quiz_answers($quiz_results['id'], $post_quizData['stdNum']);
+
+				$numberOfRightAns = $this->students_mod->get_quiz_number_right_answers($quizData['quizID']);
+
+				if ($numberOfRightAns != NULL){
+					$data['numberOfRightAns'] = $numberOfRightAns;
+				}else{
+					$data['numberOfRightAns'] = 0;
+				}
+
+				$quiz_data = $this->admin_mod->select_chapter_quiz_by_id($quizData['quizID']);
+
+				if ($quiz_data == null){
+					show_404();
+				} else if (sizeof($quiz_data) == 0){
+					show_404();
+				}
+
+				$data['quiz_data'] = $quiz_data;
+				$data['quizID'] = $quizData['quizID'];
+
+				$chapterData = $this->admin_mod->select_chapter_by_id($quiz_data['chapterID']);
+				$data['chapterData'] = $chapterData;
+
+				$topicData = $this->admin_mod->select_principles_sub_topic_by_topic_id($chapterData['topicID']);
+				$data['topicData'] = $topicData;
+
+				$principleData = $this->admin_mod->select_principle_by_id($chapterData['principleID']);
+				$data['principleData'] = $principleData;
+
+				$data['quiz_questions_choices_matrix'] = $this->get_quiz_questions_and_choices_matrix_get($quizData['quizID']);
+
+				$data['page_title'] = "Admin student quiz results";
+				$data['page_code'] = "quiz_results";
+
+				$this->load->view("admin/header", $data);
+				$this->load->view("admin/sidebar");
+				$this->load->view("admin/content_start_div");
+				$this->load->view("admin/topbar");
+				$this->load->view("admin/std_quiz_results");
+				$this->load->view("admin/footer");
+
+			}else{
+				show_404();
+			}
 
 		}
 
@@ -4769,13 +4845,7 @@
 
 		}
 
-		public function get_quiz_questions_and_choices_matrix(){
-			
-			$matrix = array();
-
-			$data = array(
-				"quizID" => $this->input->post('quizID'),
-			);
+		public function get_quiz_questions_and_choices_tmp($data){
 
 			$data = $this->security->xss_clean($data);
 
@@ -4820,12 +4890,35 @@
 					
 				}
 
-				$matrix = $quiz_questions;
+				return $quiz_questions;
 			}
+
+			return array();
+		}
+
+		public function get_quiz_questions_and_choices_matrix(){
+			
+			$data = array(
+				"quizID" => $this->input->post('quizID'),
+			);
+
+			$matrix = $this->get_quiz_questions_and_choices_tmp($data);
 
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($matrix));
 
+		}
+
+
+		public function get_quiz_questions_and_choices_matrix_get($quizID){
+			
+			$data = array(
+				"quizID" => $quizID
+			);
+
+			$matrix = $this->get_quiz_questions_and_choices_tmp($data);
+
+			return $matrix;
 		}
 
 
@@ -4937,6 +5030,27 @@
 
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));
+		}
+
+
+		public function get_all_stds_quizzes_results(){
+
+			$stdQuizzes = $this->admin_mod->get_std_quizzes_results(200);
+
+			$quizzesLen = sizeof($stdQuizzes);
+
+			for($i=0; $i<$quizzesLen; $i++){
+				$rightAnsLen = $this->students_mod->get_quiz_number_right_answers($stdQuizzes[$i]['quizID']);
+
+				if ($rightAnsLen != NULL){
+					$stdQuizzes[$i]['rightAnsLen'] = $rightAnsLen['count'];
+				}else{
+					$stdQuizzes[$i]['rightAnsLen'] = 0;
+				}
+			}
+
+			$this->output->set_content_type('application/json');
+			$this->output->set_output(json_encode($stdQuizzes));
 		}
 
 	}

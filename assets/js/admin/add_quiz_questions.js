@@ -134,9 +134,13 @@ $(".btn-add-question-choices").on("click", function(){
 							    processData: false, // Don't process the files
 							    contentType: false, // Set content type to false as jQuery will tell the server its a query string request
 							    success: function(data, textStatus, jqXHR) {
-							    	console.log(data);
+							    	// console.log(data);
 
 							    	$("#quiz_question_ans_msg").html(data.msg);
+
+							    	if (parseInt(quiz_id) > 0){
+										get_all_quiz_questions(quiz_id);
+									}
 
 							    	$(".loader_blocks").css("display", "none");
 							    }
@@ -149,8 +153,6 @@ $(".btn-add-question-choices").on("click", function(){
 
 					}
 				);
-
-							
 
 			}else{
 				$("#quiz_question_ans_msg").html("Invalid quiz id");

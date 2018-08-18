@@ -209,6 +209,10 @@ SELECT R.*, C.chapterTitle, Q.quizTitle, DATE_FORMAT(dateTaken, '%M %d, %Y') As 
 FROM TopicChapters As C, Quizzes As Q, StudentQuizResults As R, Students As S
 WHERE R.chapterID=C.id AND R.quizID=Q.id AND R.stdNum='2012101218' AND S.stdNum=R.stdNum ORDER BY R.id DESC;
 
+SELECT R.*, C.chapterTitle, Q.quizTitle, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTakenFormat, CONCAT(S.firstName,' ', S.lastName) As stdName
+FROM TopicChapters As C, Quizzes As Q, StudentQuizResults As R, Students As S
+WHERE R.chapterID=C.id AND R.quizID=Q.id AND S.stdNum=R.stdNum ORDER BY R.id DESC;
+
 SELECT * FROM Students;
 
 CREATE TABLE IF NOT EXISTS StudentQuizAnswers(

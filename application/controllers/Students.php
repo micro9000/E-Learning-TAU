@@ -470,9 +470,6 @@
 
 				$data['quiz_questions_choices_matrix'] = $this->get_quiz_questions_and_choices_matrix($quizData['quizID']);
 
-
-
-
 				$this->load->view("students/header", $data);
 				$this->load->view("main/sidebar");
 				$this->load->view("main/topbar");
@@ -861,6 +858,15 @@
 
 					$this->session->set_userdata("student_num_registration", $data['student_id_num']);
 
+					$msg = "<p>Hi Good Day!</p>";
+					$msg .= "<p>Thank you for your registration</p>";
+					$msg .= "<p>Registration Code: <strong>". $data['regCode'] ."</strong></p>";
+					$msg .= "<br/><br/><strong>E-Learning</strong>";
+					$msg .= "<p>Do not reply</p>";
+					$msg .= "<p>Tarlac Agriculture University, Agriculture Department</p>";
+
+					$this->send_email($data['email'], "E-Learning Registration Code", $msg);
+
 					$is_done = array(
 						"done" => "TRUE",
 						"msg" => "Submitted Successfully, <br/> please visit your email account and enter the registration code"
@@ -873,23 +879,23 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
-		private function send_email_notif_registration_code($code, $stdEmail, $stdNum){
+		// private function send_email_notif_registration_code($code, $stdEmail, $stdNum){
 
-			// $config['protocol'] = 'sendmail';
-			// $config['mailpath'] = '/usr/sbin/sendmail';
-			$config['charset'] = 'iso-8859-1';
-			$config['wordwrap'] = TRUE;
+		// 	// $config['protocol'] = 'sendmail';
+		// 	// $config['mailpath'] = '/usr/sbin/sendmail';
+		// 	$config['charset'] = 'iso-8859-1';
+		// 	$config['wordwrap'] = TRUE;
 
-			$this->email->from('elearning.tau2018@gmai.com', 'ELearning');
-			$this->email->to('Raniel.Garcia@onsemi.com');
-			// $this->email->cc('another@another-example.com');
-			// $this->email->bcc('them@their-example.com');
+		// 	$this->email->from('elearning.tau2018@gmai.com', 'ELearning');
+		// 	$this->email->to('Raniel.Garcia@onsemi.com');
+		// 	// $this->email->cc('another@another-example.com');
+		// 	// $this->email->bcc('them@their-example.com');
 
-			$this->email->subject('Student Registertion - E-Learning Tarlac Agriculture University');
-			$this->email->message('Testing the email class.');
+		// 	$this->email->subject('Student Registertion - E-Learning Tarlac Agriculture University');
+		// 	$this->email->message('Testing the email class.');
 
-			$this->email->send();
-		}
+		// 	$this->email->send();
+		// }
 
 		public function verify_registration_code(){
 			

@@ -512,7 +512,7 @@
 
 		public function get_std_last_chapter_quiz($resultsID, $stdNum){
 
-			$this->db->select("id, chapterID, quizID, score, stdNum, dateTaken, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTaketFormat");
+			$this->db->select("id, chapterID, quizID, score, stdNum, dateTaken, DATE_FORMAT(dateTaken, '%M %d, %Y %h:%i:%S') As dateTaketFormat");
 
 			$this->db->where(array(
 								"id" => $resultsID,

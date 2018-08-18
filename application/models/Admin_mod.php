@@ -1656,21 +1656,33 @@
 		}
 
 
-		public function get_std_quizzes_results($stdNum){
+		public function get_std_quizzes_results($limit=200){
 
-			$this->db->select("R.*, C.chapterTitle, Q.quizTitle, R.score, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTakenFormat");
+			$this->db->select("R.*, C.chapterTitle, Q.quizTitle, R.score, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTakenFormat, CONCAT(S.firstName,' ', S.lastName) As stdName");
 			$this->db->from("StudentQuizResults As R");
 			$this->db->join("TopicChapters As C", "R.chapterID=C.id");
 			$this->db->join("Quizzes As Q", "R.quizID=Q.id");
-			$this->db->where(array(
-						"R.stdNum" => $stdNum
-					));
+			$this->db->join("Students As S", "S.stdNum=R.stdNum");
 			$this->db->order_by("R.id", "DESC");
+			$this->db->limit($limit);
 
 			$results = $this->db->get();
 			return $results->result_array();
 		}
 
+		public function get_std_last_chapter_quiz($resultsID, $stdNum){
+
+			$this->db->select("SQR.id, SQR.chapterID, SQR.quizID, SQR.score, SQR.stdNum, SQR.dateTaken, DATE_FORMAT(SQR.dateTaken, '%M %d, %Y %h:%i:%S') As dateTaketFormat, CONCAT(S.firstName,' ', S.lastName) As stdName");
+			$this->db->from("StudentQuizResults As SQR");
+			$this->db->join("Students As S", "SQR.stdNum=S.stdNum");
+			$this->db->where(array(
+								"SQR.id" => $resultsID,
+								"SQR.stdNum" => $stdNum
+							));
+
+			$results = $this->db->get("StudentQuizResults");
+			return $results->row_array();
+		}
 
 	}
 
