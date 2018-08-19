@@ -858,12 +858,15 @@
 
 					$this->session->set_userdata("student_num_registration", $data['student_id_num']);
 
-					$msg = "<p>Hi Good Day!</p>";
-					$msg .= "<p>Thank you for your registration</p>";
-					$msg .= "<p>Registration Code: <strong>". $data['regCode'] ."</strong></p>";
-					$msg .= "<br/><br/><strong>E-Learning</strong>";
-					$msg .= "<p>Do not reply</p>";
-					$msg .= "<p>Tarlac Agriculture University, Agriculture Department</p>";
+					$msg = "<h4 style='color: skyblue'>Verify your email address</h4>";
+					$msg .= "<br/><br/>";
+					$msg .= "<p>To finish setting up your ELearning account, we just need to make sure this email address is yours.</p>";
+					$msg .= "<br/><br/>";
+					$msg .= "<p>To verify your email address use this registration code: <strong>". $data['regCode'] ."</strong></p>";
+					$msg .= "<br/><br/>";
+					$msg .= "<p>If you didn't request this code, you can safely ignore this email. Someone else might have typed your email address by mistake.</p>";
+					$msg .= "<br/><br/>";
+					$msg .= "<p>Thanks, <br/> ELearning - Tarlac Agriculture University, Agriculture Department</p>";
 
 					$this->send_email($data['email'], "E-Learning Registration Code", $msg);
 
