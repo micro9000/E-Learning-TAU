@@ -116,18 +116,22 @@ function get_student_data_with_validation(){
 	return data;
 }
 
-$(".form-signin").on("submit", function(e){
 
-	e.preventDefault();
+
+$(".btn-agree-to-collec-pr-info").on("click", function(){
+
+	$(".loader_blocks").css("display", "block");
 
 	var std_data = get_student_data_with_validation();
+
+	// console.log(std_data);
 	
 	if (std_data.length > 0){
 		$.post(
 			base_url + "student_initial_registration",
 			std_data,
 			function(data){
-				// console.log(data);
+				console.log(data);
 
 				if (data.done == "TRUE"){
 					$(".btn-register").attr("disabled", "disabled");
@@ -140,12 +144,44 @@ $(".form-signin").on("submit", function(e){
 
 				}else{
 					$(".registration-msg").html(data.msg).removeClass("hidden-default").addClass("alert-danger");
+					$(".loader_blocks").css("display", "none");
 				}
 			}
 		);
 	}
 
 });
+
+// $(".form-signin").on("submit", function(e){
+
+// 	e.preventDefault();
+
+// 	var std_data = get_student_data_with_validation();
+	
+// 	if (std_data.length > 0){
+// 		$.post(
+// 			base_url + "student_initial_registration",
+// 			std_data,
+// 			function(data){
+// 				console.log(data);
+
+// 				if (data.done == "TRUE"){
+// 					$(".btn-register").attr("disabled", "disabled");
+
+// 					$(".registration-msg").html(data.msg).removeClass("hidden-default").removeClass("alert-danger").addClass("alert-primary");
+
+// 					setTimeout(function(){
+// 						window.location = base_url + "student_registration_code/" + std_data.student_id_num;
+// 					}, 500);
+
+// 				}else{
+// 					$(".registration-msg").html(data.msg).removeClass("hidden-default").addClass("alert-danger");
+// 				}
+// 			}
+// 		);
+// 	}
+
+// });
 
 
 $(".btn-submit-registration-code").on("click", function(){
