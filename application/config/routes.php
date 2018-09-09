@@ -75,6 +75,7 @@ $route['add_lesson_comment'] = "students/add_lesson_comment";
 $route['get_all_lesson_comments'] = "students/get_all_lesson_comments";
 
 $route['student_profile'] = "students/profile";
+$route['update_student_profile'] = "students/update_profile";
 $route['update_student_data'] = "students/update_student_data";
 
 $route['main_search_lessons/(:any)'] = "students/search_lessons/$1";

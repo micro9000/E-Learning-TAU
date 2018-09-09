@@ -187,7 +187,7 @@ a.article:hover {
 /* 
     Switch
 */
-.switch {
+/* .switch {
   position: relative;
   display: inline-block;
   width: 60px;
@@ -232,14 +232,14 @@ input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
-}
+} */
 
 
 /* Rounded sliders */
-.slider.round {
+/* .slider.round {
   border-radius: 34px;
 }
 
 .slider.round:before {
   border-radius: 50%;
-}
+} */

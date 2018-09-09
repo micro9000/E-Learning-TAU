@@ -25,16 +25,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="select_sub_topic_ID">Chapters <span style="color:red">*</span></label>
+                    <label for="select_sub_topic_ID">Select Chapters <span style="color:red">*</span></label>
                     
                     <select class="form-control chapter_id" id="select_chapter_ID">
 					</select>
                 </div>
 
                 <div class="form-group">
-                    <label for="input_lesson_title">Lesson title <span style="color:red">*</span></label>
+                    <!-- <label for="input_lesson_title">Lesson title <span style="color:red">*</span></label> -->
 
-                    <input type="text" class="form-control lesson_title" id="input_lesson_title" placeholder="Title">
+                    <input type="text" class="form-control lesson_title" id="input_lesson_title" placeholder="Lesson Title">
                 </div>
 
                 <?php if (isset($lessonID) && $lessonID > 0): ?>

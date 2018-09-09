@@ -9,10 +9,10 @@
 
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             	<div class="form-group">
-                    <label for="select_principleID">Select Principle</label>
+                    <!-- <label for="select_principleID">Select Principle</label> -->
                     
                     <select class="form-control principleID" id="select_principleID">
-					  	<option value=""></option>
+					  	<option value="">Select Principle</option>
 					  	<?php
 
 					  		$principlesLen = sizeof($principles);
@@ -30,18 +30,18 @@
 
 
                	<div class="form-group">
-                    <label for="input_principle_sub_topic">Principle Sub Topic</label>
+                    <!-- <label for="input_principle_sub_topic">Principle Sub Topic</label> -->
 
                     <?php if (isset($topicID) && $topicID > 0): ?>
 
                         <?php if (sizeof($topic_to_update_data) > 0): ?>
-                        	<input type="text" value="<?php echo $topic_to_update_data['topic']; ?>" class="form-control principle_sub_topic" id="input_principle_sub_topic" placeholder="Sub topic">
+                        	<input type="text" value="<?php echo $topic_to_update_data['topic']; ?>" class="form-control principle_sub_topic" id="input_principle_sub_topic" placeholder="Add new sub topic">
                         <?php else: ?>
-                        	<input type="text" class="form-control principle_sub_topic" id="input_principle_sub_topic" placeholder="Sub topic">
+                        	<input type="text" class="form-control principle_sub_topic" id="input_principle_sub_topic" placeholder="Add new sub topic">
                          <?php endif; ?>
                             
                     <?php else: ?>
-                    	<input type="text" class="form-control principle_sub_topic" id="input_principle_sub_topic" placeholder="Sub topic">
+                    	<input type="text" class="form-control principle_sub_topic" id="input_principle_sub_topic" placeholder="Add new sub topic">
                     <?php endif; ?>
 
                     

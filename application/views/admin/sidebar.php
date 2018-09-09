@@ -49,13 +49,17 @@
                     </ul>
                 </li>
 
-                <?php if ($userType == "admin_faculty" || $userType == "dean_admin_faculty"): // FOR ADMIN VIEW ONLY ?>
+                <?php if ($userType == "admin_faculty" || $userType == "dean_admin_faculty" || $userType == "dean"): ?>
                     <li id="faculty_list_page">
-                        <a href="<?php echo base_url("faculties"); ?>">Faculties</a>
+                        <a href="<?php echo base_url("faculties"); ?>">Faculty</a>
                     </li>
                     <li id="students_list_page">
                         <a href="<?php echo base_url("students"); ?>">Students</a>
                     </li>
+                <?php endif; ?>
+
+                <?php if ($userType == "admin_faculty" || $userType == "dean_admin_faculty"): // FOR ADMIN VIEW ONLY ?>
+                    
                     <li id="audit_trail_page">
                         <a href="<?php echo base_url("audit_trail"); ?>">Audit Trail</a>
                     </li>

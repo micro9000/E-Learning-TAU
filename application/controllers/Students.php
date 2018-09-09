@@ -244,6 +244,42 @@
 			$this->load->view("students/footer");
 		}
 
+		public function update_profile(){
+
+			if ($this->is_student_still_logged_in() === FALSE){
+				redirect("/student_login_page");
+			}
+
+			$studentID = $this->session->userdata('std_session_id');
+			$studentIDNum = $this->session->userdata('std_session_stdNum');
+
+			if (is_numeric($studentID) && $studentID > 0 && $studentID != 0 && $studentIDNum != ""){
+
+				$student_data = $this->admin_mod->select_std_by_id($studentID);
+
+				if ($student_data == null){
+					show_404();
+				}else if (sizeof($student_data) == 0){
+					show_404();
+				}
+
+				$data['student_to_update_data'] = $student_data;
+				$data['studentID'] = $studentID;
+			}
+
+			$data['session_data'] = $this->session->userdata();
+
+			$data['page_title'] = "Student Profile";
+			$data['page_code'] = "student_profile_panel";
+			$data['agriculture_matrix'] = $this->admin_mod->get_principles_sub_topics_chapters_matrix();
+
+			$this->load->view("students/header", $data);
+			$this->load->view("main/sidebar");
+			$this->load->view("main/topbar");
+			$this->load->view("students/update_profile");
+			$this->load->view("students/footer");
+		}
+
 		public function profile(){
 
 			if ($this->is_student_still_logged_in() === FALSE){
@@ -858,17 +894,17 @@
 
 					$this->session->set_userdata("student_num_registration", $data['student_id_num']);
 
-					$msg = "<h4 style='color: skyblue'>Verify your email address</h4>";
-					$msg .= "<br/><br/>";
-					$msg .= "<p>To finish setting up your ELearning account, we just need to make sure this email address is yours.</p>";
-					$msg .= "<br/><br/>";
-					$msg .= "<p>To verify your email address use this registration code: <strong>". $data['regCode'] ."</strong></p>";
-					$msg .= "<br/><br/>";
-					$msg .= "<p>If you didn't request this code, you can safely ignore this email. Someone else might have typed your email address by mistake.</p>";
-					$msg .= "<br/><br/>";
-					$msg .= "<p>Thanks, <br/> ELearning - Tarlac Agriculture University, Agriculture Department</p>";
+					// $msg = "<h4 style='color: skyblue'>Verify your email address</h4>";
+					// $msg .= "<br/><br/>";
+					// $msg .= "<p>To finish setting up your ELearning account, we just need to make sure this email address is yours.</p>";
+					// $msg .= "<br/><br/>";
+					// $msg .= "<p>To verify your email address use this registration code: <strong>". $data['regCode'] ."</strong></p>";
+					// $msg .= "<br/><br/>";
+					// $msg .= "<p>If you didn't request this code, you can safely ignore this email. Someone else might have typed your email address by mistake.</p>";
+					// $msg .= "<br/><br/>";
+					// $msg .= "<p>Thanks, <br/> ELearning - Tarlac Agriculture University, Agriculture Department</p>";
 
-					$this->send_email($data['email'], "E-Learning Registration Code", $msg);
+					// $this->send_email($data['email'], "E-Learning Registration Code", $msg);
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -1008,11 +1044,13 @@
 
 			$std_data = $this->admin_mod->select_std_num($stdIDNum);
 
-			if ($std_data != NULL){
-				if (sizeof($std_data) == 0){
-					$this->form_validation->set_message('check_is_student_enrolled', 'Invalid {field}, you are not in the master list, please contact system admin.');
-					return FALSE;
-				}
+			if ($std_data == NULL){
+				// if (sizeof($std_data) == 0){
+				// 	$this->form_validation->set_message('check_is_student_enrolled', 'Invalid {field}, you are not in the master list, please contact system admin.');
+				// 	return FALSE;
+				// }
+				$this->form_validation->set_message('check_is_student_enrolled', 'Invalid {field}, you are not in the master list, please contact system admin.');
+				return FALSE;
 			}
 
 			return TRUE;
@@ -1290,7 +1328,8 @@
 				"lastname" => $this->input->post('lastname'),
 				"firstname" => $this->input->post('firstname'),
 				"password" => $this->input->post('password'),
-				"confirm_pass" => $this->input->post('confirm_pass')
+				"confirm_pass" => $this->input->post('confirm_pass'),
+				"subject" => $this->input->post('subject')
 			);
 
 			// print_r($data);
@@ -1302,7 +1341,7 @@
 			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email");
 			$this->form_validation->set_rules("lastname", "Student Lastname", "trim|required");
 			$this->form_validation->set_rules("firstname", "Student Firstname", "trim|required");
-
+			$this->form_validation->set_rules("subject", "Student Subject", "trim");
 
 			if ($this->form_validation->run() === FALSE){
 				$is_done = array(
@@ -1383,8 +1422,6 @@
 					}
 				}
 				
-				
-
 			}
 
 

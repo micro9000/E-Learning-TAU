@@ -1,6 +1,8 @@
+$.switcher();
 
-$(".switch-mark-as-admin").bootstrapSwitch('size', 'mini');
-$(".switch-mark-as-dean").bootstrapSwitch('size', 'mini');
+
+// $(".switch-mark-as-admin").bootstrapSwitch('size', 'mini');
+// $(".switch-mark-as-dean").bootstrapSwitch('size', 'mini');
 
 // $("[name='mark-as-admin']").bootstrapSwitch();
 // $("[name='mark-as-dean']").bootstrapSwitch();
@@ -18,90 +20,163 @@ function check_faculty_permissions(facultyIDTmp){
 
 			setTimeout(function(){
 				if (data.isAdmin == "1"){
-					$(".switch-mark-as-admin").bootstrapSwitch('state', true);
+					// $(".switch-mark-as-admin").bootstrapSwitch('state', true);
+					// $('input[name=switch-mark-as-admin]').prop('checked', true);
+					$(".switch-mark-as-admin").prop('checked', true);
+					$(".ui-switcher").eq(0).attr("aria-checked", "true");
+				}else{
+					$(".switch-mark-as-admin").prop('checked', false);
 				}
 
 				if (data.isDean == "1"){
-					$(".switch-mark-as-dean").bootstrapSwitch('state', true);
+					// $(".switch-mark-as-dean").bootstrapSwitch('state', true);
+					$(".switch-mark-as-dean").prop('checked', true);
+					$(".ui-switcher").eq(1).attr("aria-checked", "true");
 				}
 			}, 500);
 		}
 	);
 }
 
-$(".switch-mark-as-admin").on('switchChange.bootstrapSwitch', function(event, state) {
+$(".switch-mark-as-admin").on("change", function(){
+	var isChecked = $(this).prop("checked");
+	// console.log(isChecked);
 
-	
-  	var faculty_id = $(this).attr("data-id");
+	var faculty_id = $(this).attr("data-id");
 
-  	var data = {};
-
-  	if (state === true){
-
-  		data = {
-  				"mark_as" : "admin",
-  				"facultyID" : faculty_id,
-  				"status" : "1"
-  			};
-  		
-
-  	}else if (state === false){
-  		data = {
+	if (isChecked == true){
+		data = {
+			"mark_as" : "admin",
+			"facultyID" : faculty_id,
+			"status" : "1"
+		};
+	}else{
+		data = {
 			"mark_as" : "admin",
 			"facultyID" : faculty_id,
 			"status" : "0"
 		};
-  	}
+	}
 
-  	$.post(
+	$.post(
 		base_url + "mark_faculty_as_admin_or_dean",
 		data,
 		function(data){
-			console.log(data);
+			// console.log(data);
+			if (data.done == "FALSE"){
+				$(".actionMsg").html(data.msg);
+				$("#actionMsgDialog").dialog('open');
+			}
 		}
 	);
 });
 
+// $(".switch-mark-as-admin").on('switchChange.bootstrapSwitch', function(event, state) {
 
-$(".switch-mark-as-dean").on('switchChange.bootstrapSwitch', function(event, state) {
+// 	var faculty_id = $(this).attr("data-id");
+	  
+//   	var data = {};
 
-  	var faculty_id = $(this).attr("data-id");
+//   	if (state === true){
 
-  	// console.log(faculty_id);
-
-  	var data = {};
-
-  	if (state === true){
-
-  		data = {
-  				"mark_as" : "dean",
-  				"facultyID" : faculty_id,
-  				"status" : "1"
-  			};
+//   		data = {
+//   				"mark_as" : "admin",
+//   				"facultyID" : faculty_id,
+//   				"status" : "1"
+//   			};
   		
 
-  	}else if (state === false){
-  		data = {
+//   	}else if (state === false){
+//   		data = {
+// 			"mark_as" : "admin",
+// 			"facultyID" : faculty_id,
+// 			"status" : "0"
+// 		};
+//   	}
+
+//   	$.post(
+// 		base_url + "mark_faculty_as_admin_or_dean",
+// 		data,
+// 		function(data){
+// 			console.log(data);
+// 		}
+// 	);
+// });
+
+
+$(".switch-mark-as-dean").on("change", function(){
+	var isChecked = $(this).prop("checked");
+	// console.log(isChecked);
+
+	var faculty_id = $(this).attr("data-id");
+
+	if (isChecked == true){
+		data = {
+			"mark_as" : "dean",
+			"facultyID" : faculty_id,
+			"status" : "1"
+		};
+	}else{
+		data = {
 			"mark_as" : "dean",
 			"facultyID" : faculty_id,
 			"status" : "0"
 		};
-  	}
+	}
 
-  	$.post(
+	$.post(
 		base_url + "mark_faculty_as_admin_or_dean",
 		data,
 		function(data){
-			console.log(data);
+			// console.log(data);
 
 			if (data.done == "FALSE"){
 				$(".actionMsg").html(data.msg);
 				$("#actionMsgDialog").dialog('open');
 			}
-				
 		}
 	);
 });
+
+// $(".switch-mark-as-dean").on('switchChange.bootstrapSwitch', function(event, state) {
+
+//   	var faculty_id = $(this).attr("data-id");
+
+//   	// console.log(faculty_id);
+
+//   	var data = {};
+
+//   	if (state === true){
+
+//   		data = {
+//   				"mark_as" : "dean",
+//   				"facultyID" : faculty_id,
+//   				"status" : "1"
+//   			};
+  		
+
+//   	}else if (state === false){
+//   		data = {
+// 			"mark_as" : "dean",
+// 			"facultyID" : faculty_id,
+// 			"status" : "0"
+// 		};
+//   	}
+
+//   	$.post(
+// 		base_url + "mark_faculty_as_admin_or_dean",
+// 		data,
+// 		function(data){
+// 			console.log(data);
+
+// 			if (data.done == "FALSE"){
+// 				$(".actionMsg").html(data.msg);
+// 				$("#actionMsgDialog").dialog('open');
+// 			}
+				
+// 		}
+// 	);
+// });
 
 $(".faculty_id_num").on("keyup", function(){
 

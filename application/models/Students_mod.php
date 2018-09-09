@@ -422,7 +422,8 @@
 			$data = array(
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
-				'email' => $info['email']
+				'email' => $info['email'],
+				'stdSubject' => $info['subject']
 			);
 
 			$this->db->set($data);
@@ -437,7 +438,8 @@
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
-				'pswd' => $info['pswd']
+				'pswd' => $info['pswd'],
+				'stdSubject' => $info['subject']
 			);
 
 			$this->db->set($data);

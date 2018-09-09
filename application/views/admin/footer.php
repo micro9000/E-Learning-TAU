@@ -47,6 +47,7 @@
     
     <?php elseif($page_code == "faculty_list_panel"): ?>
 
+        <script type="text/javascript" src="<?php echo base_url("assets/plugins/switcher/jquery.switcher.min.js"); ?>"></script>
         <script type="text/javascript" src="<?php echo base_url("assets/js/admin/faculty.js"); ?>"></script>
     
     <?php elseif($page_code == "students_list_panel"): ?>

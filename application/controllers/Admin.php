@@ -341,9 +341,10 @@
 			$data['userType'] = $userType;
 			$data['actualUserType'] = $actualUserType;
 			
-			if ($userType == "faculty" || $userType == "dean"){
-				redirect("/admin_main_panel");
-			}
+			// echo $userType;
+			// if ($userType == "faculty" || $userType == "dean"){
+			// 	redirect("/admin_main_panel");
+			// }
 
 			$data['session_data'] = $this->session->userdata();
 
@@ -371,7 +372,7 @@
 			$data['userType'] = $userType;
 			$data['actualUserType'] = $actualUserType;
 			
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -421,7 +422,7 @@
 			$data['userType'] = $userType;
 			$data['actualUserType'] = $actualUserType;
 			
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -516,9 +517,6 @@
 			$data['userType'] = $userType;
 			$data['actualUserType'] = $actualUserType;
 
-			if ($userType == "faculty" || $userType == "dean"){
-				redirect("/admin_main_panel");
-			}
 
 			$data['page_title'] = "Admin Add Lessons";
 			$data['page_code'] = "add_lessons";
@@ -950,7 +948,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1072,7 +1070,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1200,7 +1198,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1321,7 +1319,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1349,9 +1347,39 @@
 
 			if ($this->form_validation->run() === TRUE){
 
-				$dean_count = $this->admin_mod->select_Dean_count($data['facultyID']);
+				if ($data['mark_as'] == "dean" && $data['status'] == "1"){
 
-				if ($dean_count['count'] == "0" && $dean_count['count'] == 0){
+					$dean_count = $this->admin_mod->select_Dean_count($data['facultyID']);
+
+					if ($dean_count['count'] == "0" && $dean_count['count'] == 0){
+						$facuCurData = $this->admin_mod->select_faculty_by_id($data['facultyID']);
+
+						if ($this->admin_mod->mark_faculty_as_admin_or_dean($data['facultyID'], $data['status'], $data['mark_as']) == 1){
+
+							if ($facuCurData != null){
+								if (sizeof($facuCurData) > 0){
+									// audit trail
+									$facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
+									$actionDone = "Faculty ". $facuCurData['lastName'] .", ". $facuCurData['firstName'] . " mark as " . $data['mark_as'];
+									$this->admin_mod->insert_audit_trail_new_entry($actionDone, "FACU", $facultyIDNum);
+								}
+							}
+									
+
+							$is_done = array(
+								"done" => "TRUE",
+								"msg" => "Successfully changed mark ".$data['mark_as']." status"
+							);
+						}
+					}else{
+						$is_done = array(
+							"done" => "FALSE",
+							"msg" => "Can't mark multiple dean"
+						);
+					}
+
+				}else{
+
 					$facuCurData = $this->admin_mod->select_faculty_by_id($data['facultyID']);
 
 					if ($this->admin_mod->mark_faculty_as_admin_or_dean($data['facultyID'], $data['status'], $data['mark_as']) == 1){
@@ -1371,12 +1399,8 @@
 							"msg" => "Successfully changed mark ".$data['mark_as']." status"
 						);
 					}
-				}else{
-					$is_done = array(
-						"done" => "FALSE",
-						"msg" => "Can't mark multiple dean"
-					);
 				}
+
 
 			}else{
 				$is_done = array(
@@ -1396,7 +1420,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 			
@@ -1421,7 +1445,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //  || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 			
@@ -1445,7 +1469,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 			
@@ -1471,7 +1495,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 			
@@ -1495,7 +1519,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1525,7 +1549,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1555,7 +1579,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1597,7 +1621,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1639,7 +1663,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1687,7 +1711,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1704,7 +1728,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1845,6 +1869,10 @@
 			$this->output->set_output(json_encode($is_done));
 		}
 
+
+		#################################################################################
+		#################################################################################
+		#################################################################################
 		public function add_student(){
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -1852,7 +1880,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //  || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1969,7 +1997,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //  || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -1988,7 +2016,8 @@
 				"lastname" => $this->input->post('lastname'),
 				"firstname" => $this->input->post('firstname'),
 				"password" => $this->input->post('password'),
-				"confirm_pass" => $this->input->post('confirm_pass')
+				"confirm_pass" => $this->input->post('confirm_pass'),
+				"subject" => $this->input->post('subject')
 			);
 
 			// print_r($data);
@@ -2001,6 +2030,7 @@
 			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email|callback_check_std_email_already_used_on_update");
 			$this->form_validation->set_rules("lastname", "Student Lastname", "trim|required");
 			$this->form_validation->set_rules("firstname", "Student Firstname", "trim|required");
+			$this->form_validation->set_rules("subject", "Student Subject", "trim");
 
 
 			if ($this->form_validation->run() === FALSE){
@@ -2098,7 +2128,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 			
@@ -2166,7 +2196,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 			
@@ -2190,7 +2220,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 			
@@ -2216,7 +2246,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty" ){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 			
@@ -2241,7 +2271,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean
 				redirect("/admin_main_panel");
 			}
 			
@@ -2266,7 +2296,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -2283,7 +2313,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -2300,7 +2330,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //|| $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -2362,7 +2392,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -2424,7 +2454,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ // || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 
@@ -2454,7 +2484,7 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
+			if ($userType == "faculty"){ //  || $userType == "dean"
 				redirect("/admin_main_panel");
 			}
 

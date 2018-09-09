@@ -29,18 +29,18 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="form-group">
-                            <label for="input_student_id_num">Student ID Number (Press enter to validate student number))</label>
+                            <label for="input_student_id_num">Student ID Number (Press enter to validate student number)</label>
 
                             <?php if (isset($studentID) && $studentID > 0): ?>
 
                                 <?php if (sizeof($student_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $student_to_update_data['stdNum']; ?>" class="form-control student_id_num" id="input_student_id_num" placeholder="id number">
+                                    <input type="text" value="<?php echo $student_to_update_data['stdNum']; ?>" class="form-control student_id_num" id="input_student_id_num">
                                 <?php else: ?>
-                                    <input type="text" class="form-control student_id_num" id="input_student_id_num" placeholder="id number">
+                                    <input type="text" class="form-control student_id_num" id="input_student_id_num">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control student_id_num" id="input_student_id_num" placeholder="id number">
+                                <input type="text" class="form-control student_id_num" id="input_student_id_num">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -52,13 +52,13 @@
                             <?php if (isset($studentID) && $studentID > 0): ?>
 
                                 <?php if (sizeof($student_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $student_to_update_data['email']; ?>" class="form-control student_email" id="input_student_email" placeholder="email">
+                                    <input type="text" value="<?php echo $student_to_update_data['email']; ?>" class="form-control student_email" id="input_student_email">
                                 <?php else: ?>
-                                    <input type="text" class="form-control student_email" id="input_student_email" placeholder="email">
+                                    <input type="text" class="form-control student_email" id="input_student_email">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control student_email" id="input_student_email" placeholder="email">
+                                <input type="text" class="form-control student_email" id="input_student_email">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -70,13 +70,13 @@
                             <?php if (isset($studentID) && $studentID > 0): ?>
 
                                 <?php if (sizeof($student_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $student_to_update_data['lastName']; ?>" class="form-control student_lastname" id="input_lastname" placeholder="lastname">
+                                    <input type="text" value="<?php echo $student_to_update_data['lastName']; ?>" class="form-control student_lastname" id="input_lastname">
                                 <?php else: ?>
-                                    <input type="text" class="form-control student_lastname" id="input_lastname" placeholder="lastname">
+                                    <input type="text" class="form-control student_lastname" id="input_lastname">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control student_lastname" id="input_lastname" placeholder="lastname">
+                                <input type="text" class="form-control student_lastname" id="input_lastname">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -88,28 +88,49 @@
                             <?php if (isset($studentID) && $studentID > 0): ?>
 
                                 <?php if (sizeof($student_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $student_to_update_data['firstName']; ?>" class="form-control student_firstname" id="input_firstname" placeholder="firstname">
+                                    <input type="text" value="<?php echo $student_to_update_data['firstName']; ?>" class="form-control student_firstname" id="input_firstname">
                                 <?php else: ?>
-                                    <input type="text" class="form-control student_firstname" id="input_firstname" placeholder="firstname">
+                                    <input type="text" class="form-control student_firstname" id="input_firstname">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control student_firstname" id="input_firstname" placeholder="firstname">
+                                <input type="text" class="form-control student_firstname" id="input_firstname">
                             <?php endif; ?>
                         </div>
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="form-group">
+                            <label for="input_firstname">Subject</label>
+
+                            <?php if (isset($studentID) && $studentID > 0): ?>
+
+                                <?php if (sizeof($student_to_update_data) > 0): ?>
+                                    <input type="text" value="<?php echo $student_to_update_data['stdSubject']; ?>" class="form-control student_subject" id="input_std_subject">
+                                <?php else: ?>
+                                    <input type="text" class="form-control student_subject" id="input_std_subject">
+                                <?php endif; ?>
+
+                            <?php else: ?>
+                                <input type="text" class="form-control student_subject" id="input_std_subject">
+                            <?php endif; ?>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                    </div>
+
+                    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+                        <div class="form-group">
                             <label for="input_password">Password</label>
-                            <input type="password" class="form-control student_password" id="input_password" placeholder="password">
+                            <input type="password" class="form-control student_password" id="input_password">
                         </div>
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="form-group">
                             <label for="input_confirm_password">Confirm Password</label>
-                            <input type="password" class="form-control student_confirm_password" id="input_confirm_password" placeholder="confirm password">
+                            <input type="password" class="form-control student_confirm_password" id="input_confirm_password">
                         </div>
                     </div>
 
@@ -168,6 +189,7 @@
                             <th scope="col">ID Number</th>
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
+                            <th scope="col">Subject</th>
                             <th scope="col">Date Registered</th>
                             <th scope="col">Control</th>
                         </tr>
@@ -181,6 +203,7 @@
                                     <td><?php echo $student_to_update_data['stdNum'] ?></td>
                                     <td><?php echo $student_to_update_data['firstName'] ." ". $student_to_update_data['lastName'] ?></td>
                                     <td><?php echo $student_to_update_data['email'] ?></td>
+                                    <td><?php echo $student_to_update_data['stdSubject'] ?></td>
                                     <td><?php echo $student_to_update_data['dateRegisteredFormated'] ?></td>
                                     <td></td>
                                 </tr>

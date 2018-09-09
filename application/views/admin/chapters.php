@@ -39,18 +39,18 @@
                 </div>
 
                	<div class="form-group">
-                    <label for="input_topic_chapter">New Chapter</label>
+                    <!-- <label for="input_topic_chapter">Add new chapter</label> -->
 
                     <?php if (isset($chapterID) && $chapterID > 0): ?>
 
                         <?php if (sizeof($chapter_to_update_data) > 0): ?>
-                        	<input type="text" value="<?php echo $chapter_to_update_data['chapterTitle']; ?>" class="form-control topic_chapter" id="input_topic_chapter" placeholder="Chapter">
+                        	<input type="text" value="<?php echo $chapter_to_update_data['chapterTitle']; ?>" class="form-control topic_chapter" id="input_topic_chapter" placeholder="Add new chapter">
                         <?php else: ?>
-                        	<input type="text" class="form-control topic_chapter" id="input_topic_chapter" placeholder="Chapter">
+                        	<input type="text" class="form-control topic_chapter" id="input_topic_chapter" placeholder="Add new chapter">
                          <?php endif; ?>
                             
                     <?php else: ?>
-                    	<input type="text" class="form-control topic_chapter" id="input_topic_chapter" placeholder="Chapter">
+                    	<input type="text" class="form-control topic_chapter" id="input_topic_chapter" placeholder="Add new chapter">
                     <?php endif; ?>
 
                 </div>

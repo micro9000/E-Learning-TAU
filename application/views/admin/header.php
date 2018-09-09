@@ -85,6 +85,8 @@
 				}
 			</style>
 
+			<link rel="stylesheet" type="text/css" href="<?php echo base_url("assets/plugins/switcher/switcher.css"); ?>">
+
 		<?php elseif ($page_code == "students_list_panel"): ?>
 			
 			<style type="text/css">

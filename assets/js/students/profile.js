@@ -50,6 +50,7 @@ function get_student_data_with_validation(task){
 	var student_firstname = $(".student_firstname").val();
 	var student_password = $(".student_password").val();
 	var student_confirm_password = $(".student_confirm_password").val();
+	var student_subject = $(".student_subject").val();
 
 	var is_valid = validateEmail(student_email);
 
@@ -64,6 +65,7 @@ function get_student_data_with_validation(task){
 		"email" : student_email,
 		"lastname" : student_lastname,
 		"firstname" : student_firstname,
+		"subject" : student_subject,
 		"length" : 3
 	};
 
@@ -109,7 +111,7 @@ $(".btn-update-student-data").on("click", function(){
 
 				if (data.done === "TRUE"){
 					setTimeout(function(){
-						window.location.reload();
+						window.location = base_url + "student_profile";
 					}, 500)
 				}
 			}

@@ -10,18 +10,18 @@
 
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                <div class="form-group">
-                    <label for="input_agriculture_principle">Agriculure Principle</label>
+                    <!-- <label for="input_agriculture_principle">Add new Principle</label> -->
 
                     <?php if (isset($principleID) && $principleID > 0): ?>
 
                         <?php if (sizeof($principle_to_update_data) > 0): ?>
-                            <input type="text" value="<?php echo $principle_to_update_data['principle']; ?>" class="form-control agriculture_principle" id="input_agriculture_principle" placeholder="Principle">
+                            <input type="text" value="<?php echo $principle_to_update_data['principle']; ?>" class="form-control agriculture_principle" id="input_agriculture_principle" placeholder="Add new Principle">
                         <?php else: ?>
-                            <input type="text" class="form-control agriculture_principle" id="input_agriculture_principle" placeholder="Principle">
+                            <input type="text" class="form-control agriculture_principle" id="input_agriculture_principle" placeholder="Add new Principle">
                         <?php endif; ?>
 
                     <?php else: ?>
-                        <input type="text" class="form-control agriculture_principle" id="input_agriculture_principle" placeholder="Principle">
+                        <input type="text" class="form-control agriculture_principle" id="input_agriculture_principle" placeholder="Add new Principle">
                     <?php endif; ?>
 
                 </div>

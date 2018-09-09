@@ -39,3 +39,6 @@ npm-debug.log
 /uploads/lessons/content
 /uploads/lessons/cover
 /uploads/profile
+/database-query/Diagram
+/database-query/installer
+/database-query/*.rar

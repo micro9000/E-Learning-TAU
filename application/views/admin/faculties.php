@@ -3,7 +3,7 @@
         <div class="row">
 
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <h4>Faculties</h4>
+                <h4>Faculty</h4>
                 <div class="line"></div>
             </div>
 
@@ -16,13 +16,13 @@
                             <?php if (isset($facultyID) && $facultyID > 0): ?>
 
                                 <?php if (sizeof($faculty_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $faculty_to_update_data['facultyIDNum']; ?>" class="form-control faculty_id_num" id="input_faculty_id_num" placeholder="id number">
+                                    <input type="text" value="<?php echo $faculty_to_update_data['facultyIDNum']; ?>" class="form-control faculty_id_num" id="input_faculty_id_num">
                                 <?php else: ?>
-                                    <input type="text" class="form-control faculty_id_num" id="input_faculty_id_num" placeholder="id number">
+                                    <input type="text" class="form-control faculty_id_num" id="input_faculty_id_num">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control faculty_id_num" id="input_faculty_id_num" placeholder="id number">
+                                <input type="text" class="form-control faculty_id_num" id="input_faculty_id_num">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -34,13 +34,13 @@
                             <?php if (isset($facultyID) && $facultyID > 0): ?>
 
                                 <?php if (sizeof($faculty_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $faculty_to_update_data['email']; ?>" class="form-control faculty_email" id="input_faculty_email" placeholder="email">
+                                    <input type="text" value="<?php echo $faculty_to_update_data['email']; ?>" class="form-control faculty_email" id="input_faculty_email">
                                 <?php else: ?>
-                                    <input type="text" class="form-control faculty_email" id="input_faculty_email" placeholder="email">
+                                    <input type="text" class="form-control faculty_email" id="input_faculty_email">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control faculty_email" id="input_faculty_email" placeholder="email">
+                                <input type="text" class="form-control faculty_email" id="input_faculty_email">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -52,13 +52,13 @@
                             <?php if (isset($facultyID) && $facultyID > 0): ?>
 
                                 <?php if (sizeof($faculty_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $faculty_to_update_data['lastName']; ?>" class="form-control faculty_lastname" id="input_lastname" placeholder="lastname">
+                                    <input type="text" value="<?php echo $faculty_to_update_data['lastName']; ?>" class="form-control faculty_lastname" id="input_lastname">
                                 <?php else: ?>
-                                    <input type="text" class="form-control faculty_lastname" id="input_lastname" placeholder="lastname">
+                                    <input type="text" class="form-control faculty_lastname" id="input_lastname">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control faculty_lastname" id="input_lastname" placeholder="lastname">
+                                <input type="text" class="form-control faculty_lastname" id="input_lastname">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -70,13 +70,13 @@
                             <?php if (isset($facultyID) && $facultyID > 0): ?>
 
                                 <?php if (sizeof($faculty_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $faculty_to_update_data['firstName']; ?>" class="form-control faculty_firstname" id="input_firstname" placeholder="firstname">
+                                    <input type="text" value="<?php echo $faculty_to_update_data['firstName']; ?>" class="form-control faculty_firstname" id="input_firstname">
                                 <?php else: ?>
-                                    <input type="text" class="form-control faculty_firstname" id="input_firstname" placeholder="firstname">
+                                    <input type="text" class="form-control faculty_firstname" id="input_firstname">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control faculty_firstname" id="input_firstname" placeholder="firstname">
+                                <input type="text" class="form-control faculty_firstname" id="input_firstname">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -84,14 +84,14 @@
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="form-group">
                             <label for="input_password">Password</label>
-                            <input type="password" class="form-control faculty_password" id="input_password" placeholder="password">
+                            <input type="password" class="form-control faculty_password" id="input_password">
                         </div>
                     </div>
 
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="form-group">
                             <label for="input_confirm_password">Confirm Password</label>
-                            <input type="password" class="form-control faculty_confirm_password" id="input_confirm_password" placeholder="confirm password">
+                            <input type="password" class="form-control faculty_confirm_password" id="input_confirm_password">
                         </div>
                     </div>
 
@@ -169,8 +169,18 @@
                                     <td><?php echo $faculty_to_update_data['email'] ?></td>
                                     <td><?php echo $faculty_to_update_data['dateRegisteredFormated'] ?></td>
                                     <td><?php echo $admin_data['firstName'] ." ". $admin_data['lastName'] ?></td>
-                                    <td><input type='checkbox' class="switch-mark-as-admin" name='mark-as-admin' data-id="<?php echo $faculty_to_update_data['id'] ?>" checked></td>
-                                    <td><input type='checkbox' class="switch-mark-as-dean" name='mark-as-dean' data-id="<?php echo $faculty_to_update_data['id'] ?>" checked></td>
+                                    <!-- <td><input type='checkbox' class="switch-mark-as-admin" name='mark-as-admin' data-id="<?php echo $faculty_to_update_data['id'] ?>" checked></td> -->
+                                    <!-- <td><input type='checkbox' class="switch-mark-as-dean" name='mark-as-dean' data-id="<?php echo $faculty_to_update_data['id'] ?>" checked></td> -->
+                                    <td>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input switch-mark-as-admin" type="checkbox" data-id="<?php echo $faculty_to_update_data['id'] ?>">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input switch-mark-as-dean" type="checkbox" data-id="<?php echo $faculty_to_update_data['id'] ?>">
+                                        </div>
+                                    </td>
                                     <td></td>
                                 </tr>
                             </tbody>

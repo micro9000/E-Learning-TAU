@@ -25,6 +25,8 @@ CREATE TABLE IF NOT EXISTS Students(
 	isDeleted TINYINT DEFAULT 0,
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
+ALTER TABLE students
+ADD COLUMN stdSubject VARCHAR(255) DEFAULT '';
 
 SELECT * FROM Students;
 
@@ -77,20 +79,23 @@ ADD COLUMN isAdmin TINYINT DEFAULT 0;
 ALTER TABLE Faculties
 ADD COLUMN isDean TINYINT DEFAULT 0;
 
+select * from Faculties;
+
 SELECT COUNT(*) As count FROM Faculties WHERE isDeleted=0 AND isDean=1;
 
 
-CREATE TABLE IF NOT EXISTS Admins(
-	id INT NOT NULL AUTO_INCREMENT,
-	facultyID INT NOT NULL,
-	pswd VARCHAR(255),
-	dateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
-	addedByFacultyNum CHAR(20),
-	isDeleted TINYINT DEFAULT 0,
-	FOREIGN KEY(facultyID) REFERENCES Faculties(id),
-	PRIMARY KEY(id)
-)ENGINE=INNODB;
+-- CREATE TABLE IF NOT EXISTS Admins(
+-- 	id INT NOT NULL AUTO_INCREMENT,
+-- 	facultyID INT NOT NULL,
+-- 	pswd VARCHAR(255),
+-- 	dateAdded DATETIME DEFAULT CURRENT_TIMESTAMP,
+-- 	addedByFacultyNum CHAR(20),
+-- 	isDeleted TINYINT DEFAULT 0,
+-- 	FOREIGN KEY(facultyID) REFERENCES Faculties(id),
+-- 	PRIMARY KEY(id)
+-- )ENGINE=INNODB;
 
+SELECT * FROM Admins;-- @@@@@@@@@@@@@@@@@
 
 CREATE TABLE IF NOT EXISTS AgriPrinciples(
 	id INT NOT NULL AUTO_INCREMENT,
@@ -262,6 +267,8 @@ CREATE TABLE IF NOT EXISTS Lesson_update_summary(
 	FOREIGN KEY(lessonID) REFERENCES Lessons(id),
 	PRIMARY KEY(id)
 )ENGINE=INNODB;
+
+select * from Lesson_update_summary;
 
 SELECT TIMESTAMPDIFF(MINUTE, '2018-07-22 17:55:38', CURRENT_TIMESTAMP ) as timeDiff;
 
