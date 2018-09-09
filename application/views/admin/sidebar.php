@@ -24,11 +24,15 @@
                         <a href="<?php echo base_url("admin_principles_sub_topics"); ?>">Principles sub topics</a>
                     </li>
 
-                    <li id="sub_topic_chapters_page">
+                    <!-- <li id="sub_topic_chapters_page">
                         <a href="<?php echo base_url("sub_topic_chapters"); ?>">Chapters</a>
-                    </li>
+                    </li> -->
 
                 <?php endif; ?>
+
+                <li id="sub_topic_chapters_page">
+                    <a href="<?php echo base_url("sub_topic_chapters"); ?>">Chapters</a>
+                </li>
 
                 <!-- <li id="chapters_lessons_page">
                     <a href="<?php //echo base_url("chapters_lessons"); ?>">Lessons</a>

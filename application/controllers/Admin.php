@@ -294,9 +294,9 @@
 			$data['userType'] = $userType;
 			$data['actualUserType'] = $actualUserType;
 			
-			if ($userType == "faculty" || $userType == "dean"){
-				redirect("/admin_main_panel");
-			}
+			// if ($userType == "faculty" || $userType == "dean"){
+			// 	redirect("/admin_main_panel");
+			// }
 
 			if (is_numeric($chapterID) && $chapterID > 0 && $chapterID != 0){
 
@@ -1870,9 +1870,6 @@
 		}
 
 
-		#################################################################################
-		#################################################################################
-		#################################################################################
 		public function add_student(){
 			
 			if ($this->is_admin_still_logged_in() === FALSE){
@@ -3184,10 +3181,9 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
-				redirect("/admin_main_panel");
-			}
-
+			// if ($userType == "faculty" || $userType == "dean"){
+			// 	redirect("/admin_main_panel");
+			// }
 
 			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
 
@@ -3384,9 +3380,9 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
-				redirect("/admin_main_panel");
-			}
+			// if ($userType == "faculty" || $userType == "dean"){
+			// 	redirect("/admin_main_panel");
+			// }
 
 
 			// $facultyIDNum = $this->session->userdata('admin_session_facultyNum'); // it can be use in audit trail later
@@ -3457,9 +3453,9 @@
 			}
 
 			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
-				redirect("/admin_main_panel");
-			}
+			// if ($userType == "faculty" || $userType == "dean"){
+			// 	redirect("/admin_main_panel");
+			// }
 
 			$is_done = array(
 				"done" => "FALSE",
@@ -3732,10 +3728,10 @@
 				redirect("/admin_login_page");
 			}
 
-			$userType = $this->get_user_type();
-			if ($userType == "faculty" || $userType == "dean"){
-				redirect("/admin_main_panel");
-			}
+			// $userType = $this->get_user_type();
+			// if ($userType == "faculty" || $userType == "dean"){
+			// 	redirect("/admin_main_panel");
+			// }
 
 			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
 
