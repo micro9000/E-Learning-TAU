@@ -1,6 +1,6 @@
-		<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
-            <div class="container">
-
+        <div class="container">
+            <nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+            
                 <button type="button" id="sidebarCollapse" class="btn btn-info btn-show-menu">
                     <i class="fas fa-align-left"></i>
                     <span>Menu</span>
@@ -49,5 +49,5 @@
                 </div>
 
 
-            </div>
-        </nav>
+            </nav>
+        </div>
