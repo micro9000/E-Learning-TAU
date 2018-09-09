@@ -302,6 +302,7 @@
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
+				'stdSection' => $info['section'],
 				'pswd' => $pswd,
 			);
 
@@ -316,7 +317,7 @@
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
-				'stdSubject' => $info['subject']
+				'stdSection' => $info['section']
 			);
 
 			$this->db->set($data);
@@ -333,7 +334,7 @@
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
 				'pswd' => $info['pswd'],
-				'stdSubject' => $info['subject']
+				'stdSection' => $info['section']
 			);
 
 			$this->db->set($data);
@@ -389,7 +390,7 @@
 
 		public function select_std_by_id_and_id_number($id, $stdNum){
 
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->from("Students");
 			$this->db->where(array(
 					"isDeleted" => 0,
@@ -403,7 +404,7 @@
 
 		public function select_std_by_std_num($stdNum){
 
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->from("Students");
 			$this->db->where(array(
 					"isDeleted" => 0,
@@ -416,7 +417,7 @@
 
 		public function select_std_by_id_and_email($id, $email){
 
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->from("Students");
 			$this->db->where(array(
 					"isDeleted" => 0,
@@ -430,7 +431,7 @@
 
 		public function select_all_students(){
 
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->order_by('id');
 			$this->db->from("Students");
 			$this->db->where("isDeleted=0");
@@ -441,7 +442,7 @@
 
 		public function select_all_deleted_students(){
 
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->order_by('id');
 			$this->db->from("Students");
 			$this->db->where("isDeleted=1");
@@ -452,7 +453,7 @@
 
 		public function select_students($searchStr){
 			
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->order_by('id');
 			$this->db->from("Students");
 			$this->db->where("isDeleted=0");
@@ -471,7 +472,7 @@
 
 		public function select_deleted_students($searchStr){
 			
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->order_by('id');
 			$this->db->from("Students");
 			$this->db->where("isDeleted=1");
@@ -503,7 +504,7 @@
 
 		public function select_std_by_id($id){
 
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->from("Students");
 			$this->db->where(array(
 					"isDeleted" => 0,
@@ -516,7 +517,7 @@
 
 		public function select_deleted_std_by_id($id){
 
-			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSubject");
+			$this->db->select("id, stdNum, firstName, lastName, email, DATE_FORMAT(dateRegistered, '%M %d, %Y %r') As dateRegisteredFormated, stdSection");
 			$this->db->from("Students");
 			$this->db->where(array(
 					"isDeleted" => 1,

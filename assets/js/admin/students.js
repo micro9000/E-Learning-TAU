@@ -63,7 +63,7 @@ function get_student_data_with_validation(task){
 	var student_firstname = $(".student_firstname").val();
 	var student_password = $(".student_password").val();
 	var student_confirm_password = $(".student_confirm_password").val();
-	var student_subject = $(".student_subject").val();
+	var student_section = $(".student_section").val();
 
 	if (student_id_num !== ""){
 		if (allNumeric(student_id_num) == false){
@@ -90,7 +90,7 @@ function get_student_data_with_validation(task){
 		"email" : student_email,
 		"lastname" : student_lastname,
 		"firstname" : student_firstname,
-		"subject" : student_subject,
+		"section" : student_section,
 		"length" : 4
 	};
 
@@ -196,7 +196,7 @@ function display_students(data){
 			display += "<td>"+ student.stdNum +"</td>";
 			display += "<td>"+ student.firstName +" "+ student.lastName +"</td>";
 			display += "<td>"+ student.email +"</td>";
-			display += "<td>"+ student.stdSubject +"</td>";
+			display += "<td>"+ student.stdSection +"</td>";
 			display += "<td>"+ student.dateRegisteredFormated +"</td>";
 			display += "<td>";
 				display += "<table class='table-control-btns'>";

@@ -423,7 +423,7 @@
 				'firstName' => $info['firstname'],
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
-				'stdSubject' => $info['subject']
+				'stdSection' => $info['section']
 			);
 
 			$this->db->set($data);
@@ -439,7 +439,7 @@
 				'lastName' => $info['lastname'],
 				'email' => $info['email'],
 				'pswd' => $info['pswd'],
-				'stdSubject' => $info['subject']
+				'stdSection' => $info['section']
 			);
 
 			$this->db->set($data);

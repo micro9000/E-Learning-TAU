@@ -76,12 +76,12 @@
 
 								<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 			                        <div class="form-group">
-			                            <label for="input_firstname">Subject</label>
+			                            <label for="input_firstname">Section</label>
 
 			                            <?php if (isset($studentID) && $studentID > 0): ?>
 
 			                                <?php if (sizeof($student_to_update_data) > 0): ?>
-			                                    <p><?php echo ($student_to_update_data['stdSubject'] != "") ? $student_to_update_data['stdSubject'] : "none"; ?></p>
+			                                    <p><?php echo ($student_to_update_data['stdSection'] != "") ? $student_to_update_data['stdSection'] : "none"; ?></p>
 											<?php endif; ?>
 
 			                            <?php endif; ?>

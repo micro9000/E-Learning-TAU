@@ -101,18 +101,18 @@
 
                     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                         <div class="form-group">
-                            <label for="input_firstname">Subject</label>
+                            <label for="input_firstname">Section</label>
 
                             <?php if (isset($studentID) && $studentID > 0): ?>
 
                                 <?php if (sizeof($student_to_update_data) > 0): ?>
-                                    <input type="text" value="<?php echo $student_to_update_data['stdSubject']; ?>" class="form-control student_subject" id="input_std_subject">
+                                    <input type="text" value="<?php echo $student_to_update_data['stdSection']; ?>" class="form-control student_section" id="input_std_section">
                                 <?php else: ?>
-                                    <input type="text" class="form-control student_subject" id="input_std_subject">
+                                    <input type="text" class="form-control student_section" id="input_std_section">
                                 <?php endif; ?>
 
                             <?php else: ?>
-                                <input type="text" class="form-control student_subject" id="input_std_subject">
+                                <input type="text" class="form-control student_section" id="input_std_section">
                             <?php endif; ?>
                         </div>
                     </div>
@@ -189,7 +189,7 @@
                             <th scope="col">ID Number</th>
                             <th scope="col">Name</th>
                             <th scope="col">Email</th>
-                            <th scope="col">Subject</th>
+                            <th scope="col">Section</th>
                             <th scope="col">Date Registered</th>
                             <th scope="col">Control</th>
                         </tr>
@@ -203,7 +203,7 @@
                                     <td><?php echo $student_to_update_data['stdNum'] ?></td>
                                     <td><?php echo $student_to_update_data['firstName'] ." ". $student_to_update_data['lastName'] ?></td>
                                     <td><?php echo $student_to_update_data['email'] ?></td>
-                                    <td><?php echo $student_to_update_data['stdSubject'] ?></td>
+                                    <td><?php echo $student_to_update_data['stdSection'] ?></td>
                                     <td><?php echo $student_to_update_data['dateRegisteredFormated'] ?></td>
                                     <td></td>
                                 </tr>

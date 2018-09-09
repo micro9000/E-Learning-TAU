@@ -70,8 +70,8 @@
 
 								<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
 			                        <div class="form-group">
-			                            <label for="input_confirm_password">Subject</label>
-			                            <input type="text" class="form-control student_subject" value="<?php echo $student_to_update_data['stdSubject']; ?>" id="input_std_subject">
+			                            <label for="input_confirm_password">Section</label>
+			                            <input type="text" class="form-control student_section" value="<?php echo $student_to_update_data['stdSection']; ?>" id="input_std_section">
 			                        </div>
 			                    </div>
 

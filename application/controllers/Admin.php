@@ -1897,6 +1897,7 @@
 				"email" => $this->input->post('email'),
 				"lastname" => $this->input->post('lastname'),
 				"firstname" => $this->input->post('firstname'),
+				"section" => $this->input->post('section'),
 				"password" => $this->input->post('password'),
 				"confirm_pass" => $this->input->post('confirm_pass')
 			);
@@ -1908,6 +1909,7 @@
 			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email|callback_check_std_email_already_used_on_insert");
 			$this->form_validation->set_rules("lastname", "Student Lastname", "trim|required");
 			$this->form_validation->set_rules("firstname", "Student Firstname", "trim|required");
+			$this->form_validation->set_rules("section", "Student Section", "trim|required");
 			$this->form_validation->set_rules("password", "Password", "trim|required"); 
 			$this->form_validation->set_rules("confirm_pass", "Password Confirmation", "trim|required|matches[password]");
 
@@ -2017,7 +2019,7 @@
 				"firstname" => $this->input->post('firstname'),
 				"password" => $this->input->post('password'),
 				"confirm_pass" => $this->input->post('confirm_pass'),
-				"subject" => $this->input->post('subject')
+				"section" => $this->input->post('section')
 			);
 
 			// print_r($data);
@@ -2030,7 +2032,7 @@
 			$this->form_validation->set_rules("email", "Email", "trim|required|valid_email|callback_check_std_email_already_used_on_update");
 			$this->form_validation->set_rules("lastname", "Student Lastname", "trim|required");
 			$this->form_validation->set_rules("firstname", "Student Firstname", "trim|required");
-			$this->form_validation->set_rules("subject", "Student Subject", "trim");
+			$this->form_validation->set_rules("section", "Student Section", "trim");
 
 
 			if ($this->form_validation->run() === FALSE){

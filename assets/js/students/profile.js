@@ -50,7 +50,7 @@ function get_student_data_with_validation(task){
 	var student_firstname = $(".student_firstname").val();
 	var student_password = $(".student_password").val();
 	var student_confirm_password = $(".student_confirm_password").val();
-	var student_subject = $(".student_subject").val();
+	var student_section = $(".student_section").val();
 
 	var is_valid = validateEmail(student_email);
 
@@ -65,7 +65,7 @@ function get_student_data_with_validation(task){
 		"email" : student_email,
 		"lastname" : student_lastname,
 		"firstname" : student_firstname,
-		"subject" : student_subject,
+		"section" : student_section,
 		"length" : 3
 	};
 
