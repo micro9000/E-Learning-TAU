@@ -21,67 +21,70 @@ $(document).ready(function(){
 
 $(".btn-submit-quiz").on("click", function(){
 
-	$(".loader_blocks").css("display", "block");
+	if (quizID_global > 0){
+		$(".loader_blocks").css("display", "block");
 
-	$.post(
-		base_url + "get_quiz_questions_and_choices_matrix",
-		{"quizID" : 1},
-		function(data){
-			// console.log(data);
-			var questionLen = data.length;
+		$.post(
+			base_url + "get_quiz_questions_and_choices_matrix",
+			{"quizID" : quizID_global},
+			function(data){
+				console.log(data);
+				var questionLen = data.length;
 
-			var answersArr = [];
-			var answersArrTmp = {};
+				var answersArr = [];
+				var answersArrTmp = {};
 
-			for (var i=0; i<questionLen; i++){
+				for (var i=0; i<questionLen; i++){
 
-				var questionID = data[i].id;
-				// console.log(questionID);
-				var questionRightAnsLen = data[i].choicesCorrectAnsLen;
-				var choices = data[i].choices;
-				var choicesLen = choices.length;
+					var questionID = data[i].id;
+					// console.log(questionID);
+					var questionRightAnsLen = data[i].choicesCorrectAnsLen;
+					var choices = data[i].choices;
+					var choicesLen = choices.length;
 
 
-				for(var j=0; j<choicesLen; j++){
+					for(var j=0; j<choicesLen; j++){
 
-					choiceID = choices[j].id;
+						choiceID = choices[j].id;
 
-					if (questionRightAnsLen >= 1){
-						if ($("#choice_" + choiceID).prop("checked") == true){
-							// console.log(choiceID + " - " + questionID +" - " + quizID_global +" - "+ chapterID_global);
-							answersArrTmp = {
-									"chapterID" : chapterID_global,
-									"quizID" : quizID_global,
-									"questionID" : questionID,
-									"choiceID" : choiceID
-								}
+						if (questionRightAnsLen >= 1){
+							if ($("#choice_" + choiceID).prop("checked") == true){
+								// console.log(choiceID + " - " + questionID +" - " + quizID_global +" - "+ chapterID_global);
+								answersArrTmp = {
+										"chapterID" : chapterID_global,
+										"quizID" : quizID_global,
+										"questionID" : questionID,
+										"choiceID" : choiceID
+									}
 
-							answersArr.push(answersArrTmp);
+								answersArr.push(answersArrTmp);
+							}
+						}
+
+					}
+
+				}
+				// console.log(answersArr);
+				$.post(
+					base_url + "insert_student_quiz_answer",
+					{"ans" : answersArr},
+					function(data){
+						console.log(data);
+
+						if (data.done == "TRUE"){
+							setTimeout(function(){
+
+								$("#actionMsgDialog").data('resultsID', data.quiz_results_ID).dialog('open');
+								$(".loader_blocks").css("display", "none");
+
+							}, 5000);
 						}
 					}
-
-				}
-
+				);
 
 			}
-			// console.log(answersArr);
-			$.post(
-				base_url + "insert_student_quiz_answer",
-				{"ans" : answersArr},
-				function(data){
-					console.log(data);
+		);
+	}
 
-					if (data.done == "TRUE"){
-						setTimeout(function(){
-
-							$("#actionMsgDialog").data('resultsID', data.quiz_results_ID).dialog('open');
-							$(".loader_blocks").css("display", "none");
-
-						}, 5000);
-					}
-				}
-			);
-
-		}
-	);
+	
 });
