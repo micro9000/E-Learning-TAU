@@ -562,6 +562,8 @@
 			// $config['mailpath'] = '/usr/sbin/sendmail';
 			$config['charset'] = 'iso-8859-1';
 			$config['wordwrap'] = TRUE;
+			$config['mailtype'] = 'html';
+			$this->email->initialize($config);
 
 			$this->email->from('elearning.tau2018@gmai.com', 'ELearning');
 			$this->email->to($stdEmail);
@@ -669,8 +671,6 @@
 				}
 					
 			}
-
-			// echo json_encode($is_done);
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));
 		}
@@ -894,17 +894,17 @@
 
 					$this->session->set_userdata("student_num_registration", $data['student_id_num']);
 
-					// $msg = "<h4 style='color: skyblue'>Verify your email address</h4>";
-					// $msg .= "<br/><br/>";
-					// $msg .= "<p>To finish setting up your ELearning account, we just need to make sure this email address is yours.</p>";
-					// $msg .= "<br/><br/>";
-					// $msg .= "<p>To verify your email address use this registration code: <strong>". $data['regCode'] ."</strong></p>";
-					// $msg .= "<br/><br/>";
-					// $msg .= "<p>If you didn't request this code, you can safely ignore this email. Someone else might have typed your email address by mistake.</p>";
-					// $msg .= "<br/><br/>";
-					// $msg .= "<p>Thanks, <br/> ELearning - Tarlac Agriculture University, Agriculture Department</p>";
+					$msg = "<h4 style='color: skyblue'>Verify your email address</h4>";
+					$msg .= "<br/><br/>";
+					$msg .= "<p>To finish setting up your ELearning account, we just need to make sure this email address is yours.</p>";
+					$msg .= "<br/><br/>";
+					$msg .= "<p>To verify your email address use this registration code: <strong>". $data['regCode'] ."</strong></p>";
+					$msg .= "<br/><br/>";
+					$msg .= "<p>If you didn't request this code, you can safely ignore this email. Someone else might have typed your email address by mistake.</p>";
+					$msg .= "<br/><br/>";
+					$msg .= "<p>Thanks, <br/> ELearning - Tarlac Agriculture University, Agriculture Department</p>";
 
-					// $this->send_email($data['email'], "E-Learning Registration Code", $msg);
+					$this->send_email($data['email'], "E-Learning Registration Code", $msg);
 
 					$is_done = array(
 						"done" => "TRUE",
@@ -1147,8 +1147,6 @@
 					
 				
 			}
-
-			// echo json_encode($is_done);
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));
 		}
@@ -1301,9 +1299,6 @@
 					"msg" => "Unauthorized password change"
 				);
 			}
-
-			// print_r($is_done);
-
 			$this->output->set_content_type('application/json');
 			$this->output->set_output(json_encode($is_done));
 		}
@@ -1331,8 +1326,6 @@
 				"confirm_pass" => $this->input->post('confirm_pass'),
 				"section" => $this->input->post('section')
 			);
-
-			// print_r($data);
 
 			$data = $this->security->xss_clean($data);
 
@@ -1492,8 +1485,7 @@
 		public function insert_student_quiz_answer(){
 
 			$quiz_results_ID = 0;
-			// print_r($_POST);
-			// exit();
+
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}

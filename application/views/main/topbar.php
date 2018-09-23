@@ -6,6 +6,11 @@
                     <span>Menu</span>
                 </button>
 
+                <a href="home_page"> 
+                    <img src="<?php echo base_url("assets/imgs/TAU2.png") ?>" style="width: 100%;">
+                </a>
+                <a class="nav-link" href="<?php echo base_url("home_page"); ?>"> TAU, E-Learning for Agriculture Department</a>
+
                 <button class="btn btn-dark d-inline-block d-lg-none ml-auto btn-show-top-menu" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fas fa-align-justify"></i>
                 </button>

@@ -130,8 +130,6 @@
 					"id" => $id
 			));
 
-			// $sql = $this->db->get_compiled_select();
-			// echo $sql;
 			$results = $this->db->get();
 			return $results->row_array();
 		}
@@ -839,8 +837,6 @@
 							'PT.isDeleted' => 0
 						));
 
-			// $sql = $this->db->get_compiled_select();
-			// echo $sql;
 			$results = $this->db->get();
 			return $results->result_array();
 		}
@@ -1075,8 +1071,7 @@
 
 			$this->db->set($data);
 			$this->db->where("id", $lessonID);
-			// $sql = $this->db->get_compiled_update("Lessons");
-			// echo $sql;
+
 			$result = $this->db->update('Lessons');
 			return $result;
 		}
@@ -1095,8 +1090,7 @@
 
 			$this->db->set($data);
 			$this->db->where("id", $lessonID);
-			// $sql = $this->db->get_compiled_update("Lessons");
-			// echo $sql;
+
 			$result = $this->db->update('Lessons');
 			return $result;
 		}
@@ -1239,14 +1233,6 @@
 
 		public function advance_select_lessons($principleID=0, $topicID=0, $chapterID=0, $lesson_title="", $faculty_id_number="", $startDate="", $endDate=""){
 
-			// echo "principleID " . $principleID . " -- ";
-			// echo "topicID " . $topicID . " -- ";
-			// echo "chapterID " . $chapterID . " -- ";
-			// echo "lesson_title " . $lesson_title . " -- ";
-			// echo "faculty_id_number " . $faculty_id_number . " -- ";
-			// echo "startDate " . $startDate . " -- ";
-			// echo "endDate " . $endDate . " -- ";
-
 			$this->db->select("Les.*, DATE_FORMAT(Les.dateAdded, '%M %d, %Y') As dateAddedFormated, 
 								DATE_FORMAT(Les.dateModify, '%M %d, %Y') As dateModifyFormated, Chap.chapterTitle, Top.topic, Prin.principle,
 								CONCAT(Fac.firstName, ' ', Fac.lastName) As AddedByUser");
@@ -1294,8 +1280,6 @@
 			
 			$this->db->group_end();
 
-			// $sql = $this->db->get_compiled_select();
-			// echo $sql;
 			$results = $this->db->get();
 			return $results->result_array();
 		}
@@ -1315,8 +1299,6 @@
 						'Les.id' => $lessonID
 					));
 
-			// $sql = $this->db->get_compiled_select();
-			// echo $sql;
 			$results = $this->db->get();
 			return $results->result_array();
 		}
@@ -1661,7 +1643,7 @@
 
 		public function get_std_quizzes_results($limit=200){
 
-			$this->db->select("R.*, C.chapterTitle, Q.quizTitle, R.score, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTakenFormat, CONCAT(S.firstName,' ', S.lastName) As stdName");
+			$this->db->select("R.*, C.chapterTitle, Q.quizTitle, R.score, DATE_FORMAT(dateTaken, '%M %d, %Y %h:%i:%S') As dateTakenFormat, CONCAT(S.firstName,' ', S.lastName) As stdName");
 			$this->db->from("StudentQuizResults As R");
 			$this->db->join("TopicChapters As C", "R.chapterID=C.id");
 			$this->db->join("Quizzes As Q", "R.quizID=Q.id");

@@ -30,9 +30,17 @@
 	                                                    echo "<div class='row'>";
 
 	                                                        echo "<div class='col-lg-3 col-md-3 col-sm-6 col-xs-6' style='padding: 0 !important;'>";
-	                                                            echo "<div class='post_cover cover_portrait'>";
-	                                                                echo "<img src=".base_url("uploads/lessons/cover/".$lessons_data[$i]['coverPhoto']).">"; 
-	                                                            echo "</div>";
+																
+																if ($lessons_data[$i]['isWithCoverPhoto'] == "1"){
+																	echo "<div class='post_cover cover_portrait'>";
+																		echo "<img src=".base_url("uploads/lessons/cover/".$lessons_data[$i]['coverPhoto']).">"; 
+																	echo "</div>";
+																}else{
+																	echo "<div class='post_cover'>";
+																		echo "<img src=".base_url("assets/imgs/no-image-available.png"). ">"; 
+																	echo "</div>";
+																}                                                                
+	                                                            
 	                                                        echo "</div>";
 
 	                                                        echo "<div class='col-lg-9 col-md-9 col-sm-6 col-xs-6'>";

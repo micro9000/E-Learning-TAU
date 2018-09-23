@@ -9,7 +9,8 @@
 		public function is_student_can_login($stdNum, $pass){
 			$data = array(
 				'stdNum' => $stdNum,
-				'pswd' => $pass
+				'pswd' => $pass,
+				'isDeleted' => 0
 			);
 
 			$this->db->select('id, stdNum, firstName, lastName, email');
@@ -554,7 +555,7 @@
 
 		public function get_std_quizzes_results($stdNum){
 
-			$this->db->select("R.*, C.chapterTitle, Q.quizTitle, R.score, DATE_FORMAT(dateTaken, '%M %d, %Y') As dateTakenFormat");
+			$this->db->select("R.*, C.chapterTitle, Q.quizTitle, R.score, DATE_FORMAT(dateTaken, '%M %d, %Y %h:%i:%S') As dateTakenFormat");
 			$this->db->from("StudentQuizResults As R");
 			$this->db->join("TopicChapters As C", "R.chapterID=C.id");
 			$this->db->join("Quizzes As Q", "R.quizID=Q.id");

@@ -1,7 +1,8 @@
 		<!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
-                <h5>E-Learning Admin Panel</h5>
+                <strong>Tarlac Agriculture University</strong>
+                <strong>E-Learning Admin Panel</strong>
             </div>
 
             <ul class="list-unstyled components">

@@ -66,17 +66,17 @@ function display_lessons(data){
 				display += lesson.AddedByUser;
 				display += "</div>";
 
-				limit_content = lesson.content.match(/<p>(.*?)<\/p>/g).map(function(val){
-				   return val.replace(/<\/?p>/g,'');
-				});
+				if (lesson.content.match(/<p>(.*?)<\/p>/g) !== null){
+					limit_content = lesson.content.match(/<p>(.*?)<\/p>/g).map(function(val){
+						return val.replace(/<\/?p>/g,'');
+					 });
+				}else{
+					limit_content = lesson.content;
+				}
 
-				// console.log(limit_content);
-
-				for(var i=0; i<limit_content.length; i++){
-					if (limit_content[i].indexOf("<img") === -1){
-						contentTmp += limit_content[i];
-						// console.log(contentTmp);
-						// break;
+				for(var j=0; j<limit_content.length; j++){
+					if (limit_content[j].indexOf("<img") === -1){
+						contentTmp += limit_content[j];
 					}
 				}
 
