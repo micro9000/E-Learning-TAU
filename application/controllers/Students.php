@@ -183,11 +183,20 @@
 			$this->load->view("students/footer");
 		}
 
+
+		public function block_url_copy_paste(){
+			if (!isset($_SERVER['HTTP_REFERER'])){
+				$this->destroy_student_session();
+			}
+		}
+	
 		public function home(){
 
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			$data['page_title'] = "Home - Students";
 			$data['page_code'] = "home";
@@ -215,6 +224,8 @@
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			$lessonData = array(
 						'id' => $lessonID,
@@ -249,6 +260,8 @@
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			$studentID = $this->session->userdata('std_session_id');
 			$studentIDNum = $this->session->userdata('std_session_stdNum');
@@ -286,6 +299,8 @@
 				redirect("/student_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			$studentID = $this->session->userdata('std_session_id');
 			$studentIDNum = $this->session->userdata('std_session_stdNum');
 
@@ -317,9 +332,12 @@
 		}
 
 		public function search_lessons_view($search_str=""){
+
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			$data = array(
 				"search_str" => $search_str
@@ -364,6 +382,8 @@
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}
+			
+			$this->block_url_copy_paste();
 
 			$lessonData = array(
 						'id' => $lessonID,
@@ -405,6 +425,8 @@
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}
+			
+			$this->block_url_copy_paste();
 
 			$quizData = array(
 						'quizID' => $quizID,
@@ -452,6 +474,8 @@
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}
+			
+			$this->block_url_copy_paste();
 
 			$studentIDNum = $this->session->userdata('std_session_stdNum');
 
@@ -522,6 +546,8 @@
 			if ($this->is_student_still_logged_in() === FALSE){
 				redirect("/student_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			// $studentID = $this->session->userdata('std_session_id');
 			$studentIDNum = $this->session->userdata('std_session_stdNum');

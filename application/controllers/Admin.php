@@ -168,12 +168,19 @@
 		##
 		##
 
+		public function block_url_copy_paste(){
+			if (!isset($_SERVER['HTTP_REFERER'])){
+				$this->destroy_admin_session();
+			}
+		}
 		
 		public function main_panel(){
 
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -198,6 +205,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 			
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -244,6 +253,8 @@
 				redirect("/admin_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
 			$data['userType'] = $userType;
@@ -288,6 +299,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -336,6 +349,8 @@
 				redirect("/admin_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
 			$data['userType'] = $userType;
@@ -366,6 +381,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -417,6 +434,8 @@
 				redirect("/admin_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
 			$data['userType'] = $userType;
@@ -459,6 +478,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			$facultyID = $this->session->userdata('admin_session_faculty_id');
 			$facultyIDNum = $this->session->userdata('admin_session_facultyNum');
@@ -511,6 +532,8 @@
 				redirect("/admin_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -540,6 +563,8 @@
 				redirect("/admin_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -566,6 +591,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
@@ -606,6 +633,8 @@
 				redirect("/admin_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -632,6 +661,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
@@ -661,6 +692,8 @@
 				redirect("/admin_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -688,6 +721,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+			
+			$this->block_url_copy_paste();
 
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
@@ -716,6 +751,8 @@
 				redirect("/admin_login_page");
 			}
 
+			$this->block_url_copy_paste();
+
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
 			$actualUserType = $this->get_actual_user_type($userType);
@@ -742,6 +779,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
@@ -770,6 +809,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
@@ -808,6 +849,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
@@ -854,6 +897,8 @@
 			if ($this->is_admin_still_logged_in() === FALSE){
 				redirect("/admin_login_page");
 			}
+
+			$this->block_url_copy_paste();
 
 			// Needs inside sidebar
 			$userType = $this->get_user_type();
